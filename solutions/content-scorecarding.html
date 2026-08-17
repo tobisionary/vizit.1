@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Content Scorecarding | One Conversion Standard | Vizit</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Replace subjective brand policing with a single objective score. Vizit Content Scorecarding gives global and regional teams the same standard for what converts — the Vizit Score — in every market, at every scale.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Global Content Scorecarding) ─── */
+  a { color: var(--accent); }
+  a:hover { color: var(--blue-700); }
+
+  /* Dual-certified hero stage */
+  .dualcert {
+    position: relative; background: var(--blue-1000); color: #fff;
+    aspect-ratio: 1 / 1.02; overflow: hidden; box-shadow: var(--shadow-lg);
+    display: grid; grid-template-rows: 36px 1fr;
+  }
+  .dualcert::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 70% at 82% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 60% at 0% 100%, rgba(1,116,217,0.36), transparent 62%);
+    pointer-events: none;
+  }
+  .dualcert .hs-chrome {
+    position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    background: rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--blue-200); text-transform: uppercase;
+  }
+  .dualcert .hs-chrome .pulse { width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25); }
+  .dualcert .markets { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-4); padding: var(--space-6); }
+  .dualcert .mkt { display: flex; flex-direction: column; gap: var(--space-3); align-items: center; text-align: center; }
+  .dualcert .mkt .flagline { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-200); }
+  .dualcert .mkt .pack { width: 96px; height: 128px; border-radius: 4px; position: relative; box-shadow: 10px 12px 26px rgba(0,0,0,0.4), inset -12px 0 20px rgba(0,0,0,0.25); }
+  .dualcert .mkt.a .pack { background: linear-gradient(150deg, #b0472f, #7d2f1e); }
+  .dualcert .mkt.b .pack { background: linear-gradient(150deg, #2b6fb0, #0174d9); }
+  .dualcert .mkt .pack::after { content: ''; position: absolute; left: 18%; right: 18%; top: 26%; height: 7px; background: rgba(255,255,255,0.9); box-shadow: 0 14px 0 rgba(255,255,255,0.55), 0 26px 0 rgba(255,255,255,0.32); }
+  .dualcert .cert {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    background: rgba(52,160,254,0.16); border: 1px solid rgba(52,160,254,0.42); color: var(--cyan); padding: 5px 9px;
+  }
+  .dualcert .cert .dot { width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.22); }
+  .dualcert .seam { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .dualcert .seam .line { width: 1px; height: 54px; background: rgba(255,255,255,0.2); }
+  .dualcert .seam .one { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue-200); writing-mode: vertical-rl; }
+
+  /* Localization split cards */
+  .loc { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-7); }
+  @media (max-width: 700px) { .loc { grid-template-columns: 1fr; } }
+  .loc .card { border: 1px solid var(--border); background: #fff; overflow: hidden; }
+  .loc .card .pic { aspect-ratio: 4/3; position: relative; background: linear-gradient(160deg,#f4ece2,#e2d2bf); }
+  .loc .card .pic .p { position: absolute; inset: 20% 30% 22%; border-radius: 6px; box-shadow: inset 0 -12px 20px rgba(0,0,0,0.2); }
+  .loc .card.a .pic .p { background: linear-gradient(150deg,#b0472f,#7d2f1e); }
+  .loc .card.b .pic .p { background: linear-gradient(150deg,#2b6fb0,#0174d9); }
+  .loc .card .pic .badge { position: absolute; top: 10px; left: 10px; }
+  .loc .card .bar { padding: var(--space-4); display: flex; align-items: center; justify-content: space-between; }
+  .loc .card .mk { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .loc .card .sc { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: -0.03em; color: var(--accent); }
+
+  /* Global gateway reject */
+  .gateway { background: #fff; border: 1px solid var(--border); overflow: hidden; }
+  .gateway .gh { padding: var(--space-3) var(--space-4); background: var(--blue-1000); color: #fff; display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .gateway .gh .thresh { color: var(--blue-200); }
+  .gateway .grow { display: grid; grid-template-columns: 52px 1fr auto; gap: var(--space-4); align-items: center; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border); }
+  .gateway .grow:last-child { border-bottom: none; }
+  .gateway .grow .th { width: 52px; height: 52px; border-radius: 6px; position: relative; }
+  .gateway .grow .th .p { position: absolute; inset: 22%; border-radius: 4px; }
+  .gateway .grow .nm { font-family: var(--font-display); font-size: 1.05rem; color: var(--blue-1000); }
+  .gateway .grow .mkt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .gateway .grow .verdict { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px; }
+  .gateway .grow.pass .verdict { background: var(--accent-soft); color: var(--blue-700); border: 1px solid var(--blue-100); }
+  .gateway .grow.fail .verdict { background: rgba(200,69,58,0.08); color: var(--risk-red); border: 1px solid rgba(200,69,58,0.3); }
+  .gateway .grow.fail .th { outline: 2px solid var(--risk-red); outline-offset: -2px; }
+  .gateway .grow .score { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: -0.03em; }
+  .gateway .grow.pass .score { color: var(--accent); }
+  .gateway .grow.fail .score { color: var(--risk-red); }
+
+  /* Leaderboard */
+  .leaderboard { background: #fff; border: 1px solid var(--border); overflow: hidden; }
+  .leaderboard .lh { padding: var(--space-3) var(--space-4); background: var(--surface); border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+  .leaderboard .lrow { display: grid; grid-template-columns: 28px 150px 1fr 44px; gap: var(--space-3); align-items: center; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border); }
+  .leaderboard .lrow:last-child { border-bottom: none; }
+  .leaderboard .lrow .rk { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .leaderboard .lrow.lead .rk { color: var(--accent); font-weight: 600; }
+  .leaderboard .lrow .rg { font-size: var(--text-sm); color: var(--color-700); }
+  .leaderboard .lrow.lead .rg { color: var(--blue-1000); font-weight: 600; }
+  .leaderboard .lrow .track { height: 10px; background: var(--color-100); position: relative; }
+  .leaderboard .lrow .track .f { position: absolute; inset: 0 auto 0 0; width: var(--w,50%); background: var(--blue-300); }
+  .leaderboard .lrow.lead .track .f { background: var(--accent); }
+  .leaderboard .lrow .v { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: right; color: var(--blue-1000); }
+
+  /* Case study strip */
+  .casebar { margin-top: var(--space-6); background: var(--blue-1000); color: #fff; padding: clamp(1.75rem,3.5vw,2.75rem); position: relative; overflow: hidden; }
+  .casebar::before { content:''; position:absolute; inset:0; background: radial-gradient(70% 100% at 100% 0%, rgba(52,160,254,0.22), transparent 60%); pointer-events:none; }
+  .casebar .lab { position: relative; z-index:1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-200); margin-bottom: var(--space-4); display: block; }
+  .casebar p { position: relative; z-index:1; margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.15rem,1.9vw,1.55rem); line-height: 1.4; letter-spacing: -0.01em; color: #fff; max-width: 68ch; }
+  .casebar p em { font-style: normal; color: var(--blue-300); }
+
+  /* Timeline before/after */
+  .tl { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-7); }
+  @media (max-width: 760px) { .tl { grid-template-columns: 1fr; } }
+  .tl .col { border: 1px solid var(--border); background: #fff; padding: var(--space-6); }
+  .tl .col.old { background: var(--surface); }
+  .tl .col .tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--space-5); display: flex; justify-content: space-between; }
+  .tl .col.old .tag { color: var(--muted); } .tl .col.old .tag b { color: var(--risk-red); font-weight: 600; }
+  .tl .col.new .tag { color: var(--accent); } .tl .col.new .tag b { color: var(--accent); font-weight: 600; }
+  .tl .node { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: var(--text-sm); color: var(--color-700); }
+  .tl .node .d { width: 8px; height: 8px; border-radius: 999px; background: var(--color-300); flex: 0 0 auto; }
+  .tl .col.old .node .d { background: var(--risk-amber); }
+  .tl .col.new .node .d { background: var(--accent); }
+  .tl .col.new .node.check { color: var(--blue-1000); font-weight: 600; }
+
+  /* Heatmap */
+  .heatmap { background: #fff; border: 1px solid var(--border); padding: var(--space-6); }
+  .heatmap .hm-head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--space-5); display: flex; justify-content: space-between; }
+  .heatmap .regions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 620px) { .heatmap .regions { grid-template-columns: repeat(2, 1fr); } }
+  .heatmap .rg { border: 1px solid var(--border); padding: var(--space-4); position: relative; }
+  .heatmap .rg .nm { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .heatmap .rg .sc { font-family: var(--font-display); font-size: 2rem; letter-spacing: -0.03em; line-height: 1; margin-top: 6px; }
+  .heatmap .rg.good { background: var(--accent-soft); border-color: var(--blue-100); }
+  .heatmap .rg.good .sc { color: var(--accent); }
+  .heatmap .rg.warn { background: rgba(217,155,39,0.1); border-color: rgba(217,155,39,0.35); }
+  .heatmap .rg.warn .sc { color: #b07a14; }
+  .heatmap .rg .leak { margin-top: 8px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.04em; color: var(--risk-red); }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="content-scorecarding"></vizit-nav>
+
+<!-- PANEL 1 — HERO -->
+<section class="sol-hero" data-screen-label="01 One standard">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Global Content Scorecarding</span>
+        <h1 class="display">Global consistency. Local performance. <em>One standard</em> delivers both.</h1>
+        <p class="subhead">Replace subjective brand policing with the Vizit Score — giving global and regional teams the same objective measure of what converts.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Audit my global digital shelf <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Two localized product variations, both Vizit Certified against one standard">
+        <div class="dualcert">
+          <div class="hs-chrome">
+            <span class="pulse"></span>
+            <span>Vizit · one standard, every market</span>
+            <span style="margin-left:auto;">Threshold 80+</span>
+          </div>
+          <div class="markets">
+            <div class="mkt a">
+              <span class="flagline">EMEA · localized</span>
+              <div class="pack"></div>
+              <span class="cert"><span class="dot"></span>Vizit Certified · 86</span>
+            </div>
+            <div class="seam"><span class="line"></span><span class="one">One standard</span><span class="line"></span></div>
+            <div class="mkt b">
+              <span class="flagline">North America · localized</span>
+              <div class="pack"></div>
+              <span class="cert"><span class="dot"></span>Vizit Certified · 85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">Powering global content standards for the world's most iconic brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>MARS PETCARE</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 2 — THE LOCALIZATION CHALLENGE -->
+<section class="panel panel--paper" data-screen-label="02 Localization challenge">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">02 — The localization challenge</span>
+      <h2 class="display">Prove what works locally without <em>breaking the global brand</em>.</h2>
+      <p class="subhead">End the friction between HQ and regional teams. Vizit scores content against specific geographic shopper audiences, giving every market statistical insight into what drives maximum conversion — without compromising brand standards.</p>
+    </div>
+
+    <div class="loc reveal" aria-label="Two cultural variations of the same product, both Vizit Certified">
+      <div class="card a">
+        <div class="pic"><span class="badge"><span class="score-tag win"><span class="dot"></span>Vizit Certified</span></span><div class="p"></div></div>
+        <div class="bar"><span class="mk">EMEA variation</span><span class="sc">86</span></div>
+      </div>
+      <div class="card b">
+        <div class="pic"><span class="badge"><span class="score-tag win"><span class="dot"></span>Vizit Certified</span></span><div class="p"></div></div>
+        <div class="bar"><span class="mk">North America variation</span><span class="sc">85</span></div>
+      </div>
+    </div>
+    <div class="callout-strip reveal" style="margin-top: var(--space-6);">
+      <span class="ix">The principle</span>
+      <p class="ms">Local adaptation is <em>welcome</em> — as long as it performs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 3 — THE STANDARD -->
+<section class="panel" data-screen-label="03 One standard">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="Global gateway rejecting content that scores below the standard">
+        <div class="gateway">
+          <div class="gh"><span>Global syndication gateway</span><span class="thresh">Threshold · 80+</span></div>
+          <div class="grow pass"><span class="th" style="background:linear-gradient(150deg,#2b6fb0,#0174d9);"><span class="p"></span></span><div><div class="nm">Approved asset</div><div class="mkt">North America</div></div><span class="verdict">Vizit Certified</span><span class="score">85</span></div>
+          <div class="grow pass"><span class="th" style="background:linear-gradient(150deg,#b0472f,#7d2f1e);"><span class="p"></span></span><div><div class="nm">Approved asset</div><div class="mkt">EMEA</div></div><span class="verdict">Vizit Certified</span><span class="score">86</span></div>
+          <div class="grow fail"><span class="th" style="background:linear-gradient(150deg,#8a7a68,#6f5842);"><span class="p"></span></span><div><div class="nm">Upload attempt</div><div class="mkt">APAC · local market</div></div><span class="verdict">Below standard</span><span class="score">65</span></div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — The standard</span>
+        <h2 class="display">Every region. One standard. <em>Freedom to localize</em> within it.</h2>
+        <p class="subhead">The world's best commerce teams set 80+ as the syndication threshold. Every region localizes freely within it. Anything below never ships — the gateway rejects it before it reaches the shelf.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-ghost" href="../blog-article.html">See the Content Conversion Standard <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 4 — THE LEADERBOARD -->
+<section class="panel panel--paper" data-screen-label="04 Performance leaderboard">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">04 — The performance leaderboard</span>
+      <h2 class="display">Give regional teams a score to beat. Watch <em>performance follow</em>.</h2>
+      <p class="subhead">When every region sees where they rank, everyone moves toward the standard. Leaderboards turn content into competition.</p>
+    </div>
+
+    <div class="leaderboard reveal" style="margin-top: var(--space-7);" aria-label="Global content leaderboard by region">
+      <div class="lh"><span>Global content leaderboard</span><span>Avg. Vizit Score</span></div>
+      <div class="lrow lead"><span class="rk">01</span><span class="rg">EMEA · Pet Nutrition</span><span class="track"><span class="f" style="--w:88%;"></span></span><span class="v">88</span></div>
+      <div class="lrow"><span class="rk">02</span><span class="rg">North America</span><span class="track"><span class="f" style="--w:85%;"></span></span><span class="v">85</span></div>
+      <div class="lrow"><span class="rk">03</span><span class="rg">LATAM</span><span class="track"><span class="f" style="--w:81%;"></span></span><span class="v">81</span></div>
+      <div class="lrow"><span class="rk">04</span><span class="rg">APAC</span><span class="track"><span class="f" style="--w:74%;"></span></span><span class="v">74</span></div>
+    </div>
+
+    <div class="casebar reveal">
+      <span class="lab">Case study · Mars Petcare</span>
+      <p>Live across 10+ global markets, Mars Petcare uses Vizit to enforce a universal visual standard. By deploying global leaderboards, regional and category teams actively compete for the highest Vizit Scores — driving a <em>measurable, self-sustaining lift</em> in total digital shelf performance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 5 — VIZIT SPARK -->
+<section class="panel" data-screen-label="05 Instant lift">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal" style="max-width:56ch;">
+        <span class="eyebrow">05 — Instant conversion lift</span>
+        <h2 class="display">Enforcing standards shouldn't cost you <em>time-to-market</em>.</h2>
+        <p class="subhead">Give local teams the AI to fix low-performing content. Vizit Spark upgrades a low-scoring asset to Vizit Certified in seconds — no reshoot, no brief, no wait.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-ghost" href="../vizit-next-gen-platform.html">See Vizit Spark <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Vizit Spark upgrading a rejected local asset to Vizit Certified">
+        <div class="ba">
+          <div class="ba-head"><span>Rejected · 55</span><span class="div">→</span><span>Certified · 84</span></div>
+          <div class="ba-frames">
+            <div class="ba-frame before"><div class="obj"></div><span class="tag"><span class="score-tag low"><span class="dot"></span>55</span></span></div>
+            <div class="ba-frame after"><div class="obj" style="--prod:#0174d9;"></div><span class="tag"><span class="score-tag win"><span class="dot"></span>Vizit Certified</span></span></div>
+            <div class="ba-divider"></div>
+          </div>
+          <div class="ba-foot"><span>Vizit Spark · APAC market · same brief</span><span class="lift">+29 pts</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 6 — FASTER TO MARKET -->
+<section class="panel panel--paper" data-screen-label="06 Faster to market">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">06 — Faster to market, everywhere</span>
+      <h2 class="display">Less revision. More launches. <em>Zero guesswork</em>.</h2>
+      <p class="subhead">When every team briefs to a clear performance standard, revision cycles collapse. Content either meets the standard, or Vizit tells you exactly what to change — before it reaches the approval queue.</p>
+    </div>
+
+    <div class="tl reveal">
+      <div class="col old">
+        <span class="tag">Before Vizit <b>6 weeks</b></span>
+        <div class="node"><span class="d"></span>Regional agency draft</div>
+        <div class="node"><span class="d"></span>Local market feedback</div>
+        <div class="node"><span class="d"></span>HQ brand review</div>
+        <div class="node"><span class="d"></span>Revision round 2</div>
+        <div class="node"><span class="d"></span>Revision round 3</div>
+      </div>
+      <div class="col new">
+        <span class="tag">With Vizit <b>1 week</b></span>
+        <div class="node"><span class="d"></span>Brief to the standard</div>
+        <div class="node check"><span class="d"></span>Single checkpoint: Vizit Certified</div>
+        <div class="node"><span class="d"></span>Ship</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 7 — FINAL CTA / HEATMAP -->
+<section class="panel" data-screen-label="07 Enterprise readiness">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="Executive heatmap of conversion power by region">
+        <div class="heatmap">
+          <div class="hm-head"><span>Global content scorecard</span><span>Conversion power</span></div>
+          <div class="regions">
+            <div class="rg good"><div class="nm">North America</div><div class="sc">82</div></div>
+            <div class="rg warn"><div class="nm">Europe</div><div class="sc">64</div><div class="leak">$1.2M projected leak</div></div>
+            <div class="rg good"><div class="nm">LATAM</div><div class="sc">80</div></div>
+            <div class="rg warn"><div class="nm">APAC</div><div class="sc">71</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">07 — Enterprise conversion power</span>
+        <h2 class="display">Which regions are secretly hurting your global <em>conversion rate</em>?</h2>
+        <p class="subhead">Set up a Global Content Scorecard. Vizit maps the conversion power of your entire catalog against billions of shopper signals — broken down by region, brand, category, and SKU — so you discover exactly where revenue is leaking, and what to do about it.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Calculate your global revenue opportunity <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" data-screen-label="08 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">One standard. Every market.</span>
+    <h2 class="display on-dark reveal">Global consistency and local performance — <em>measured</em>, not policed.</h2>
+    <p class="subhead on-dark reveal">Give every region the same objective standard for what converts, and the AI to hit it. Watch total digital shelf performance rise, market by market.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Audit my global digital shelf <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

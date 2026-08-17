@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vizit API | Content Optimization for Every Agent, Pipeline, and Product</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta name="description" content="Score, diagnose, and optimize images and PDPs through a single REST API. The Vizit Score, Content Conversion Standard, and Synthetic Shopper Audience prediction — available for any customer system to call.">
+  <link rel="stylesheet" href="css/ci-styles.css">
+  <link rel="stylesheet" href="css/vizit-theme.css">
+  <link rel="stylesheet" href="css/vizit-elevate.css">
+  <script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+  <script src="https://js.hsforms.net/forms/embed/24432389.js" defer></script>
+  <style>
+    /* Final CTA → headline left, form right */
+    #request-access { scroll-margin-top: 80px; }
+    .final-split { display: grid; grid-template-columns: 1.05fr .95fr; gap: var(--space-8); align-items: center; text-align: left; }
+    .final-split h2, .final-split .subhead { max-width: 24ch; margin-left: 0; margin-right: 0; }
+    .final-form { background: #fff; border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+    .final-form .hs-form-frame { min-height: 520px; }
+    .final-form .hs-form-frame iframe { min-height: 520px; width: 100%; border: 0; }
+    .final-form .form-kicker { font-family: var(--font-mono); font-size: .6875rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 var(--space-4); }
+    @media (max-width: 900px) { .final-split { grid-template-columns: 1fr; gap: var(--space-7); } }
+    .api-hero { padding: var(--space-9) 0 var(--space-8); }
+    .api-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-9); align-items: center; }
+    @media (max-width: 980px) { .api-hero-grid { grid-template-columns: 1fr; gap: var(--space-7); } }
+    .api-hero .eyebrow { display: block; margin-bottom: var(--space-5); }
+
+    /* Request / response card */
+    .api-call { background: var(--blue-1000); border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: var(--shadow-lg); }
+    .api-call .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: var(--font-mono); font-size: 11px; color: var(--blue-200); }
+    .api-call .bar .d { width: 8px; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.2); }
+    .api-call .bar .d.g { background: #65c87b; }
+    .api-call pre { margin: 0; padding: var(--space-5) var(--space-6); font-family: var(--font-mono); font-size: 12px; line-height: 1.7; color: rgba(255,255,255,0.86); overflow-x: auto; }
+    .api-call .mut { color: var(--blue-200); }
+    .api-call .key { color: #8fd0ff; }
+    .api-call .num { color: #7ee2a8; }
+    .api-call .resp { border-top: 1px solid rgba(255,255,255,0.08); background: rgba(52,160,254,0.06); }
+    .api-call .scorebig { font-family: var(--font-display); font-size: 2.5rem; color: #fff; line-height: 1; }
+    .api-call .scoreline { display: flex; align-items: baseline; gap: 10px; padding: var(--space-4) var(--space-6) var(--space-5); }
+    .api-call .badge { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue-1000); background: var(--blue-300); padding: 3px 8px; }
+
+    /* Architecture diagram */
+    .api-arch { margin-top: var(--space-7); }
+    .api-arch .row { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+    .api-arch .node { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 14px; background: #fff; border: 1px solid var(--border); color: var(--color-700); }
+    .api-arch .conn { height: var(--space-5); width: 1px; background: var(--border); margin: 0 auto; }
+    .api-arch .bar { margin: var(--space-4) 0; padding: var(--space-5); text-align: center; background: linear-gradient(120deg, var(--blue-base), var(--blue-300)); color: #fff; font-family: var(--font-mono); font-size: var(--text-sm); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
+    .panel--dark .api-arch .node { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); color: var(--blue-100); }
+    .panel--dark .api-arch .conn { background: rgba(255,255,255,0.18); }
+
+    /* Operations */
+    .api-ops { margin-top: var(--space-7); display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    @media (max-width: 760px) { .api-ops { grid-template-columns: 1fr; } }
+    .api-op { background: #fff; padding: var(--space-6); }
+    .api-op .n { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .api-op h4 { font-family: var(--font-display); font-weight: 400; font-size: var(--text-lg); margin: var(--space-3) 0 var(--space-2); color: var(--blue-1000); letter-spacing: -0.02em; }
+    .api-op p { margin: 0; font-size: var(--text-sm); color: var(--color-700); line-height: 1.55; }
+
+    /* System chips */
+    .api-chips { margin-top: var(--space-7); display: flex; flex-wrap: wrap; gap: var(--space-3); }
+    .api-chip { padding: 12px 18px; background: #fff; border: 1px solid var(--border); font-family: var(--font-mono); font-size: var(--text-sm); letter-spacing: 0.04em; color: var(--blue-1000); }
+
+    /* Build cards */
+    .api-build { margin-top: var(--space-7); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+    @media (max-width: 880px) { .api-build { grid-template-columns: 1fr; } }
+    .api-build .card { background: var(--paper); border: 1px solid rgba(0,0,0,0.05); padding: var(--space-6); }
+    .api-build .card h4 { font-family: var(--font-display); font-weight: 400; font-size: var(--text-lg); line-height: 1.15; letter-spacing: -0.02em; color: var(--blue-1000); margin: 0 0 var(--space-3); }
+    .api-build .card p { margin: 0; font-size: var(--text-sm); color: var(--color-700); line-height: 1.6; }
+
+    /* ── Elevated architecture flow (P2) ── */
+    .panel--dark .api-arch { margin-top: var(--space-8); max-width: 1040px; margin-inline: auto; }
+    .api-arch .row { gap: var(--space-3) var(--space-4); }
+    .panel--dark .api-arch .node {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14);
+      color: var(--blue-100); padding: 11px 16px; border-radius: 999px;
+      transition: transform .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease);
+    }
+    .panel--dark .api-arch .node:hover {
+      transform: translateY(-2px); border-color: var(--blue-300);
+      background: rgba(52,160,254,0.12); box-shadow: 0 12px 26px -14px rgba(52,160,254,0.65);
+    }
+    .api-arch .conn {
+      position: relative; height: var(--space-7); width: 2px; margin: 0 auto;
+      background: rgba(255,255,255,0.12); overflow: hidden;
+    }
+    .api-arch .conn::after {
+      content: ""; position: absolute; left: 0; right: 0; top: -45%; height: 45%;
+      background: linear-gradient(180deg, transparent, var(--blue-300), transparent);
+      animation: apiFlow 2.2s linear infinite;
+    }
+    @keyframes apiFlow { from { transform: translateY(0); } to { transform: translateY(360%); } }
+    .panel--dark .api-arch .bar {
+      position: relative; overflow: hidden;
+      margin: var(--space-4) auto; max-width: 380px; border-radius: 12px;
+      padding: var(--space-5) var(--space-6);
+      background: linear-gradient(120deg, var(--blue-base), var(--blue-300));
+      font-size: var(--text-base); letter-spacing: 0.18em;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.16), 0 26px 64px -24px rgba(52,160,254,0.7);
+    }
+    .panel--dark .api-arch .bar::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.38) 50%, transparent 70%);
+      transform: translateX(-120%); animation: apiSheen 3.4s ease-in-out infinite;
+    }
+    @keyframes apiSheen { 0%, 22% { transform: translateX(-120%); } 62%, 100% { transform: translateX(120%); } }
+
+    /* ── Card hover life (P3/P4/P5) ── */
+    .api-op { transition: background .25s var(--ease); }
+    .api-op:hover { background: var(--paper); }
+    .api-build .card { transition: transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease); }
+    .api-build .card:hover { transform: translateY(-3px); border-color: var(--blue-200); box-shadow: 0 18px 40px -26px rgba(1,116,217,0.42); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .api-arch .conn::after, .panel--dark .api-arch .bar::after { animation: none; }
+    }
+  </style>
+  <style id="api-brand-align">
+    /* Dark sections → black (homepage-matched) */
+    .panel--dark, .final { background: radial-gradient(110% 60% at 50% -5%, rgba(1,116,217,.14), transparent 60%), #000000 !important; }
+    .final::before { display: none !important; }
+    /* Headlines: semibold, black on light / white on dark, no accent italics */
+    h1.display, h2.display, .display { font-weight: 600 !important; }
+    h1.display, h2.display { color: #0a0e14; }
+    .display em, .headline em { font-style: normal !important; color: inherit !important; font-weight: inherit !important; }
+    .panel--dark .display, .final .display, .display.on-dark { color: #ffffff !important; }
+    /* Buttons: homepage black pill / white pill on dark */
+    .btn { border-radius: 999px !important; font-weight: 500 !important; }
+    .btn { --mx: 50%; --my: 50%; }
+    .btn::before { content: none !important; }
+    .btn-primary { background: #0a0e14 !important; color: #ffffff !important; border: none !important; box-shadow: none !important; }
+    .btn-primary:hover { background-image: radial-gradient(170px circle at var(--mx,50%) var(--my,50%), rgba(94,182,255,0.45) 0%, rgba(52,160,254,0.22) 38%, rgba(52,160,254,0) 72%) !important; background-color: #ffffff !important; color: #0a0e14 !important; box-shadow: 0 0 0 1px #0a0e14 inset, 0 0 26px -6px rgba(52,160,254,0.35) !important; transform: none !important; }
+    .btn-on-dark { background: #ffffff !important; color: #0a0e14 !important; }
+    .btn-on-dark:hover { background-image: radial-gradient(170px circle at var(--mx,50%) var(--my,50%), rgba(94,182,255,0.5) 0%, rgba(52,160,254,0.25) 38%, rgba(52,160,254,0) 72%) !important; background-color: #3f464e !important; color: #ffffff !important; box-shadow: 0 0 0 1px #ffffff inset, 0 0 26px -6px rgba(52,160,254,0.4) !important; }
+    /* Hero headline: fit 3–4 lines */
+    .api-hero h1.display { font-size: clamp(2.3rem, 3.5vw, 3.4rem) !important; }
+    /* Every headline semibold */
+    h3, h4, .api-op h4, .api-build .card h4 { font-weight: 600 !important; }
+    /* Section 2 — blocky flow diagram */
+    .api-arch .row { display: grid !important; gap: 10px; }
+    .api-arch .row.sys { grid-template-columns: repeat(7, 1fr); }
+    .api-arch .row.ag { grid-template-columns: repeat(5, 1fr); }
+    @media (max-width: 980px) { .api-arch .row.sys { grid-template-columns: repeat(4, 1fr); } .api-arch .row.ag { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 620px) { .api-arch .row.sys, .api-arch .row.ag { grid-template-columns: repeat(2, 1fr); } }
+    .panel--dark .api-arch .node { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; border-radius: 10px !important; padding: 18px 10px !important; line-height: 1.35; }
+    .api-arch .node svg { width: 20px; height: 20px; stroke: #5db4ff; stroke-width: 1.4; fill: none; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+    .api-arch .node svg polygon { fill: #5db4ff; stroke: none; }
+    .panel--dark .api-arch .node.ag::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: #5db4ff; box-shadow: 0 0 10px rgba(93,180,255,0.8); }
+    .panel--dark .api-arch .bar { border-radius: 10px; max-width: 460px; }
+    /* Code card joins the black family */
+    .api-call { background: #0a0e14; border-color: rgba(255,255,255,.12); }
+    .api-call .badge { color: #0a0e14; }
+  </style>
+</head>
+<body>
+
+<vizit-nav data-current="api"></vizit-nav>
+
+<!-- P1 — HERO -->
+<section class="api-hero" data-screen-label="01 Hero">
+  <div class="container api-hero-grid">
+    <div>
+      <h1 class="display">Score, diagnose, and optimize <em>every asset</em>, anywhere, in an instant.</h1>
+      <p class="subhead" style="margin-top:var(--space-5);">Call the Vizit API and our agents run the task — scoring, diagnosing, and optimizing your content, then returning the result to your systems in seconds.</p>
+      <div style="margin-top:var(--space-6);display:flex;gap:var(--space-3);flex-wrap:wrap;">
+        <a class="btn btn-primary btn-lg" href="#request-access">Request access <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="api-call" aria-hidden="true">
+      <div class="bar"><span class="d"></span><span class="d"></span><span class="d g"></span><span style="margin-left:8px;">POST&nbsp;/v1/score</span></div>
+      <pre><span class="mut">// request</span>
+{
+  <span class="key">"type"</span>: <span class="num">"pdp"</span>,
+  <span class="key">"image_url"</span>: <span class="num">"cdn.brand.com/sku_8841.jpg"</span>,
+  <span class="key">"category"</span>: <span class="num">"snacks"</span>,
+  <span class="key">"audience"</span>: <span class="num">"us_value_shopper"</span>
+}</pre>
+      <div class="resp">
+        <div class="scoreline">
+          <span class="scorebig">84</span>
+          <span class="mut" style="font-family:var(--font-mono);font-size:11px;">/ 100 · Vizit Score</span>
+          <span class="badge" style="margin-left:auto;">Vizit Certified</span>
+        </div>
+        <pre style="padding-top:0;"><span class="mut">// diagnosis + optimized variant returned</span>
+{ <span class="key">"hero"</span>: <span class="num">88</span>, <span class="key">"carousel"</span>: <span class="num">79</span>, <span class="key">"asset_mix"</span>: <span class="num">82</span> }</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P2 — ONE API -->
+<section class="panel panel--dark" data-screen-label="02 One API">
+  <div class="container">
+    <h2 class="display on-dark" style="max-width:24ch;">The intelligence powering the Vizit Platform — available to <em>every system</em> in your commerce tech stack.</h2>
+    <div class="api-arch">
+      <div class="row sys">
+        <span class="node"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13"></rect><line x1="1.5" y1="6" x2="14.5" y2="6"></line><line x1="6" y1="6" x2="6" y2="14.5"></line></svg>PIM</span>
+        <span class="node"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13"></rect><circle cx="5.5" cy="5.5" r="1.5"></circle><line x1="1.5" y1="12" x2="10" y2="7"></line><line x1="10" y1="7" x2="14.5" y2="11"></line></svg>DAM</span>
+        <span class="node"><svg viewBox="0 0 16 16"><line x1="8" y1="1.5" x2="8" y2="14.5"></line><line x1="1.5" y1="8" x2="14.5" y2="8"></line><line x1="3.5" y1="3.5" x2="12.5" y2="12.5"></line><line x1="12.5" y1="3.5" x2="3.5" y2="12.5"></line></svg>Generation Models</span>
+        <span class="node"><svg viewBox="0 0 16 16"><rect x="1.5" y="2.5" width="13" height="11"></rect><polygon points="6.5,5.5 11,8 6.5,10.5"></polygon></svg>Retail Media</span>
+        <span class="node"><svg viewBox="0 0 16 16"><rect x="2.5" y="5" width="11" height="9.5"></rect><path d="M5.5 5 a2.5 2.5 0 0 1 5 0"></path></svg>Ecommerce</span>
+        <span class="node"><svg viewBox="0 0 16 16"><line x1="3.5" y1="14" x2="3.5" y2="9"></line><line x1="8" y1="14" x2="8" y2="3"></line><line x1="12.5" y1="14" x2="12.5" y2="6"></line></svg>BI Dashboards</span>
+        <span class="node"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13"></rect><polyline points="5,8 7.2,10.2 11.5,5.5"></polyline></svg>Project Management</span>
+      </div>
+      <div class="conn"></div>
+      <div class="bar">Vizit API</div>
+      <div class="conn"></div>
+      <div class="row ag">
+        <span class="node ag">Conversion Scoring</span><span class="node ag">Content Optimization</span><span class="node ag">Visual Attention</span><span class="node ag">Revenue Recovery</span><span class="node ag">Digital Merchandising</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P3 — WHAT THE API DOES -->
+<section class="panel" data-screen-label="03 Operations">
+  <div class="container">
+    <h2 class="display" style="max-width:26ch;">Two object types: images and PDPs. Submit either, then <em>four operations</em> on both.</h2>
+    <div class="api-ops">
+      <div class="api-op">
+        <span class="n">Submit</span>
+        <h4>Submit images &amp; PDPs</h4>
+        <p>Send any standalone image or full Product Detail Page to Vizit for analysis. Asynchronous ingestion handles catalog-scale volume.</p>
+      </div>
+      <div class="api-op">
+        <span class="n">Score</span>
+        <h4>Score</h4>
+        <p>Call the Conversion Scoring Agent and get back a Vizit Score for any asset, calibrated to category, audience, and competitive context. The same score behind the Content Conversion Standard.</p>
+      </div>
+      <div class="api-op">
+        <span class="n">Diagnose</span>
+        <h4>Diagnose</h4>
+        <p>The Conversion Scoring Agent returns element-level breakdowns of exactly why an asset scores the way it does, at both the image and product page level.</p>
+      </div>
+      <div class="api-op">
+        <span class="n">Recommend</span>
+        <h4>Recommend</h4>
+        <p>The Content Optimization Agent returns prioritized recommendations on exactly what to change to reach Vizit Certified.</p>
+      </div>
+      <div class="api-op" style="grid-column:1 / -1;">
+        <span class="n">Optimize</span>
+        <h4>Optimize</h4>
+        <p>Hand a low-scoring asset to the Content Optimization Agent and it generates a higher-scoring, on-brand variant with more conversion power, powered by Vizit Spark.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P4 — HOW IT WORKS -->
+<section class="panel panel--surface" data-screen-label="04 How it works">
+  <div class="container">
+    <h2 class="display" style="max-width:22ch;">Open by design. Vizit meets you <em>where you already work</em>.</h2>
+    <p class="subhead" style="margin-top:var(--space-5);">Vizit is built to plug into your existing commerce systems and content workflows.</p>
+    <div class="api-build" style="margin-top:var(--space-7);">
+      <div class="card">
+        <h4>Any system can call Vizit's agents.</h4>
+        <p>Any system in your stack can call Vizit's agents to score, diagnose, and optimize content, and get the result back in seconds. If your teams work there, Vizit can work there.</p>
+      </div>
+      <div class="card">
+        <h4>You don't build it alone.</h4>
+        <p>Vizit works with leading commerce SIs to build and roll out these integrations across your DAM, PIM, and channel stack. You don't build it alone, and you don't wait on a roadmap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P5 — WHAT TEAMS BUILD -->
+<section class="panel" data-screen-label="05 What teams build">
+  <div class="container">
+    <h2 class="display" style="max-width:20ch;">The teams that build on Vizit <em>don't go back</em>.</h2>
+    <p class="subhead" style="margin-top:var(--space-5);">Because once Vizit is in your stack, you can't go back to flying blind.</p>
+    <div class="api-build">
+      <div class="card">
+        <h4>Pre-syndication conversion scoring</h4>
+        <p>Catalog and syndication systems call Vizit's agents to score every asset against the Content Conversion Standard before it syndicates. Only Vizit Certified content reaches the shelf.</p>
+      </div>
+      <div class="card">
+        <h4>Global content scorecarding</h4>
+        <p>Exportable Vizit Scores by brand, category, and region — powering global leaderboards that hold every team to the same standard, and feeding a creative briefing dashboard so every new asset is built to outperform the category benchmark from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- P6 — GET BUILDING -->
+<section class="final" id="request-access" data-screen-label="06 Get building">
+  <div class="container final-inner final-split">
+    <div>
+      <h2 class="display on-dark" style="max-width:22ch;">Open to enterprise teams and platform partners building the next generation of <em>commerce infrastructure</em>.</h2>
+    </div>
+    <div class="final-form">
+      <p class="form-kicker">Request API access</p>
+      <div class="hs-form-frame" data-region="na1" data-form-id="cb43d436-6f30-4335-987e-dd95c14fe279" data-portal-id="24432389"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="panel" data-screen-label="07 FAQ">
+  <div class="container faq-grid">
+    <div>
+      <h2 class="display">Building with the <em>Vizit API</em>.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary><span class="plus" aria-hidden="true">+</span>What can I do with the Vizit API?</summary>
+        <div class="answer">Submit any image or PDP and Vizit's agents score, diagnose, recommend, and optimize it. Every response uses the same Content Conversion Standard that powers the Vizit platform — so a score returned by the API is the same score returned in the Vizit platform.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="plus" aria-hidden="true">+</span>How is the Vizit API different from a generic image API?</summary>
+        <div class="answer">A generic image API tells you what's in an image. The Vizit API tells you whether an image will convert — for a specific audience, in a specific category, in a specific country, against the Content Conversion Standard. It's trained on Vizit's proprietary Visual Conversion Graph.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="plus" aria-hidden="true">+</span>Does the API support catalog-scale volume?</summary>
+        <div class="answer">Yes. Image scoring is asynchronous — submit, then poll for results. PDP submissions are designed for continuous ingestion across millions of SKUs.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="plus" aria-hidden="true">+</span>Can I optimize images through the API, not just score them?</summary>
+        <div class="answer">Yes. Submit any asset and receive a higher-scoring optimized variant — generated on-brand and scored against the Content Conversion Standard before it's returned. The same Generative AI optimization that powers Vizit Spark, exposed as an API call.</div>
+      </details>
+      <details class="faq-item">
+        <summary><span class="plus" aria-hidden="true">+</span>How do I get access?</summary>
+        <div class="answer">Request access at partner@vizit.com. Available to enterprise teams, platform partners, and developers ready to build with Vizit.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER TAGLINE -->
+
+
+<vizit-footer></vizit-footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('pointermove', function(e){
+      var r = btn.getBoundingClientRect();
+      btn.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      btn.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+    btn.addEventListener('pointerleave', function(){
+      btn.style.setProperty('--mx', '50%');
+      btn.style.setProperty('--my', '50%');
+    });
+  });
+});
+</script>
+</body>
+</html>

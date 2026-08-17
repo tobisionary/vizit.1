@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category &amp; Competitive Intelligence for Product and Insight Teams | Vizit</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="See exactly what's winning in your category, and why. Vizit decodes millions of visual triggers driving conversion for every competitor, every SKU, and every market. Know what to build before you brief.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Competitive Visual Intelligence) ─── */
+  a { color: var(--accent); }
+  a:hover { color: var(--blue-700); }
+
+  /* Atlas category board — signature hero visual */
+  .atlas {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.02;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-rows: 36px 1fr;
+  }
+  .atlas::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 78% 0%, rgba(52,160,254,0.34), transparent 60%),
+      radial-gradient(80% 60% at 0% 100%, rgba(1,116,217,0.40), transparent 62%);
+    pointer-events: none;
+  }
+  .atlas .hs-chrome {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200); text-transform: uppercase;
+  }
+  .atlas .hs-chrome .pulse {
+    width: 6px; height: 6px; border-radius: 999px; background: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(52,160,254,0.25);
+  }
+  .atlas .board {
+    position: relative; z-index: 1;
+    padding: var(--space-5);
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr;
+    gap: 10px;
+  }
+  .atlas .node {
+    position: relative;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    overflow: hidden;
+  }
+  .atlas .node .swatch {
+    position: absolute; inset: 22%;
+    background: var(--c, #7d97b0);
+    border-radius: 14%;
+    box-shadow: inset 0 -10px 18px rgba(0,0,0,0.28);
+  }
+  .atlas .node .s {
+    position: absolute; top: 6px; right: 6px;
+    font-family: var(--font-mono); font-size: 9px;
+    padding: 2px 5px; background: rgba(0,33,61,0.75); color: var(--blue-100);
+    letter-spacing: 0.04em;
+  }
+  .atlas .node.win {
+    border: 1.5px solid var(--cyan);
+    box-shadow: 0 0 0 4px rgba(52,160,254,0.22), 0 16px 34px -10px rgba(52,160,254,0.5);
+    z-index: 3;
+  }
+  .atlas .node.win .s { background: var(--cyan); color: var(--blue-1000); font-weight: 600; }
+  .atlas .node.dim { opacity: 0.5; }
+  .atlas .callouts {
+    position: absolute; z-index: 4; left: var(--space-5); bottom: var(--space-5);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .atlas .callout {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em;
+    background: rgba(0,33,61,0.86); border: 1px solid rgba(52,160,254,0.4);
+    padding: 5px 9px; backdrop-filter: blur(4px);
+    width: fit-content;
+  }
+  .atlas .callout b { color: var(--cyan); font-weight: 600; }
+  .atlas .callout .k { color: rgba(255,255,255,0.82); }
+
+  /* Category landscape — light panel version with lift callouts */
+  .landscape {
+    background: #fff; border: 1px solid var(--border);
+    padding: var(--space-6);
+    display: grid; grid-template-columns: 1.15fr 0.85fr; gap: var(--space-6);
+    align-items: center;
+  }
+  @media (max-width: 620px) { .landscape { grid-template-columns: 1fr; } }
+  .landscape .shelf {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .landscape .tile {
+    aspect-ratio: 3 / 4; position: relative;
+    background: linear-gradient(160deg, #f4ece2, #e2d2bf);
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .landscape .tile .p {
+    position: absolute; inset: 20% 20% 26%; background: var(--c, #9a7d5e);
+    border-radius: 10%; box-shadow: inset 0 -10px 16px rgba(0,0,0,0.18);
+  }
+  .landscape .tile.win {
+    border: 1.5px solid var(--accent);
+    box-shadow: 0 0 0 4px rgba(1,116,217,0.16), 0 14px 30px -10px rgba(1,116,217,0.4);
+    z-index: 2;
+  }
+  .landscape .tile .sc {
+    position: absolute; top: 6px; left: 6px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    background: var(--blue-1000); color: #fff; padding: 2px 6px;
+  }
+  .landscape .tile.win .sc { background: var(--accent); }
+  .landscape .lifts { display: flex; flex-direction: column; gap: 10px; }
+  .landscape .lift {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .landscape .lift:last-child { border-bottom: none; }
+  .landscape .lift .n {
+    font-family: var(--font-display); font-size: 1.6rem; letter-spacing: -0.03em;
+    color: var(--accent); line-height: 1;
+  }
+  .landscape .lift .l { font-size: var(--text-sm); color: var(--color-700); line-height: 1.35; }
+  .landscape .verdict {
+    grid-column: 1 / -1; margin-top: var(--space-3);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .landscape .verdict b { color: var(--blue-1000); font-weight: 600; }
+
+  /* Pre-launch benchmarking bars */
+  .bench { background: #fff; border: 1px solid var(--border); overflow: hidden; }
+  .bench-head {
+    padding: var(--space-3) var(--space-4); background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .bench-body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+  .bench-row { display: grid; grid-template-columns: 130px 1fr 44px; gap: var(--space-3); align-items: center; }
+  .bench-row .who { font-size: var(--text-sm); color: var(--color-700); }
+  .bench-row .who.you { color: var(--blue-1000); font-weight: 600; }
+  .bench-row .track { height: 12px; background: var(--color-100); position: relative; }
+  .bench-row .track .fill { position: absolute; inset: 0 auto 0 0; width: var(--w,50%); background: var(--blue-300); }
+  .bench-row.you .track .fill { background: var(--risk-amber); }
+  .bench-row.leader .track .fill { background: var(--accent); }
+  .bench-row .v { font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-align: right; color: var(--blue-1000); }
+  .bench-gap {
+    margin-top: var(--space-2); padding: var(--space-4);
+    background: var(--accent-soft); border-left: 3px solid var(--accent);
+    font-size: var(--text-sm); color: var(--blue-1000); line-height: 1.5;
+  }
+  .bench-gap b { color: var(--accent); }
+
+  /* Brief flow */
+  .brief-flow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-7); }
+  @media (max-width: 760px) { .brief-flow { grid-template-columns: 1fr; } }
+  .brief-col { border: 1px solid var(--border); background: #fff; padding: var(--space-6); }
+  .brief-col.old { background: var(--surface); }
+  .brief-col .tag {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: var(--space-4); display: block;
+  }
+  .brief-col.old .tag { color: var(--muted); }
+  .brief-col.new .tag { color: var(--accent); }
+  .brief-col .step {
+    display: flex; align-items: center; gap: 10px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border); font-size: var(--text-sm); color: var(--color-700);
+  }
+  .brief-col .step:last-child { border-bottom: none; }
+  .brief-col .step .d { width: 7px; height: 7px; border-radius: 999px; background: var(--color-300); flex: 0 0 auto; }
+  .brief-col.new .step .d { background: var(--accent); }
+  .brief-col .step.hot { color: var(--blue-1000); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="competitive-visual-intelligence"></vizit-nav>
+
+<!-- PANEL 1 — HERO -->
+<section class="sol-hero" data-screen-label="01 See your category">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Competitive Visual Intelligence</span>
+        <h1 class="display">See your category the way <em>shoppers</em> do.</h1>
+        <p class="subhead">Vizit Atlas decodes the visual triggers your competitors don't know exist — so your team knows what wins before the brief is written, and what converts before a dollar is spent on creative or media.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">See your category through Vizit <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Vizit Atlas category board decoding competitor visual performance">
+        <div class="atlas">
+          <div class="hs-chrome">
+            <span class="pulse"></span>
+            <span>Vizit Atlas · category decode</span>
+            <span style="margin-left:auto;">Coffee · Single-serve</span>
+          </div>
+          <div class="board">
+            <div class="node dim"><div class="swatch" style="--c:#6f5842;"></div><span class="s">61</span></div>
+            <div class="node"><div class="swatch" style="--c:#3b5f7d;"></div><span class="s">78</span></div>
+            <div class="node win"><div class="swatch" style="--c:#0174d9;"></div><span class="s">91</span></div>
+            <div class="node dim"><div class="swatch" style="--c:#8a6b4e;"></div><span class="s">64</span></div>
+            <div class="node"><div class="swatch" style="--c:#4a6b52;"></div><span class="s">73</span></div>
+            <div class="node dim"><div class="swatch" style="--c:#7d6a86;"></div><span class="s">58</span></div>
+            <div class="node"><div class="swatch" style="--c:#b06a3a;"></div><span class="s">70</span></div>
+            <div class="node dim"><div class="swatch" style="--c:#5c5c5c;"></div><span class="s">66</span></div>
+            <div class="callouts">
+              <span class="callout"><span class="k">High-contrast background</span> <b>+12%</b></span>
+              <span class="callout"><span class="k">Benefit callout overlay</span> <b>+8%</b></span>
+              <span class="callout"><span class="k">Front-facing product</span> <b>+9%</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">The intelligence layer behind the world's fastest-growing commerce brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>BRAND C</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 2 — THE CATEGORY BLIND SPOT -->
+<section class="panel panel--paper" data-screen-label="02 Category blind spot">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">02 — The category blind spot</span>
+      <h2 class="display">Your competitors are winning on the shelf. Do you know <em>why</em>?</h2>
+      <p class="subhead">Most innovation teams spend months on a launch built on instinct. Vizit replaces that with a live data model of exactly which visual strategies are winning in your category right now — ranked by impact.</p>
+    </div>
+
+    <div class="landscape reveal" style="margin-top: var(--space-7);" aria-label="Category landscape with per-element conversion lift">
+      <div class="shelf">
+        <div class="tile"><span class="sc">72</span><div class="p" style="--c:#3b5f7d;"></div></div>
+        <div class="tile win"><span class="sc">91</span><div class="p" style="--c:#0174d9;"></div></div>
+        <div class="tile"><span class="sc">68</span><div class="p" style="--c:#8a6b4e;"></div></div>
+        <div class="tile"><span class="sc">64</span><div class="p" style="--c:#7d6a86;"></div></div>
+        <div class="tile"><span class="sc">77</span><div class="p" style="--c:#4a6b52;"></div></div>
+        <div class="tile"><span class="sc">59</span><div class="p" style="--c:#6f5842;"></div></div>
+      </div>
+      <div class="lifts">
+        <div class="lift"><span class="n">+12%</span><span class="l">High-contrast background isolates the pack at thumbnail scale.</span></div>
+        <div class="lift"><span class="n">+8%</span><span class="l">Benefit callout overlay answers the shopper's question instantly.</span></div>
+        <div class="lift"><span class="n">+9%</span><span class="l">Front-facing product shot reads as the category's default "hero."</span></div>
+      </div>
+      <div class="verdict">This isn't inspiration. It's <b>intelligence.</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 3 — LAUNCH INTELLIGENCE -->
+<section class="panel" data-screen-label="03 Launch intelligence">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="Pre-launch benchmarking of a new concept against category leaders">
+        <div class="bench">
+          <div class="bench-head">
+            <span>Pre-launch benchmarking</span>
+            <span>Category top 3</span>
+          </div>
+          <div class="bench-body">
+            <div class="bench-row leader"><span class="who">Category leader</span><span class="track"><span class="fill" style="--w:88%;"></span></span><span class="v">88</span></div>
+            <div class="bench-row"><span class="who">Runner-up</span><span class="track"><span class="fill" style="--w:82%;"></span></span><span class="v">82</span></div>
+            <div class="bench-row"><span class="who">Third place</span><span class="track"><span class="fill" style="--w:79%;"></span></span><span class="v">79</span></div>
+            <div class="bench-row you"><span class="who you">Your new concept</span><span class="track"><span class="fill" style="--w:67%;"></span></span><span class="v">67</span></div>
+            <div class="bench-gap">Missing: <b>high-contrast background</b> and <b>front-facing orientation</b>. Estimated lift: <b>+18 points</b>.</div>
+          </div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — Launch intelligence</span>
+        <h2 class="display">Know if your launch will out-convert the competition <em>before</em> a single shopper sees it.</h2>
+        <p class="subhead">Vizit scores your new assets against the category's top performers before launch day. Every gap has a fix. Every fix has a score. Nothing ships below standard.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-ghost" href="../blog-article.html">See the Content Conversion Standard <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 4 — FASTER TIME TO MARKET -->
+<section class="panel panel--paper" data-screen-label="04 Faster time to market">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">04 — Faster time to market</span>
+      <h2 class="display">The brands that launch fastest brief to a <em>standard</em>, not a feeling.</h2>
+      <p class="subhead">When your agency receives category intelligence instead of a mood board, everything downstream gets smarter. First drafts score higher. Approval cycles shorten. Products launch faster and convert better from day one.</p>
+    </div>
+
+    <div class="brief-flow reveal">
+      <div class="brief-col old">
+        <span class="tag">Briefed to a feeling</span>
+        <div class="step"><span class="d"></span>Mood board &amp; instinct</div>
+        <div class="step"><span class="d"></span>First draft misses the mark</div>
+        <div class="step hot"><span class="d"></span>Rounds of subjective revision</div>
+        <div class="step"><span class="d"></span>Launch late, convert on hope</div>
+      </div>
+      <div class="brief-col new">
+        <span class="tag">Briefed to a standard</span>
+        <div class="step"><span class="d"></span>Category intelligence in the brief</div>
+        <div class="step hot"><span class="d"></span>First drafts score higher</div>
+        <div class="step"><span class="d"></span>One checkpoint: Vizit Certified</div>
+        <div class="step"><span class="d"></span>Launch faster, convert from day one</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 5 — FINAL CTA -->
+<section class="final-cta" data-screen-label="05 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">Grow share. Accelerate launches.</span>
+    <h2 class="display on-dark reveal">What is your category telling you <em>right now</em>?</h2>
+    <p class="subhead on-dark reveal">Shoppers are already telling you what they want. See it through Vizit — every competitor, every SKU, every market, decoded.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">See your category through Vizit <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

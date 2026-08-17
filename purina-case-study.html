@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Purina | Vizit Case Study</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="Purina improved conversion rates by 9.44% in 6 weeks by reordering product images based on Vizit Scores.">
+<link rel="stylesheet" href="css/colors-and-type.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/vizit-theme.css">
+<script src="js/vizit-nav.js" defer></script>
+<script src="js/vizit-footer.js" defer></script>
+<script src="js/image-slot.js" defer></script>
+<link id="gfont-Inter" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap">
+<style>
+  :root{ --font-display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --ink:#0a1017; --ink-soft:#4d5a68; --ink-faint:#7a8794;
+    --paper:#ffffff; --mist:#f6f8fb;
+    --accent:var(--blue-base); --accent-deep:var(--blue-1000); --accent-mid:var(--blue-600);
+    --tint:rgba(1,116,217,.07); --line:#e4e8ee; --line-strong:#b3d4f0;
+    --night:#0a0d12; --night-line:#1b2431;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:var(--font-sans);color:var(--ink);background:var(--paper);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--blue-600)}
+  img,svg{display:block;max-width:100%}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .eyebrow{font-family:var(--font-mono);font-size:.6875rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent)}
+  .eyebrow.light{color:var(--blue-300)}
+  .eyebrow.light::before{background:var(--blue-300)}
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
+  h1{font-size:clamp(2.4rem,4.8vw,3.9rem);line-height:1.04}
+  h2{font-size:clamp(1.9rem,3.2vw,2.8rem)}
+  h3{font-size:1.35rem;letter-spacing:-.02em}
+  .lead{font-size:clamp(1.0625rem,1.3vw,1.25rem);color:var(--color-700,#404040);max-width:52ch;line-height:1.5;letter-spacing:-.01em}
+  .btn{--mx:50%;--my:50%;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:var(--text-base,15px);font-weight:500;padding:11px 20px;border:1px solid transparent;cursor:pointer;transition:transform .15s ease,background .15s,border-color .15s,color .15s,box-shadow .15s;border-radius:999px}
+  .btn-primary{background:#0a0e14;color:#fff}
+  .btn-primary:hover{background-image:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(94,182,255,.45) 0%,rgba(52,160,254,.22) 38%,rgba(52,160,254,0) 72%);background-color:#fff;color:#0a0e14;box-shadow:0 0 0 1px #0a0e14 inset,0 0 26px -6px rgba(52,160,254,.35)}
+  .btn-arrow{transition:transform .2s ease}
+  .btn:hover .btn-arrow{transform:translateX(3px)}
+
+  .cs-tag{display:inline-flex;align-items:center;font-family:var(--font-mono);font-size:.6875rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line-strong);border-radius:999px;padding:6px 14px}
+  /* HERO */
+  .cs-hero{padding:88px 0 0;background:linear-gradient(180deg,var(--paper),#edf1f6 130%)}
+  .cs-hero .crumb{font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);display:flex;gap:8px;margin-bottom:34px}
+  .cs-hero .crumb a{color:var(--ink-faint)}
+  .cs-hero .crumb a:hover{color:var(--accent)}
+  .cs-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:end;padding-bottom:0}
+  .cs-hero-grid > div:first-child{padding-bottom:72px}
+  .cs-hero .logo{height:44px;width:auto;margin-bottom:0}
+  .cs-hero h1{margin:18px 0 22px}
+  .cs-hero .meta{display:flex;gap:22px;align-items:center;margin-top:28px;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .cs-hero-media{border-radius:16px 16px 0 0;overflow:hidden}
+  .cs-hero-media img{width:100%;height:100%;object-fit:cover}
+
+  /* STAT BAND */
+  .statband{background:linear-gradient(0deg,rgba(1,60,130,.92) 0%,rgba(2,38,88,.72) 40%,rgba(5,18,40,.6) 75%,rgba(4,8,14,.9) 100%),#101820;color:#fff;padding:84px 0}
+  .statband .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .statband .stat{background:none;border:none;box-shadow:none;border-radius:0;padding:0 0 0 28px;border-left:1px solid var(--night-line)}
+  .statband .stat:first-child{border-left:none;padding-left:0}
+  .statband .n{color:transparent}
+  .statband .n{font-family:var(--font-display);font-weight:600;font-size:clamp(3.8rem,7vw,6rem);line-height:1;letter-spacing:-.04em;background:linear-gradient(90deg,#7cc4ff 0%,#4f9dff 25%,#3b7bff 50%,#4f9dff 75%,#7cc4ff 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(59,123,255,.45));animation:statFlow 6s linear infinite}
+  @keyframes statFlow{from{background-position:0% 0}to{background-position:-200% 0}}
+  @media (prefers-reduced-motion:reduce){.statband .n{animation:none}}
+  .statband .l{margin-top:14px;color:#c3d2e2;max-width:34ch;line-height:1.5;font-size:1.0625rem}
+
+  /* STORY */
+  .story{padding:96px 0}
+  .story-grid{display:grid;grid-template-columns:200px 1fr;gap:56px;align-items:start;padding:56px 0;border-top:1px solid var(--line)}
+  .story-grid:first-child{border-top:none;padding-top:0}
+  .story-k{position:sticky;top:110px}
+  .story-k .n{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.12em;color:var(--ink-faint);display:block;margin-bottom:8px}
+  .story-body p{color:var(--ink-soft);max-width:62ch;font-size:1.0625rem;line-height:1.7}
+  .story-body p+p{margin-top:18px}
+  .story-body .hl{color:var(--ink);font-weight:600}
+
+  .story-grid{opacity:0;transform:translateY(36px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+  .story-grid.in{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion:reduce){.story-grid{opacity:1;transform:none;transition:none}}
+  /* QUOTE */
+  .quote{background:var(--night);padding:110px 0}
+  .quote blockquote{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;font-size:clamp(1.4rem,2.4vw,2.1rem);line-height:1.35;color:#fff;max-width:22.5em;margin:0}
+  .quote blockquote em{font-style:normal;color:#7cc4ff}
+  .quote .attr{display:flex;align-items:center;gap:16px;margin-top:40px}
+  .quote .attr img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+  .quote .attr .who{color:#fff;font-weight:600}
+  .quote .attr .role{color:#9fb0c2;font-size:.875rem}
+
+  /* PROOF LIST */
+  .proof{padding:96px 0;background:var(--mist)}
+  .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+  .proof-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 26px}
+  .proof-card h3{margin-bottom:12px;font-size:1.125rem}
+  .proof-card p{color:var(--ink-soft);font-size:.9375rem;line-height:1.6}
+
+  /* CTA */
+  .cta{padding:110px 0;text-align:center}
+  .cta h2{max-width:20em;margin:18px auto 20px}
+  .cta p{max-width:52ch;margin:0 auto 36px;color:var(--ink-soft)}
+
+  @media (max-width:900px){
+    .cs-hero-grid,.statband .wrap{grid-template-columns:1fr}
+    .story-grid{grid-template-columns:1fr;gap:16px}
+    .story-k{position:static}
+    .proof-grid{grid-template-columns:1fr}
+    .statband .stat{border-left:none;padding-left:0}
+  }
+</style>
+</head>
+<body>
+<vizit-nav></vizit-nav>
+
+<header class="cs-hero" data-screen-label="Hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><a href="case-studies.html">Case studies</a><span>/</span><span>Purina</span></nav>
+    <div class="cs-hero-grid">
+      <div>
+        <div style="margin-bottom:26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap"><img class="logo" src="assets/img/pasted-1785253840012-0.png" alt="Purina" style="height:36px;width:auto;filter:brightness(0)"><span class="cs-tag">Case study</span></div>
+        <h1>Purina improved conversion rates by 9.44% in 6 weeks.</h1>
+        <p class="lead">A controlled study of Vizit Score&ndash;based image reordering: the optimized group converted higher, the control group didn't move.</p>
+        <div class="meta"><span>5 min read</span><span>&middot;</span><span>Pet care</span><span>&middot;</span><span>6-week study</span></div>
+      </div>
+      <div class="cs-hero-media">
+        <img src="assets/img/purina-cs.png" alt="Purina product imagery scored in Vizit">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="statband" data-screen-label="Results">
+  <div class="wrap" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat"><div class="n">9.44%</div><p class="l">Conversion rate improvement in the Vizit-optimized group</p></div>
+    <div class="stat"><div class="n">$90.2k</div><p class="l">Average weekly revenue increase</p></div>
+    <div class="stat"><div class="n">$1.71M</div><p class="l">Projected annual revenue increase</p></div>
+  </div>
+</section>
+
+<section class="story" data-screen-label="Story">
+  <div class="wrap">
+    <div class="story-grid">
+      <div class="story-k"><span class="n">01</span><h3>The challenge</h3></div>
+      <div class="story-body">
+        <p>Purina wanted hard proof that image optimization moves revenue &mdash; not a before-and-after anecdote, but a <span class="hl">controlled test</span> where any lift could be attributed to the images themselves.</p>
+      </div>
+    </div>
+    <div class="story-grid">
+      <div class="story-k"><span class="n">02</span><h3>The action</h3></div>
+      <div class="story-body">
+        <p>Purina ran a study testing the impact of <span class="hl">reordering product images based on their Vizit Score</span> &mdash; leading each listing with its highest-scoring visual.</p>
+        <p>A matched control group kept its existing image order, isolating the effect of the optimization.</p>
+      </div>
+    </div>
+    <div class="story-grid">
+      <div class="story-k"><span class="n">03</span><h3>The result</h3></div>
+      <div class="story-body">
+        <p>Over six weeks, the Vizit-optimized group achieved a <span class="hl">9.44% conversion rate improvement</span> post-treatment, while the control group saw no change.</p>
+        <p>The lift translated to a <span class="hl">$90.2k average weekly revenue increase</span> &mdash; a projected <span class="hl">$1.71M annually</span> &mdash; from existing content, simply reordered.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof" data-screen-label="What made it work">
+  <div class="wrap">
+    <h2 style="margin-top:18px">Proof by control group.</h2>
+    <div class="proof-grid">
+      <div class="proof-card"><h3>No new content needed</h3><p>The entire lift came from reordering existing images by Vizit Score &mdash; zero new creative production.</p></div>
+      <div class="proof-card"><h3>A clean experiment</h3><p>An unchanged control group meant the 9.44% lift could be attributed to the optimization, not seasonality or traffic.</p></div>
+      <div class="proof-card"><h3>Revenue you can project</h3><p>Measured weekly gains made the annual impact forecastable: $1.71M from one six-week test.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<vizit-footer></vizit-footer>
+<script>
+(function(){
+  var els=document.querySelectorAll('.story-grid');
+  var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.2});
+  els.forEach(function(e){io.observe(e);});
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('pointermove',function(e){
+      var r=btn.getBoundingClientRect();
+      btn.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      btn.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    });
+    btn.addEventListener('pointerleave',function(){
+      btn.style.setProperty('--mx','50%');btn.style.setProperty('--my','50%');
+    });
+  });
+})();
+</script>
+</body>
+</html>

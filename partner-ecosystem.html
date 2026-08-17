@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vizit Partner Ecosystem | Platform, Agency, Data &amp; Community Partners</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta name="description" content="Vizit Scores are the universal standard for content proven ready to convert — embedded in the platforms, agencies, and tools your customers already use.">
+  <link rel="stylesheet" href="css/ci-styles.css">
+  <link rel="stylesheet" href="css/vizit-theme.css">
+  <script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+  <script src="https://js.hsforms.net/forms/embed/24432389.js" defer></script>
+  <style>
+    /* Final CTA → headline left, form right */
+    #partner-with-vizit { scroll-margin-top: 80px; }
+    .final-split { display: grid; grid-template-columns: 1.05fr .95fr; gap: var(--space-8); align-items: center; text-align: left; }
+    .final-split h2 { max-width: 22ch; margin-left: 0; margin-right: 0; }
+    .final-split .eyebrow { display: block; margin-bottom: var(--space-4); }
+    .final-form { background: #fff; border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+    .final-form .hs-form-frame { min-height: 520px; }
+    .final-form .hs-form-frame iframe { min-height: 520px; width: 100%; border: 0; }
+    .final-form .form-kicker { font-family: var(--font-mono); font-size: .6875rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 var(--space-4); }
+    @media (max-width: 900px) { .final-split { grid-template-columns: 1fr; gap: var(--space-7); } }
+  </style>
+  <style>
+    /* ───────── Partner Ecosystem ───────── */
+    .pe-hero { padding: var(--space-9) 0 var(--space-8); }
+    .pe-hero .eyebrow { display: block; margin-bottom: var(--space-5); }
+    .pe-hero h1 { margin: 0; max-width: 18ch; }
+    .pe-hero .dek { margin-top: var(--space-5); max-width: 52ch; }
+    .pe-hero .cta-row { margin-top: var(--space-7); }
+
+    /* partner name ribbon — NOTE: confirm each partner has agreed to be listed publicly before publish */
+    .pe-logos { margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+    .pe-logos .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: var(--space-5); }
+    .pe-logos .row { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-7); align-items: baseline; }
+    .pe-logos .row span { font-family: var(--font-display); font-size: clamp(1.05rem, 1.9vw, 1.4rem); letter-spacing: -0.01em; color: var(--blue-1000); opacity: 0.72; }
+
+    .pe-prose { max-width: 62ch; }
+    .pe-prose p { font-size: 1.0625rem; line-height: 1.62; color: var(--color-800); margin: 0 0 var(--space-4); }
+    .pe-prose p:last-child { margin-bottom: 0; }
+    .pe-link { display: inline-flex; align-items: center; gap: 8px; margin-top: var(--space-6); font-family: var(--font-mono); font-size: var(--text-sm); letter-spacing: 0.04em; color: var(--accent); text-decoration: none; }
+    .pe-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* partnership-type cards */
+    .pe-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); margin-top: var(--space-7); }
+    @media (max-width: 760px) { .pe-cards { grid-template-columns: 1fr; } }
+    .pe-card { padding: var(--space-6); border: 1px solid var(--border); background: #fff; display: flex; flex-direction: column; gap: var(--space-3); }
+    .pe-card .no { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+    .pe-card h3 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.35rem, 2.6vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.1; margin: 0; color: var(--blue-1000); }
+    .pe-card p { font-size: var(--text-base); line-height: 1.55; color: var(--color-700); margin: 0; }
+
+    /* what partners get */
+    .pe-gets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: var(--space-7); background: #fff; border: 1px solid #e5e8ec; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,33,61,0.04); overflow: hidden; }
+    @media (max-width: 820px) { .pe-gets { grid-template-columns: 1fr; } }
+    .pe-get { padding: var(--space-5); border-top: none; }
+    .pe-get + .pe-get { border-left: 1px solid #e5e8ec; }
+    @media (max-width: 820px) { .pe-get + .pe-get { border-left: none; border-top: 1px solid #e5e8ec; } }
+    .pe-get h4 { font-family: var(--font-display); font-weight: 400; font-size: var(--text-lg); letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 var(--space-3); color: var(--blue-1000, #00213d); }
+    .pe-get p { font-size: var(--text-sm); line-height: 1.55; color: var(--color-600, #525f6e); margin: 0; }
+    .pe-get p a { color: var(--blue-300); text-decoration: underline; text-underline-offset: 3px; }
+
+    a { color: var(--accent); }
+    a:hover { color: var(--blue-500); }
+
+    @media print {
+      vizit-nav, vizit-footer { display: none !important; }
+      .panel--dark { background: #fff !important; color: var(--blue-1000) !important; }
+      .panel--dark * { color: var(--blue-1000) !important; }
+      .panel { break-inside: avoid; }
+    }
+    .final::before { content: none; }
+  </style>
+</head>
+<body>
+  <template id="__bundler_thumbnail">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#00213d"/>
+      <circle cx="40" cy="50" r="16" fill="none" stroke="#fff" stroke-width="5"/>
+      <circle cx="62" cy="50" r="16" fill="none" stroke="#34a0fe" stroke-width="5"/>
+    </svg>
+  </template>
+
+<vizit-nav data-current="partners"></vizit-nav>
+
+<!-- PANEL 1 — HERO -->
+<section class="pe-hero" data-screen-label="01 Hero">
+  <div class="container">
+    <span class="eyebrow">The Vizit partner ecosystem</span>
+    <h1 class="display">Build the content standard your customers trust into your platform.</h1>
+    <p class="subhead dek">Alongside the world's leading platforms, agencies, and advisors, Vizit Scores have become the universal standard for content proven ready to convert.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="#partner-with-vizit">Become a Partner <span class="arrow">→</span></a>
+    </div>
+    <!-- NOTE: confirm each named partner has agreed to be listed publicly before publish -->
+    <div class="pe-logos">
+      <span class="k">Trusted across the ecosystem</span>
+      <div class="row">
+        <span>Syndigo</span>
+        <span>Salsify</span>
+        <span>Bynder</span>
+        <span>Profitero</span>
+        <span>NielsenIQ</span>
+        <span>WPP</span>
+        <span>Saatchi &amp; Saatchi</span>
+        <span>Court Avenue</span>
+        <span>Sitation</span>
+        <span>Firstmovr</span>
+        <span>Shalion</span>
+        <span>The CPG View</span>
+        <span>Path to Purchase Institute</span>
+        <span>Digital Shelf Institute</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 2 — (merged) ECOMMERCE IS NOT A SINGLE SYSTEM -->
+<section class="panel panel--paper" data-screen-label="02 One standard">
+  <div class="container">
+    <span class="eyebrow" style="display:block;margin-bottom:var(--space-4);">Ecommerce is not a single system</span>
+    <h2 class="display" style="max-width:18ch;">Your stack is connected. Your content standard should be too.</h2>
+    <div class="pe-prose" style="margin-top:var(--space-6);">
+      <p>Vizit unites platforms, agencies, and brands around a single, data-backed standard for measuring and improving the first impression of every product — scoring performance at the source and connecting that intelligence to the workflows where decisions get made.</p>
+    </div>
+    <a class="pe-link" href="vizit-api.html">See where Vizit plugs into your stack →</a>
+  </div>
+</section>
+
+<!-- PANEL 4 — HOW WE PARTNER -->
+<section class="panel" data-screen-label="03 How we partner">
+  <div class="container">
+    <span class="eyebrow" style="display:block;margin-bottom:var(--space-4);">How we partner</span>
+    <h2 class="display" style="max-width:20ch;">Bring content scoring and optimization into the workflows your customers already use.</h2>
+    <div class="pe-prose" style="margin-top:var(--space-5);">
+          </div>
+    <div class="pe-cards">
+      <div class="pe-card">
+        <span class="no">01</span>
+        <h3>Platform Partners</h3>
+        <p>Your customers get a content standard built into the tools they already use.</p>
+      </div>
+      <div class="pe-card">
+        <span class="no">02</span>
+        <h3>Agency Partners</h3>
+        <p>Prove creative performance with data no subjective review can dispute.</p>
+      </div>
+      <div class="pe-card">
+        <span class="no">03</span>
+        <h3>Data &amp; Intelligence Partners</h3>
+        <p>Connect the visual layer to the shelf intelligence your customers already trust.</p>
+      </div>
+      <div class="pe-card">
+        <span class="no">04</span>
+        <h3>Industry &amp; Community Partners</h3>
+        <p>Set the standard for what content proven ready to convert looks like across the category.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 5 — WHAT PARTNERS GET (dark) -->
+<section class="panel" data-screen-label="04 What partners get">
+  <div class="container">
+    <span class="eyebrow" style="display:block;margin-bottom:var(--space-4);">What partners get</span>
+    <h2 class="display" style="max-width:18ch;">The standard your customers have been asking for.</h2>
+    <div class="pe-prose" style="margin-top:var(--space-6);max-width:60ch;">
+      <p>Vizit gives every partner in the ecosystem one thing no other platform can offer — an objective, mathematically proven measure of the conversion power of content.</p>
+    </div>
+    <div class="pe-gets">
+      <div class="pe-get">
+        <h4>A score customers trust</h4>
+        <p>The Vizit Score is the only conversion score trained on real shopper behavior. Partners embed it. Customers get better results.</p>
+      </div>
+      <div class="pe-get">
+        <h4>A shared definition of good content</h4>
+        <p>Brands, agencies, and platforms aligned on one standard for conversion so every team is optimizing content toward the same outcome.</p>
+      </div>
+      <div class="pe-get">
+        <h4>A clear expansion path</h4>
+        <p>Start at hero images. Extend to carousels, A+ content, retail media, and packaging as the partnership deepens.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 6 — PARTNER WITH VIZIT -->
+<section class="final" id="partner-with-vizit" style="background:#0a0e14;" data-screen-label="05 Partner with Vizit">
+  <div class="container final-inner final-split">
+    <div>
+      <span class="eyebrow on-dark">Partner with Vizit</span>
+      <h2 class="display on-dark" style="font-size:clamp(2rem,5vw,3.5rem);max-width:20ch;">There is a place for you in the Vizit ecosystem.</h2>
+    </div>
+    <div class="final-form">
+      <p class="form-kicker">Become a Vizit Partner</p>
+      <div class="hs-form-frame" data-region="na1" data-form-id="cb43d436-6f30-4335-987e-dd95c14fe279" data-portal-id="24432389"></div>
+    </div>
+  </div>
+</section>
+
+<vizit-footer data-cta="off"></vizit-footer>
+
+</body>
+</html>

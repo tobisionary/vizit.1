@@ -1,0 +1,155 @@
+/* ══════════════════════════════════════════════════════════════════
+   VIZIT DESIGN SYSTEM — TOKENS
+   Foundation tokens for all Vizit marketing surfaces.
+   Import: <link rel="stylesheet" href="colors-and-type.css">
+   ══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+/* Source Serif 4 — official brand font (variable, opsz 8..60, wght 200..900) */
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('../fonts/sourceserif4-variablefont-opsz-wght.ttf') format('truetype-variations'),
+       url('../fonts/sourceserif4-variablefont-opsz-wght.ttf') format('truetype');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  /* ─────────────────────────────────────────────
+     BRAND BLUE — PQ-2195C · 11-step scale
+     ───────────────────────────────────────────── */
+  --blue-0:    #e6f3ff;
+  --blue-100:  #b3dbff;
+  --blue-200:  #80c3fe;
+  --blue-300:  #34a0fe;
+  --blue-base: #0174d9;   /* primary brand color */
+  --blue-500:  #015fb2;
+  --blue-600:  #014c8e;
+  --blue-700:  #013c70;
+  --blue-800:  #002b51;
+  --blue-900:  #002647;
+  --blue-1000: #00213d;   /* deepest — for dark surfaces */
+
+  /* ─────────────────────────────────────────────
+     NEUTRALS — 12-step scale
+     ───────────────────────────────────────────── */
+  --color-0:    #ffffff;
+  --color-50:   #fafafa;
+  --color-100:  #f4f4f4;
+  --color-200:  #e4e4e4;
+  --color-300:  #d4d4d4;
+  --color-400:  #a3a3a3;
+  --color-500:  #737373;
+  --color-600:  #525252;
+  --color-700:  #404040;
+  --color-800:  #262626;
+  --color-900:  #171717;
+  --color-1000: #0a0a0a;
+
+  /* ─────────────────────────────────────────────
+     SEMANTIC ALIASES
+     ───────────────────────────────────────────── */
+  --bg:           var(--color-0);
+  --surface:      var(--color-50);
+  --border:       var(--color-200);
+  --text:         var(--color-1000);
+  --muted:        var(--color-500);
+  --accent:       var(--blue-base);
+  --accent-soft:  var(--blue-0);
+  --inverse-bg:   var(--blue-1000);
+  --inverse-text: var(--color-0);
+
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY — Source Serif 4 · Inter · Geist Mono
+     ───────────────────────────────────────────── */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Standard section-headline size (site-wide) */
+  --h-section: clamp(2.2rem, 3.9vw, 3.5rem);
+
+  /* Type scale — 8 steps */
+  --text-xs:   0.6875rem;   /* 11px — labels, captions, mono */
+  --text-sm:   0.8125rem;   /* 13px — small body, metadata */
+  --text-base: 0.9375rem;   /* 15px — default body */
+  --text-md:   1.125rem;    /* 18px — large body, lead */
+  --text-lg:   1.5rem;      /* 24px — h3 */
+  --text-xl:   2.25rem;     /* 36px — h2 */
+  --text-2xl:  3.5rem;      /* 56px — h1 */
+  --text-3xl:  5.5rem;      /* 88px — display */
+
+  /* ─────────────────────────────────────────────
+     SPACING — 4px base, 10 steps
+     ───────────────────────────────────────────── */
+  --space-1:  0.25rem;   /* 4px */
+  --space-2:  0.5rem;    /* 8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.5rem;    /* 24px */
+  --space-6:  2rem;      /* 32px */
+  --space-7:  3rem;      /* 48px */
+  --space-8:  4rem;      /* 64px */
+  --space-9:  6rem;      /* 96px */
+  --space-10: 8rem;      /* 128px */
+
+  /* ─────────────────────────────────────────────
+     RADIUS · ELEVATION · MOTION
+     ───────────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+
+  --ease:     cubic-bezier(0.2, 0, 0, 1);
+  --duration: 200ms;
+}
+
+/* ──────────────────────────────────────────────────
+   BASE — apply to <body> for default Vizit styling
+   ────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ──────────────────────────────────────────────────
+   TYPE UTILITY CLASSES
+   ────────────────────────────────────────────────── */
+.vz-display {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.vz-display em { font-style: normal; color: var(--accent); }
+
+.vz-h1 { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 600; line-height: 1; letter-spacing: -0.03em; }
+.vz-h2 { font-family: var(--font-display); font-size: var(--h-section, clamp(2.2rem, 3.9vw, 3.5rem)); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
+.vz-h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+
+.vz-lead { font-size: var(--text-md); color: var(--muted); }
+.vz-body { font-size: var(--text-base); }
+.vz-small { font-size: var(--text-sm); color: var(--muted); }
+
+.vz-eyebrow,
+.vz-caption {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}

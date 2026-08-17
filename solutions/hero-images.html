@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Image Optimization | Score & Fix Hero Images</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Score and optimize the hero image that decides whether shoppers click — with AI trained on billions of shopper signals. Built for Amazon, DTC, and every major retail site and RMN.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <link rel="stylesheet" href="../css/vizit-effects.css">
+  <script src="../js/vizit-effects.js" defer></script>
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Hero Image Optimization) ─── */
+
+  /* Panel 1 hero stage — the scoring panel */
+  .score-panel {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.1;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 36px 1fr;
+  }
+  .score-panel::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 60% at 80% 0%, rgba(52,160,254,0.35), transparent 60%),
+      radial-gradient(80% 80% at 0% 100%, rgba(1,116,217,0.25), transparent 65%);
+    pointer-events: none;
+  }
+  .score-panel .hs-chrome {
+    position: relative; z-index: 1;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .score-panel .hs-chrome .pulse {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(52,160,254,0.25);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+  .score-panel .body {
+    position: relative; z-index: 1;
+    padding: var(--space-6);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--space-5);
+  }
+  .score-panel .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .score-panel .main {
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    gap: var(--space-5); align-items: center;
+  }
+  @media (max-width: 540px) { .score-panel .main { grid-template-columns: 1fr; } }
+  .score-panel .product {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #efe6db, #d4b89a);
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .score-panel .product::after {
+    content: '';
+    position: absolute; left: 18%; top: 18%; width: 64%; height: 64%;
+    background: #b85543;
+    box-shadow: inset 0 -22px 36px rgba(0,0,0,0.25), 0 14px 30px rgba(0,0,0,0.18);
+  }
+  .score-panel .product .scoring-line {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    box-shadow: 0 0 12px var(--cyan);
+    animation: scan-down 3s var(--ease) infinite;
+  }
+  @keyframes scan-down {
+    0%, 100% { top: 0; opacity: 0.3; }
+    50%      { top: 100%; opacity: 1; }
+  }
+  .score-panel .product .vizit-tag {
+    position: absolute; top: 8px; left: 8px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 8px;
+    background: var(--blue-1000); color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .score-panel .breakdown {
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .score-panel .dim-row {
+    display: grid; grid-template-columns: 1fr 90px 36px;
+    gap: var(--space-3); align-items: center;
+  }
+  .score-panel .dim-row .lab {
+    font-family: var(--font-sans); font-size: 12px;
+    color: rgba(255,255,255,0.9); font-weight: 400;
+  }
+  .score-panel .dim-row .bar {
+    height: 4px; background: rgba(255,255,255,0.10);
+    position: relative;
+  }
+  .score-panel .dim-row .bar::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: var(--w, 60%);
+    background: linear-gradient(90deg, var(--blue-300), var(--cyan));
+    animation: bar-grow 2s var(--ease) forwards;
+  }
+  @keyframes bar-grow {
+    from { width: 0; }
+    to   { width: var(--w, 60%); }
+  }
+  .score-panel .dim-row .v {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--cyan); text-align: right; letter-spacing: 0.04em;
+  }
+  .score-panel .overall {
+    display: grid; grid-template-columns: 1fr auto; gap: var(--space-3);
+    align-items: center;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255,255,255,0.10);
+  }
+  .score-panel .overall .lab {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .score-panel .overall .n {
+    font-family: var(--font-display);
+    font-size: 2.5rem; line-height: 1; letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .score-panel .overall .n em { font-style: normal; color: var(--cyan); }
+
+  /* Panel 5 — proof feature card (statement + customer voice) */
+  .hero-proof {
+    margin-top: var(--space-7);
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    overflow: hidden;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+  .hero-proof::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(70% 90% at 100% 0%, rgba(52,160,254,0.28), transparent 60%),
+      radial-gradient(60% 80% at 0% 100%, rgba(1,116,217,0.30), transparent 62%);
+    pointer-events: none;
+  }
+  @media (max-width: 880px) { .hero-proof { grid-template-columns: 1fr; gap: var(--space-6); } }
+  .hero-proof .lead { position: relative; z-index: 1; }
+  .hero-proof .kicker {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.13em; text-transform: uppercase; color: var(--blue-200);
+    display: inline-flex; align-items: center; gap: 9px; margin-bottom: var(--space-5);
+  }
+  .hero-proof .kicker .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 0 4px rgba(52,160,254,0.2); }
+  .hero-proof .statement {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+    line-height: 1.12; letter-spacing: -0.03em; margin: 0; color: #fff;
+  }
+  .hero-proof .statement em { font-style: normal; color: var(--blue-300); }
+  .hero-proof .voice {
+    position: relative; z-index: 1;
+    border-left: 1px solid rgba(255,255,255,0.16);
+    padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  @media (max-width: 880px) { .hero-proof .voice { border-left: none; border-top: 1px solid rgba(255,255,255,0.16); padding-left: 0; padding-top: var(--space-6); } }
+  .hero-proof .voice .mk { font-family: var(--font-display); font-size: 3.5rem; line-height: 0.6; color: var(--blue-300); display: block; margin-bottom: var(--space-3); }
+  .hero-proof .voice blockquote {
+    margin: 0; font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.45; letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.92);
+  }
+  .hero-proof .voice cite {
+    display: block; margin-top: var(--space-4); font-style: normal;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--blue-200);
+  }
+
+  /* Panel 8 — Audit (donut + benchmark) */
+  .audit-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: var(--space-7);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  @media (max-width: 760px) { .audit-card { grid-template-columns: 1fr; } }
+  .audit-card .head {
+    grid-column: 1 / -1;
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .audit-card .head .live {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--blue-700);
+  }
+  .audit-card .head .live::before {
+    content: ''; width: 6px; height: 6px; border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(1,116,217,0.18);
+  }
+  .audit-card .you, .audit-card .leader {
+    display: flex; flex-direction: column; gap: var(--space-4);
+    align-items: center; text-align: center;
+  }
+  .audit-card .donut-lbl {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .audit-card .leader .donut-lbl { color: var(--blue-700); }
+  .audit-card .gap-stat {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    align-items: center;
+  }
+  .audit-card .gap-stat .lbl {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .audit-card .gap-stat .n {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4.4vw, 3.5rem);
+    line-height: 1; letter-spacing: -0.03em;
+    color: var(--blue-1000);
+  }
+  .audit-card .gap-stat .n em { font-style: normal; color: var(--accent); }
+
+  /* Mobile-bezel sizing in Panel 3 */
+  .panel-3 .visual-wrap {
+    display: flex; justify-content: center;
+    padding: var(--space-6) 0;
+  }
+
+  /* Note callout for "high scoring images make everything easier" */
+  .makes-easier {
+    background: var(--blue-1000); color: #fff;
+    padding: var(--space-6) var(--space-7);
+    margin-top: var(--space-6);
+    display: grid; grid-template-columns: auto 1fr; gap: var(--space-4);
+    align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .makes-easier::after {
+    content: ''; position: absolute;
+    inset: auto -40px -100px auto;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,160,254,0.3), transparent 65%);
+    pointer-events: none;
+  }
+  .makes-easier .ix {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--blue-200);
+    white-space: nowrap;
+  }
+  .makes-easier .ms {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+    line-height: 1.2; letter-spacing: -0.02em;
+    color: #fff;
+    position: relative; z-index: 1;
+  }
+  .makes-easier .ms em { color: var(--blue-300); font-style: normal; }
+
+  /* Panel — GS1 mobile-ready compliance (floor vs. ceiling) */
+  .gs1-panel { position: relative; background: var(--blue-1000); color: #fff; overflow: hidden; }
+  .gs1-panel::before { content: ''; position: absolute; inset: 0; background: radial-gradient(80% 70% at 100% 0%, rgba(52,160,254,0.26), transparent 60%), radial-gradient(70% 80% at 0% 100%, rgba(1,116,217,0.28), transparent 62%); pointer-events: none; }
+  .gs1-panel .container { position: relative; z-index: 1; }
+  .gs1-panel .two-up { align-items: center; }
+  .gs1-panel .eyebrow { color: var(--blue-200); }
+  .gs1-panel .display { color: #fff; }
+  .gs1-panel .display em { font-style: normal; color: var(--blue-300); }
+  .gs1-panel .subhead { color: rgba(255,255,255,0.82); }
+  .gs1-card { display: flex; flex-direction: column; gap: var(--space-4); }
+  .gs1-tier { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: var(--space-5) var(--space-6); }
+  .gs1-tier-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+  .gs1-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-200); }
+  .gs1-status { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; }
+  .gs1-status.ok { background: rgba(52,160,254,0.16); color: var(--cyan); border: 1px solid rgba(52,160,254,0.4); }
+  .gs1-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .gs1-checks li { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: var(--font-sans); font-size: 13px; color: rgba(255,255,255,0.9); }
+  .gs1-checks li:last-child { border-bottom: none; }
+  .gs1-checks .ck { color: var(--cyan); font-size: 14px; }
+  .gs1-floor-note { margin: var(--space-3) 0 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue-200); }
+  .gs1-plus { text-align: center; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: var(--space-3); }
+  .gs1-plus::before, .gs1-plus::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.14); }
+  .gs1-tier.ceiling { display: flex; align-items: center; gap: var(--space-5); background: linear-gradient(120deg, rgba(1,116,217,0.28), rgba(52,160,254,0.14)); border-color: rgba(52,160,254,0.4); }
+  .gs1-score { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .gs1-score-n { font-family: var(--font-display); font-size: 3.25rem; letter-spacing: -0.03em; color: var(--cyan); }
+  .gs1-score-lbl { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-200); margin-top: 6px; }
+  .gs1-ceiling-q { margin: 0; font-family: var(--font-display); font-size: clamp(1.15rem, 1.8vw, 1.5rem); line-height: 1.2; letter-spacing: -0.02em; color: #fff; }
+  .gs1-ceiling-q em { font-style: normal; color: var(--blue-300); }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="hero-images"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 1 — THE HERO IMAGE STANDARD
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="01 Standard">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — The hero image standard</span>
+        <h1 class="display">The best image wins. We make sure it's <em>yours</em>.</h1>
+        <p class="subhead">Vizit is the only hero image scoring technology trained on billions of shopper signals — giving your product the best chance to win the click in search, sponsored placements, and AI discovery. Vizit Agents score and rebuild your heroes continuously, at catalog scale.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Score my hero images <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="../vizit-next-gen-platform.html">How Vizit works</a>
+        </div>
+      </div>
+      <div class="fx reveal" data-fx="blink" data-root="../" aria-label="The 2-second blink test — interactive demo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 2 — THE FOUR DIMENSIONS
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="02 Four dimensions">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">02 — The hero image formula</span>
+        <h2 class="display">The four dimensions that decide whether your hero image <em>wins</em>.</h2>
+        <p class="subhead">After analyzing 100M+ product images, Vizit has decoded the four dimensions that determine whether a shopper clicks your product or moves on.</p>
+      </div>
+      <div class="reveal">
+        <div class="dim-grid">
+
+          <div class="dim-card">
+            <span class="dim-no">01</span>
+            <div class="dim-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="12" cy="12" r="9"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="12" cy="12" r="1.2" fill="currentColor"/>
+              </svg>
+            </div>
+            <h3>Shopper clarity</h3>
+            <p>Can a shopper read your brand, product type, variant, and size at a glance — the four things the GS1 mobile-ready standard demands, scored automatically.</p>
+            <span class="dim-q">Scored: can a shopper understand this thumbnail at a glance?</span>
+          </div>
+
+          <div class="dim-card">
+            <span class="dim-no">02</span>
+            <div class="dim-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+                <rect x="13" y="13" width="9" height="9" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+            <h3>Image quality</h3>
+            <p>Is the image well-executed and professionally produced — sharp, clean, and free of the flaws that quietly erode shopper trust on the shelf.</p>
+            <span class="dim-q">Scored: is the image well-executed and professionally produced?</span>
+          </div>
+
+          <div class="dim-card">
+            <span class="dim-no">03</span>
+            <div class="dim-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 3 L14.5 9 L21 9 L15.8 12.8 L17.8 19 L12 15.2 L6.2 19 L8.2 12.8 L3 9 L9.5 9 Z"/>
+              </svg>
+            </div>
+            <h3>Composition</h3>
+            <p>Does your image's visual approach match what actually wins in your category — measured against the live top performers, not generic best practice.</p>
+            <span class="dim-q">Scored: does this image's visual approach look similar to top performers?</span>
+          </div>
+
+          <div class="dim-card">
+            <span class="dim-no">04</span>
+            <div class="dim-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M5 13 L10 18 L19 7"/>
+                <path d="M3 7 L7 11" opacity="0.55"/>
+              </svg>
+            </div>
+            <h3>Product staging</h3>
+            <p>Are the key elements positioned and sized to command attention the moment your product hits the screen — not lost in whitespace or shadow.</p>
+            <span class="dim-q">Scored: are key elements positioned and sized effectively?</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 3 — ONE WINNER PER SCREEN
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel-3" data-screen-label="03 One winner">
+  <div class="container">
+    <div class="two-up flip" style="align-items:center;">
+      <div class="reveal visual-wrap" aria-label="Mobile search result with one winning product">
+        <div class="mobile-bezel">
+          <div class="mobile-screen">
+            <div class="mobile-status">
+              <span>9:41</span>
+              <span>amazon.com</span>
+            </div>
+            <div class="mobile-search-bar">sports drink</div>
+            <div class="shelf-grid">
+              <div class="shelf-card dim" style="--bg1:#efe6db;--bg2:#d4b89a;--prod:#5c3825;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/vzero-orange.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$48</span><span class="rt">★★★☆</span></div>
+                <span class="badge">62</span>
+              </div>
+              <div class="shelf-card win" style="--bg1:#e6f3ff;--bg2:#b3dbff;--prod:#0174d9;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/vizzy.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$54</span><span class="rt">★★★★</span></div>
+                <span class="badge">94</span>
+              </div>
+              <div class="shelf-card dim" style="--bg1:#f4f0e6;--bg2:#e0d2bf;--prod:#a0826b;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/foundation.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$39</span><span class="rt">★★★☆</span></div>
+                <span class="badge">58</span>
+              </div>
+              <div class="shelf-card dim" style="--bg1:#eee8df;--bg2:#cfc2ad;--prod:#7d5236;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/vizbone.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$52</span><span class="rt">★★★☆</span></div>
+                <span class="badge">71</span>
+              </div>
+              <div class="shelf-card dim" style="--bg1:#f0e8de;--bg2:#d8c5ab;--prod:#8e6442;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/cerave.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$45</span><span class="rt">★★★☆</span></div>
+                <span class="badge">66</span>
+              </div>
+              <div class="shelf-card dim" style="--bg1:#f4ece2;--bg2:#dcc7ad;--prod:#7d5236;--prod-r:14%">
+                <div class="img" style="position:relative;background:#fff;"><img src="../assets/products/hismile.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                <div class="meta"><span class="px">$41</span><span class="rt">★★★☆</span></div>
+                <span class="badge">60</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="shelf-caption">The cost of blending in: <strong>0% CTR</strong></p>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — One winner per screen</span>
+        <h2 class="display">If you aren't the first choice, you're <em>invisible</em>.</h2>
+        <p class="subhead">On a 5-inch mobile screen, your hero image has to be thumb-stopping — commanding attention over the four other products surrounding it before a shopper scrolls away. If yours doesn't, you've already lost the sale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 4 — GS1 MOBILE-READY COMPLIANCE (floor vs. ceiling)
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel gs1-panel" data-screen-label="04 GS1 compliance">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">04 — GS1 mobile-ready compliance</span>
+        <h2 class="display">Compliance is the floor. <em>Winning</em> is the ceiling.</h2>
+        <p class="subhead">The GS1 Mobile-Ready Hero Image standard makes sure a shopper can read your product on a small screen — the 4Ws: brand, product, variant, and size. But it stops there. It never tells you whether that shopper will choose you. Vizit checks GS1 readiness as table stakes, then scores the one thing the standard can't: conversion.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-on-dark" href="../score-your-content.html">Check my GS1 readiness <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="gs1-card">
+          <div class="gs1-tier">
+            <div class="gs1-tier-head">
+              <span class="gs1-kicker">GS1 MRHI · the 4Ws</span>
+              <span class="gs1-status ok">Compliant</span>
+            </div>
+            <ul class="gs1-checks">
+              <li><span>Who — the brand</span><span class="ck">✓</span></li>
+              <li><span>What — the product</span><span class="ck">✓</span></li>
+              <li><span>Which — the variant</span><span class="ck">✓</span></li>
+              <li><span>hoW much — size &amp; count</span><span class="ck">✓</span></li>
+            </ul>
+            <p class="gs1-floor-note">Legible on a mobile shelf. Table stakes.</p>
+          </div>
+          <div class="gs1-plus">Vizit adds the answer GS1 can't</div>
+          <div class="gs1-tier ceiling">
+            <div class="gs1-score">
+              <span class="gs1-score-n">92</span>
+              <span class="gs1-score-lbl">Vizit Score</span>
+            </div>
+            <p class="gs1-ceiling-q">Will a shopper actually <em>choose</em> this one?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — RETAIL MEDIA MULTIPLIER
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="05 Retail media">
+  <div class="container">
+    <div class="copy reveal">
+      <span class="eyebrow">05 — The retail media multiplier</span>
+      <h2 class="display" style="max-width:24ch;">Every sponsored ad you run lives or dies on this <em>one image</em>.</h2>
+      <p class="subhead" style="margin-top: var(--space-5);">A low-scoring Amazon main product image doesn't just lose the organic click. It drives up your effective CPC, suppresses your CTR, and undermines every campaign it appears in.</p>
+    </div>
+
+    <div class="twin reveal">
+      <div class="dash-card">
+        <div class="dash-head">
+          <span>Campaign A · same SKU · same budget</span>
+          <span class="score-tag low"><span class="dot"></span>Vizit 55</span>
+        </div>
+        <div class="dash-body">
+          <div class="dash-thumb" style="--bg1:#efe6db;--bg2:#c8a884;--prod:#6e4321"></div>
+          <div class="dash-stats">
+            <div class="dash-stat bad">
+              <div class="k">eff. CPC</div>
+              <div class="v">$1.84</div>
+              <div class="delta">↑ vs. category</div>
+            </div>
+            <div class="dash-stat bad">
+              <div class="k">CTR</div>
+              <div class="v">0.41%</div>
+              <div class="delta">below threshold</div>
+            </div>
+            <div class="dash-stat bad">
+              <div class="k">ROAS</div>
+              <div class="v">1.1×</div>
+              <div class="delta">unprofitable</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-head">
+          <span>Campaign B · same SKU · same budget</span>
+          <span class="score-tag win"><span class="dot"></span>Vizit 88</span>
+        </div>
+        <div class="dash-body">
+          <div class="dash-thumb" style="--bg1:#e6f3ff;--bg2:#80c3fe;--prod:#0174d9"></div>
+          <div class="dash-stats">
+            <div class="dash-stat good">
+              <div class="k">eff. CPC</div>
+              <div class="v">$0.92</div>
+              <div class="delta">↓ 50% vs. A</div>
+            </div>
+            <div class="dash-stat good">
+              <div class="k">CTR</div>
+              <div class="v">1.34%</div>
+              <div class="delta">3.3× lift</div>
+            </div>
+            <div class="dash-stat good">
+              <div class="k">ROAS</div>
+              <div class="v">2.4×</div>
+              <div class="delta">profitable</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="twin-foot reveal">Same budget. Same bid. <em>Different hero.</em></p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     CALLOUT — You can't bid your way out
+     ════════════════════════════════════════════════════════════ -->
+<aside class="callout-strip">
+  <div class="container">
+    <span class="ix">Callout</span>
+    <p class="ms">You can't bid your way out of a bad hero image. <em>Fix the asset first.</em></p>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — PROVEN AT SCALE
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="06 Proven at scale">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">06 — Proven at scale</span>
+      <h2 class="display">95% of PDPs we optimize see <em>measurable lift</em>.</h2>
+      <p class="subhead">When the hero image is Vizit Certified, every downstream metric improves: search rank, CTR, conversion, and ROAS of sponsored products.</p>
+    </div>
+
+    <div class="stat-strip reveal">
+      <div class="stat"><div class="n"><em>95</em>%</div><div class="l">of optimized PDPs show measurable lift in the first 30 days</div></div>
+      <div class="stat"><div class="n">16.5<em>%</em></div><div class="l">average conversion lift on hero-image-led optimization</div></div>
+      <div class="stat"><div class="n"><em>4</em>%</div><div class="l">conversion improvement per 10-point Vizit Score gain</div></div>
+    </div>
+
+    <div class="hero-proof reveal">
+      <div class="lead">
+        <span class="kicker"><span class="dot"></span>Vizit · Hero Image Lift Study, 2025</span>
+        <p class="statement">High-scoring hero images make everything else easier — <em>and more profitable</em>.</p>
+      </div>
+      <div class="voice">
+        <span class="mk" aria-hidden="true">&ldquo;</span>
+        <blockquote>Vizit gave us a number for the thing we'd been arguing about for years — and a way to actually move it. Hero by hero, our PDPs started winning the click.</blockquote>
+        <cite>VP of Digital Commerce, leading consumer brand · case study placeholder</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 6 — TRAPPED REVENUE (calc preview)
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="07 Trapped revenue">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">07 — Trapped revenue</span>
+        <h2 class="display">What is your hero image score <em>costing</em> you?</h2>
+        <p class="subhead">Enter your traffic and spend to see exactly how much trapped revenue your current hero image score is hiding.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Calculate my revenue opportunity <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="calc-preview">
+          <span class="lbl">Personalized estimate · preview</span>
+          <div class="row"><span class="k">Monthly PDP traffic</span><span class="v">2.4M</span></div>
+          <div class="row"><span class="k">Avg. order value</span><span class="v">$58</span></div>
+          <div class="row"><span class="k">Current Vizit Hero Score</span><span class="v">62</span></div>
+          <div class="row"><span class="k">Target Vizit Hero Score</span><span class="v">85+</span></div>
+          <div class="blur">
+            <div class="lock" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="11" width="14" height="10"/>
+                <path d="M8 11 V7 a4 4 0 0 1 8 0 V11"/>
+              </svg>
+            </div>
+            <div class="num">$<em>—,———,—</em>—</div>
+            <a class="cta" href="../score-your-content.html">See your full estimate →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 7 — VIZIT SPARK (before/after)
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="08 Vizit Spark">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal">
+        <div class="ba">
+          <div class="ba-head">
+            <span>Before</span>
+            <span class="div">·</span>
+            <span>Vizit Spark · After</span>
+          </div>
+          <div class="ba-frames">
+            <div class="ba-frame before" style="--prod:#b85543;">
+              <div class="obj"></div>
+              <span class="tag"><span class="score-tag low"><span class="dot"></span>Score 62</span></span>
+            </div>
+            <div class="ba-frame after" style="--prod:#c84a3a;">
+              <div class="obj"></div>
+              <span class="tag"><span class="score-tag win"><span class="dot"></span>Score 94</span></span>
+            </div>
+            <div class="ba-divider" aria-hidden="true"></div>
+          </div>
+          <div class="ba-foot">
+            <span>Same SKU · same studio shot, Spark-optimized</span>
+            <span class="lift">+12.8% projected lift</span>
+          </div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">08 — Optimization on autopilot</span>
+        <h2 class="display">Performance you don't have to <em>design</em>.</h2>
+        <p class="subhead">Vizit Spark automatically optimizes every visual element of your hero image to maximize its thumb-stopping power and conversion likelihood.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-secondary" href="../vizit-next-gen-platform.html">See how Spark works <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 8 — HERO IMAGE AUDIT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="09 Audit">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">09 — Hero image audit</span>
+      <h2 class="display">Is your hero image working <em>for</em> you, or against you?</h2>
+      <p class="subhead">Your retail media ROI depends on your main product image — the single asset that determines whether sponsored placements convert.</p>
+    </div>
+
+    <div class="audit-card reveal" style="margin-top: var(--space-7);">
+      <div class="head">
+        <span>Category benchmarking · home & kitchen · countertop blenders</span>
+        <span class="live">Live</span>
+      </div>
+      <div class="you">
+        <div class="donut warn">
+          <svg viewBox="0 0 100 100">
+            <circle class="ring-bg" cx="50" cy="50" r="44" fill="none" stroke-width="9"/>
+            <circle class="ring-fg" cx="50" cy="50" r="44" fill="none" stroke-width="9"
+                    stroke-dasharray="276" stroke-dashoffset="88"/>
+          </svg>
+          <div class="center">
+            <span class="n">68</span>
+            <span class="label">Your hero</span>
+          </div>
+        </div>
+        <span class="donut-lbl">Your product · current</span>
+      </div>
+      <div class="leader">
+        <div class="donut">
+          <svg viewBox="0 0 100 100">
+            <circle class="ring-bg" cx="50" cy="50" r="44" fill="none" stroke-width="9"/>
+            <circle class="ring-fg" cx="50" cy="50" r="44" fill="none" stroke-width="9"
+                    stroke-dasharray="276" stroke-dashoffset="22"/>
+          </svg>
+          <div class="center">
+            <span class="n">92</span>
+            <span class="label">Category leader</span>
+          </div>
+        </div>
+        <span class="donut-lbl">Where Vizit Certified sits</span>
+      </div>
+      <div class="gap-stat">
+        <span class="lbl">Revenue opportunity at 80+</span>
+        <span class="n">$<em>4.1M</em> / year</span>
+      </div>
+    </div>
+
+    <div class="cta-row reveal" style="margin-top: var(--space-7); justify-content:center;">
+      <a class="btn btn-primary btn-lg" href="../score-your-content.html">Score my hero images <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="10 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Hero image <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">The questions ecommerce, retail media, and creative leaders ask us most about the asset that decides the click.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is an Amazon hero image?</summary>
+            <div class="answer">An Amazon hero image (also called the main product image or main image) is the primary photograph displayed for a product across Amazon search results, sponsored placements, and product detail pages. It is the single most important visual asset a brand owns on Amazon: it determines whether a shopper clicks the product, and it appears identically across mobile, desktop, and AI-driven discovery surfaces. Amazon requires the hero image to have a pure white background (RGB 255, 255, 255), no text or graphic overlays, and a minimum resolution of 1000×1000 pixels for zoom functionality.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What makes a good Amazon hero image?</summary>
+            <div class="answer">A high-performing Amazon hero image does four things at once: it communicates the brand, product, and variant instantly at thumbnail scale on mobile; it speaks the visual language shoppers in its category respond to; it stands out distinctly against the competing products surrounding it on the search grid; and it meets Amazon's technical requirements for resolution, background, and composition. Vizit's Hero Image Score measures all four — Relevance, Distinctiveness, Aesthetic Impact, and Retail Readiness — on a 0–100 scale, calibrated to the live competitive context of each category.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I increase glance views on Amazon?</summary>
+            <div class="answer">Glance views — Amazon's term for unique product page visits — are driven by what shoppers see in search results, not by the product page itself. The hero image is the asset that determines whether a shopper clicks through to generate a glance view: title, price, and reviews are only consulted after the click. Optimizing the hero image for thumbnail clarity, mobile readability, and the visual triggers proven to convert in your category is the highest-leverage way to increase glance views, lift Amazon CTR, and improve sponsored ad ROAS — because every paid placement uses the same hero image as organic search.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is thumb-stopping content?</summary>
+            <div class="answer">Thumb-stopping content is visual content engineered to interrupt a shopper's scroll on mobile: to command attention in the fraction of a second before the thumb keeps moving. On mobile-first commerce surfaces (Amazon, Walmart, Instagram, TikTok Shop, etc.), thumb-stopping power is the precondition for every downstream metric: click, consideration, and conversion. Vizit's Hero Image Score measures thumb-stopping performance with shoppers in each specific category, determining whether your image actually stops the scroll.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="11 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">The hero image standard</span>
+    <h2 class="display on-dark reveal">Score your heroes. Then <em>win</em> them.</h2>
+    <p class="subhead on-dark reveal">Vizit turns the most important asset on your PDP into a number you can move — and a number that pays you back across every channel.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Score my hero images <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  // Reveal-on-scroll, matches site behavior
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function(e){ e.classList.add('in'); }); return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

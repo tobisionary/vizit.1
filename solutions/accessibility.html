@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Accessibility Testing for Ecommerce | WCAG 2.2 AA &amp; APCA</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Automatically test every product image for WCAG 2.2 AA and APCA (WCAG 3.0) contrast compliance. Built for ADA Title III and European Accessibility Act (EAA) requirements.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Accessibility) ─── */
+
+  /* Hero — contrast heatmap on a real product image mock */
+  .access-stage {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.05;
+    overflow: hidden;
+    display: grid; grid-template-rows: 36px 1fr;
+  }
+  .access-stage::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 70% at 80% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 80% at 0% 100%, rgba(1,116,217,0.25), transparent 65%);
+    pointer-events: none;
+  }
+  .access-stage .hs-chrome {
+    position: relative; z-index: 1;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .access-stage .body {
+    position: relative; z-index: 1;
+    padding: var(--space-6);
+    display: grid; grid-template-rows: auto 1fr auto;
+    gap: var(--space-4);
+  }
+  .access-stage .heads {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .access-stage .main {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--space-4);
+    align-items: center;
+  }
+  @media (max-width: 540px) { .access-stage .main { grid-template-columns: 1fr; } }
+  .pkg-mock {
+    aspect-ratio: 1 / 1;
+    background: #b85543;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.35), inset 0 -22px 30px rgba(0,0,0,0.25);
+    padding: var(--space-4) var(--space-5);
+    display: grid; grid-template-rows: 1fr auto auto auto auto auto 1fr;
+    gap: 6px;
+    position: relative;
+    color: #fff;
+    overflow: hidden;
+  }
+  .pkg-mock .pkg-line {
+    position: relative;
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    align-self: center;
+  }
+  .pkg-mock .pkg-line.brand {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+  }
+  .pkg-mock .pkg-line.product {
+    font-size: 1.05rem;
+    color: rgba(255,210,180,0.85); /* LOW CONTRAST: 1.5:1 vs red bg */
+  }
+  .pkg-mock .pkg-line.claim {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.92);
+    background: rgba(0,0,0,0.18);
+    padding: 4px 10px;
+    align-self: flex-start;
+  }
+  .pkg-mock .pkg-line.size {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: rgba(220,140,110,0.7); /* VERY LOW CONTRAST */
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .pkg-mock .heat-tag {
+    position: absolute;
+    right: -6px;
+    transform: translate(100%, -50%);
+    top: 50%;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 7px;
+    white-space: nowrap;
+  }
+  .heat-tag.fail { background: var(--risk-red); color: #fff; }
+  .heat-tag.warn { background: var(--risk-amber); color: #fff; }
+  .heat-tag.pass { background: var(--blue-base); color: #fff; }
+
+  .pkg-readout {
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .pkg-readout .meter-row {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: var(--space-3) var(--space-4);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .pkg-readout .meter-row .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .pkg-readout .meter-row .ratio {
+    font-family: var(--font-display); font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .pkg-readout .meter-row .ratio em { font-style: normal; }
+  .pkg-readout .meter-row.fail .ratio { color: #ff8b7e; }
+  .pkg-readout .meter-row.fail .ratio em { color: #ff8b7e; }
+  .pkg-readout .meter-row.warn .ratio { color: #ffd28a; }
+  .pkg-readout .meter-row.warn .ratio em { color: #ffd28a; }
+  .pkg-readout .meter-row.pass .ratio { color: var(--cyan); }
+  .pkg-readout .meter-row.pass .ratio em { color: var(--cyan); }
+  .pkg-readout .meter-row .bar {
+    grid-column: 1 / -1;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    margin-top: 6px;
+    position: relative;
+  }
+  .pkg-readout .meter-row .bar::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: var(--w, 50%);
+  }
+  .pkg-readout .meter-row.fail .bar::after { background: var(--risk-red); }
+  .pkg-readout .meter-row.warn .bar::after { background: var(--risk-amber); }
+  .pkg-readout .meter-row.pass .bar::after { background: var(--cyan); }
+  .access-stage .verdict {
+    display: flex; justify-content: space-between;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .access-stage .verdict .v { color: #ff8b7e; }
+
+  /* Standards split (WCAG 2.2 AA vs APCA) */
+  .standards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  @media (max-width: 760px) { .standards { grid-template-columns: 1fr; } }
+  .std-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .std-card .key {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.12em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  .std-card h4 {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
+    letter-spacing: -0.02em; line-height: 1.15;
+    margin: 0;
+  }
+  .std-card h4 em { color: var(--accent); font-style: normal; }
+  .std-card p {
+    margin: 0; font-size: var(--text-sm);
+    color: var(--muted); line-height: 1.55;
+  }
+  .std-card .pill {
+    margin-top: var(--space-2);
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    background: var(--accent-soft);
+    color: var(--blue-700);
+    border: 1px solid var(--blue-100);
+    width: max-content;
+  }
+
+  /* Element scorecard — diagnostics */
+  .scorecard {
+    background: #fff;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .scorecard-head {
+    padding: var(--space-4) var(--space-5);
+    background: var(--blue-1000); color: #fff;
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .scorecard-head .live {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--blue-200);
+  }
+  .scorecard-head .live::before {
+    content: ''; width: 6px; height: 6px; border-radius: 999px;
+    background: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(52,160,254,0.25);
+  }
+  .sc-row {
+    display: grid;
+    grid-template-columns: 1fr auto 110px 90px;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--border);
+    font-size: var(--text-sm);
+  }
+  .sc-row:last-child { border-bottom: none; }
+  .sc-row .el {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .sc-row .el small {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+  .sc-row .ratio {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+  .sc-row .status {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 8px;
+    text-align: center;
+  }
+  .sc-row.fail .status { background: rgba(200,69,58,0.12); color: var(--risk-red); }
+  .sc-row.warn .status { background: rgba(217,155,39,0.12); color: #b07a14; }
+  .sc-row.pass .status { background: var(--accent-soft); color: var(--blue-700); }
+  .sc-row .verdict {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-align: right;
+  }
+  .sc-row.fail .verdict { color: var(--risk-red); }
+  .sc-row.warn .verdict { color: #b07a14; }
+  .sc-row.pass .verdict { color: var(--accent); }
+  @media (max-width: 720px) {
+    .sc-row {
+      grid-template-columns: 1fr auto;
+      gap: var(--space-2);
+    }
+    .sc-row .ratio, .sc-row .status, .sc-row .verdict {
+      grid-column: 1 / -1; text-align: left;
+    }
+  }
+  /* ─── Accessibility mandate stat trio ─── */
+  .stat-strip.mandate {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 2px solid var(--blue-1000);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    margin-top: var(--space-7);
+  }
+  .stat-strip.mandate .stat {
+    padding: var(--space-6) var(--space-6) var(--space-6) 0;
+    border-left: 1px solid var(--border);
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-strip.mandate .stat:first-child {
+    border-left: none;
+    padding-left: 0;
+  }
+  .stat-strip.mandate .stat .k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-4);
+  }
+  .stat-strip.mandate .stat .n {
+    font-size: clamp(2.6rem, 4.6vw, 3.9rem);
+    color: var(--blue-1000);
+    letter-spacing: -0.035em;
+  }
+  .stat-strip.mandate .stat .l {
+    margin-top: var(--space-4);
+    max-width: 26ch;
+    color: var(--color-700, #40566b);
+    line-height: 1.5;
+  }
+  @media (max-width: 760px) {
+    .stat-strip.mandate { grid-template-columns: 1fr; }
+    .stat-strip.mandate .stat {
+      border-left: none; padding-left: 0;
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-5); padding-bottom: var(--space-5);
+    }
+    .stat-strip.mandate .stat:first-child { border-top: none; padding-top: var(--space-5); }
+  }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="accessibility"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 1 — AUTOMATED IMAGE ACCESSIBILITY TESTING
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="01 Automated A11y testing">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Automated image accessibility testing</span>
+        <span class="badge-inline" style="margin-top: var(--space-4);">Now included for all Vizit customers</span>
+        <h1 class="display">If they can't read it, they won't <em>buy</em> it.</h1>
+        <p class="subhead">Vizit's AI automatically tests every digital shelf asset for visual clarity and glance-readability on mobile — ensuring everything is readable, compliant, and built to convert on every screen. Vizit Agents run these checks continuously across your entire catalog.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Test my hero images <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="On-image text contrast diagnostic with heatmap tags">
+        <div class="access-stage">
+          <div class="hs-chrome">
+            <span style="width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25);"></span>
+            <span>Vizit · accessibility · auto-scan</span>
+            <span style="margin-left:auto;">WCAG 2.2 AA · APCA</span>
+          </div>
+          <div class="body">
+            <div class="heads">
+              <span>Hero asset</span>
+              <span>Element-by-element scorecard</span>
+            </div>
+            <div class="main">
+              <div class="pkg-mock">
+                <span class="pkg-line brand">BRAVA</span>
+                <span class="pkg-line product">Cold-pressed citrus<span class="heat-tag fail">Fail · 2.4:1</span></span>
+                <span class="pkg-line claim">No added sugar<span class="heat-tag pass">Pass · 7.1:1</span></span>
+                <span class="pkg-line size">12 fl. oz · 355 ml<span class="heat-tag warn">Warn · 3.0:1</span></span>
+              </div>
+              <div class="pkg-readout">
+                <div class="meter-row pass">
+                  <span class="lbl">"BRAVA" · brand</span>
+                  <span class="ratio">8.4<em>:1</em></span>
+                  <span class="bar" style="--w:95%"></span>
+                </div>
+                <div class="meter-row fail">
+                  <span class="lbl">"Cold-pressed citrus"</span>
+                  <span class="ratio">2.4<em>:1</em></span>
+                  <span class="bar" style="--w:30%"></span>
+                </div>
+                <div class="meter-row pass">
+                  <span class="lbl">"No added sugar"</span>
+                  <span class="ratio">7.1<em>:1</em></span>
+                  <span class="bar" style="--w:88%"></span>
+                </div>
+                <div class="meter-row warn">
+                  <span class="lbl">"12 fl. oz · 355 ml"</span>
+                  <span class="ratio">3.0<em>:1</em></span>
+                  <span class="bar" style="--w:45%"></span>
+                </div>
+              </div>
+            </div>
+            <div class="verdict">
+              <span>4 text elements · 2 fail / 1 warn / 1 pass</span>
+              <span class="v">Not compliant — WCAG 2.2 AA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 2 — THE ACCESSIBILITY MANDATE
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="02 Mandate">
+  <div class="container">
+    <div class="copy reveal" style="max-width: 60ch;">
+      <span class="eyebrow">02 — The accessibility mandate</span>
+      <h2 class="display">Digital accessibility is no longer optional. It's the <em>law</em>.</h2>
+      <p class="subhead">With rising ADA Title III enforcement in the U.S. and the European Accessibility Act (EAA) now in effect across the EU, non-compliant product imagery has become a measurable legal liability. Vizit automates WCAG 2.2 AA and APCA compliance checks before your assets ever go live.</p>
+    </div>
+
+    <div class="stat-strip mandate reveal">
+      <div class="stat">
+        <div class="k">United States · ADA Title III</div>
+        <div class="n">$30K+</div>
+        <div class="l">Average settlement per case — before remediation costs.</div>
+      </div>
+      <div class="stat">
+        <div class="k">Shoppers affected</div>
+        <div class="n">1 in 12</div>
+        <div class="l">Men have a color vision deficiency, and bounce silently from low-contrast imagery.</div>
+      </div>
+      <div class="stat">
+        <div class="k">European Union · EAA</div>
+        <div class="n">Jun 2025</div>
+        <div class="l">In force across all 27 EU member states for B2C ecommerce.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 3 — GLANCE READABILITY TESTING
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="03 Glance readability">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">03 — Glance readability testing</span>
+      <h2 class="display">Don't guess if it's legible. <em>Measure</em> it.</h2>
+      <p class="subhead">Vizit's AI automatically identifies every text string in your image and tests it against the two standards that matter most.</p>
+    </div>
+
+    <div class="standards reveal">
+      <div class="std-card">
+        <span class="key">Standard 01</span>
+        <h4>WCAG 2.2 AA</h4>
+        <p>Instantly verify that your text-to-background contrast ratios meet current global digital accessibility laws.</p>
+        <span class="pill">In force · global</span>
+      </div>
+      <div class="std-card">
+        <span class="key">Standard 02</span>
+        <h4>APCA <em>·</em> WCAG 3.0</h4>
+        <p>Future-proof your content with the Advanced Perceptual Contrast Algorithm — measuring how human eyes actually perceive clarity on backlit digital screens.</p>
+        <span class="pill">Proposed · perceptual</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 4 — EUROPEAN ACCESSIBILITY ACT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="04 EAA">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">04 — European Accessibility Act</span>
+        <h2 class="display">Product images now fall under EU <em>accessibility law</em>.</h2>
+        <p class="subhead">Since June 2025, the European Accessibility Act has required digital commerce content sold in the EU — including product imagery and on-image text — to meet defined accessibility standards. Non-compliance carries financial penalties, market access restrictions, and growing enforcement scrutiny across member states.</p>
+      </div>
+      <div class="reveal">
+        <p style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-700); margin: 0 0 var(--space-2);">What the EAA means for product imagery</p>
+        <ul class="fact-list">
+          <li>
+            <span class="check">✓</span>
+            <span>On-image text must meet contrast and legibility thresholds aligned with <strong>WCAG 2.2 AA</strong>.</span>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <span>Critical product information communicated visually must be perceivable to shoppers with low vision and color vision deficiencies.</span>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <span>Compliance applies to brands selling into the EU, <strong>regardless of where the brand is headquartered</strong>.</span>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <span>Enforcement varies by member state, but the underlying technical standards are consistent.</span>
+          </li>
+        </ul>
+        <p style="margin-top: var(--space-5); font-family: var(--font-display); font-size: 1.15rem; line-height: 1.4; color: var(--blue-1000); letter-spacing: -0.01em;">
+          Vizit's AI verifies every product image against the technical standards underpinning the EAA — at catalog scale, before publication, with <em style="color:var(--accent);">no manual review</em>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — AUTOMATED DIAGNOSTICS / SCORECARD
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="05 Automated diagnostics">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">05 — Automated diagnostics</span>
+      <h2 class="display">Every text element. <em>Tested.</em> Scored. Fixed.</h2>
+      <p class="subhead">Vizit automatically audits every title and claim across your hero and carousel assets to provide a definitive, element-by-element scorecard.</p>
+    </div>
+
+    <div class="reveal" style="margin-top: var(--space-7);">
+      <div class="scorecard">
+        <div class="scorecard-head">
+          <span>SKU · B0CDR4FG · hero asset</span>
+          <span class="live">Live · 4 elements scanned</span>
+        </div>
+        <div class="sc-row pass">
+          <div class="el">"BRAVA"<small>Brand · 64 px</small></div>
+          <div class="ratio">8.4 : 1</div>
+          <div class="status">WCAG 2.2 AA</div>
+          <div class="verdict">Pass</div>
+        </div>
+        <div class="sc-row fail">
+          <div class="el">"Cold-pressed citrus"<small>Product title · 38 px</small></div>
+          <div class="ratio">2.4 : 1</div>
+          <div class="status">WCAG 2.2 AA</div>
+          <div class="verdict">Fail</div>
+        </div>
+        <div class="sc-row pass">
+          <div class="el">"No added sugar"<small>Claim · 24 px</small></div>
+          <div class="ratio">7.1 : 1</div>
+          <div class="status">WCAG 2.2 AA</div>
+          <div class="verdict">Pass</div>
+        </div>
+        <div class="sc-row warn">
+          <div class="el">"12 fl. oz · 355 ml"<small>Net contents · 18 px</small></div>
+          <div class="ratio">3.0 : 1</div>
+          <div class="status">WCAG 2.2 AA</div>
+          <div class="verdict">Warn · borderline</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="value-grid reveal" style="margin-top: var(--space-7);">
+      <div class="value-card">
+        <span class="vix">01 · identify</span>
+        <h4>Failing elements <em>flagged</em>.</h4>
+        <p>Instantly surface which text strings fall below contrast and glance-readability thresholds — at catalog scale.</p>
+      </div>
+      <div class="value-card">
+        <span class="vix">02 · heatmap</span>
+        <h4>Contrast <em>heatmapping</em>.</h4>
+        <p>Pinpoint exactly where visual clarity breaks down to remove the guesswork from design.</p>
+      </div>
+      <div class="value-card">
+        <span class="vix">03 · optimize</span>
+        <h4>Adjust with <em>precision</em>.</h4>
+        <p>Get the precise data needed to adjust weight, size, and contrast — so your images win on the smallest screens.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 6 — THE NEW COMPLIANCE STANDARD
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="06 New standard">
+  <div class="container">
+    <div class="copy reveal" style="max-width: 60ch;">
+      <span class="eyebrow">06 — The new compliance standard</span>
+      <h2 class="display">Do your hero images <em>pass</em> the accessibility standard?</h2>
+      <p class="subhead">Instantly audit your digital shelf for global compliance risks and ensure every <a href="hero-images.html" style="color:var(--accent); border-bottom:1px solid var(--blue-100); padding-bottom:1px; text-decoration:none;">hero image</a> is engineered to convert on the smallest screens.</p>
+
+      <div class="badge-inline" style="margin-top: var(--space-5);">Included in your Vizit subscription</div>
+
+      <div class="cta-row" style="margin-top: var(--space-5);">
+        <a class="btn btn-primary btn-lg" href="../score-your-content.html">Run an accessibility audit <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="07 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Image accessibility <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">What digital commerce, legal, and creative leaders ask us most about WCAG, APCA, and the EAA.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What accessibility standards apply to product images?</summary>
+            <div class="answer">Two standards govern text-to-background contrast in product images. WCAG 2.2 AA is the current global benchmark, required for digital accessibility compliance under ADA Title III in the U.S. and the European Accessibility Act (EAA) in Europe. APCA (Advanced Perceptual Contrast Algorithm) is the proposed contrast model under WCAG 3.0, designed to measure how human eyes actually perceive clarity on backlit digital screens.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>Does the European Accessibility Act apply to ecommerce product images?</summary>
+            <div class="answer">Yes. As of June 28, 2025, the European Accessibility Act applies to B2C digital commerce in the EU, including product content where text overlays communicate critical information. The law applies to any brand selling into EU markets regardless of where the brand is headquartered, and non-compliance carries financial penalties, market access restrictions, and rising enforcement scrutiny across member states.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I audit my Amazon images for readability?</summary>
+            <div class="answer">Vizit automatically scans every text element in your Amazon hero and carousel images, tests contrast against both WCAG 2.2 AA and APCA standards, and provides an element-by-element scorecard. The analysis accounts for how Amazon's mobile thumbnails, search grid display, and PDP context affect actual glance-readability. Results return at catalog scale within the Vizit Platform, with the precise element-level guidance needed to fix failing assets.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What's the penalty for non-compliant product images under accessibility law?</summary>
+            <div class="answer">Penalties vary by jurisdiction. Under ADA Title III, U.S. brands face private litigation, settlement costs averaging tens of thousands of dollars per case, and ongoing remediation obligations. Under the European Accessibility Act, EU member states are implementing fines, market access restrictions, and enforcement actions that vary in severity by country. Beyond legal exposure, non-compliant imagery silently suppresses conversion: shoppers who can't read on-image text — including the 1 in 12 men with color vision deficiency — abandon products that don't communicate clearly at first glance.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="08 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">The accessibility standard</span>
+    <h2 class="display on-dark reveal">Compliant. Readable. <em>Converting</em>.</h2>
+    <p class="subhead on-dark reveal">Test every hero and carousel image against WCAG 2.2 AA and APCA — automatically, at catalog scale, before publication.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Run an accessibility audit <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

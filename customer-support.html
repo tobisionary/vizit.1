@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Support | Vizit</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="Get help with Vizit — reach our support team, browse common questions, or talk to your customer success manager.">
+<link rel="stylesheet" href="css/ci-styles.css">
+<link rel="stylesheet" href="css/company-styles.css">
+<link rel="stylesheet" href="css/vizit-theme.css">
+<link rel="stylesheet" href="css/vizit-elevate.css">
+<script src="js/vizit-nav.js" defer></script>
+<script src="js/vizit-footer.js" defer></script>
+<style>
+  a{color:var(--accent)}a:hover{color:var(--blue-1000)}
+  .sup-hero{padding:clamp(6rem,12vh,9rem) 24px 4.5rem;text-align:center;border-bottom:1px solid var(--border)}
+  .sup-hero h1{margin:1.2rem auto 1.4rem;max-width:20ch}
+  .sup-hero p{font-size:clamp(1.05rem,1.6vw,1.25rem);color:var(--color-600);max-width:600px;margin:0 auto;line-height:1.6}
+  .sup-kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .sup-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1120px;margin:0 auto;padding:4.5rem 24px 6rem}
+  @media(max-width:900px){.sup-grid{grid-template-columns:1fr}}
+  .sup-card{border:1px solid var(--border);background:#fff;padding:36px 30px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(0,33,61,.04)}
+  .sup-card h2{font-family:var(--font-display);font-size:1.35rem;font-weight:600;letter-spacing:-.02em;color:var(--blue-1000);margin:0}
+  .sup-card p{color:var(--color-600);line-height:1.6;margin:0;flex:1}
+  .sup-card a.sup-link{font-weight:600;text-decoration:none}
+  .sup-card a.sup-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<vizit-nav data-current="resources"></vizit-nav>
+<section class="sup-hero">
+  <div class="sup-kicker">Customer Support</div>
+  <h1>We're here to help.</h1>
+  <p>Questions about your account, scores, or integrations — our team responds within one business day.</p>
+</section>
+<div class="sup-grid">
+  <div class="sup-card">
+    <h2>Email support</h2>
+    <p>Reach the support team directly for product questions, account access, or technical issues.</p>
+    <a class="sup-link" href="mailto:support@vizit.com">support@vizit.com</a>
+  </div>
+  <div class="sup-card">
+    <h2>Talk to your CSM</h2>
+    <p>Enterprise customers can contact their customer success manager for onboarding, training, and strategy.</p>
+    <a class="sup-link" href="score-your-content.html">Request a call</a>
+  </div>
+  <div class="sup-card">
+    <h2>Getting started</h2>
+    <p>New to Vizit? Walk through connecting your catalog and scoring your first images.</p>
+    <a class="sup-link" href="vizit-next-gen-platform.html">View the guide</a>
+  </div>
+</div>
+<vizit-footer></vizit-footer>
+</body>
+</html>

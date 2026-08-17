@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Packaging Design Testing | Pre-Launch Validation with AI | Vizit</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Predict how packaging will perform on the digital and physical shelf before production. Replace months of focus groups with minutes of predictive AI.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Packaging Design Testing) ─── */
+  a { color: var(--accent); }
+  a:hover { color: var(--blue-700); }
+
+  /* Old way vs new way — signature hero */
+  .onw {
+    position: relative; background: var(--blue-1000); color: #fff;
+    aspect-ratio: 1 / 1.02; overflow: hidden; box-shadow: var(--shadow-lg);
+    display: grid; grid-template-rows: 36px 1fr;
+  }
+  .onw::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 70% at 82% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 60% at 0% 100%, rgba(1,116,217,0.36), transparent 62%);
+    pointer-events: none;
+  }
+  .onw .hs-chrome {
+    position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    background: rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--blue-200); text-transform: uppercase;
+  }
+  .onw .hs-chrome .pulse { width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25); }
+  .onw .split { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; }
+  .onw .half { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); align-items: center; justify-content: center; text-align: center; }
+  .onw .half.old { border-right: 1px solid rgba(255,255,255,0.10); }
+  .onw .lab { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-200); }
+  .onw .lab.bad { color: #f0a59c; }
+  .onw .pie {
+    width: 120px; height: 120px; border-radius: 999px;
+    background: conic-gradient(#5a6b7d 0 38%, #45525f 38% 63%, #34404b 63% 100%);
+    filter: blur(2.5px) saturate(0.7); opacity: 0.7;
+  }
+  .onw .slow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: #f0a59c; text-transform: uppercase; }
+  .onw .pack {
+    width: 92px; height: 128px;
+    background: linear-gradient(150deg, #2b6fb0 0%, #0174d9 60%, #015fb2 100%);
+    box-shadow: 12px 14px 30px rgba(0,0,0,0.4), inset -14px 0 24px rgba(0,0,0,0.28), inset 10px 0 18px rgba(255,255,255,0.12);
+    transform: perspective(600px) rotateY(-18deg); position: relative;
+  }
+  .onw .pack::after { content: ''; position: absolute; left: 18%; right: 18%; top: 22%; height: 8px; background: rgba(255,255,255,0.85); box-shadow: 0 16px 0 rgba(255,255,255,0.5), 0 30px 0 rgba(255,255,255,0.3); }
+  .onw .cert-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    background: rgba(52,160,254,0.16); border: 1px solid rgba(52,160,254,0.4); color: var(--cyan);
+    padding: 6px 10px;
+  }
+  .onw .cert-badge b { color: #fff; font-size: 13px; }
+
+  /* Mobile thumbnail failure */
+  .thumbfail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: var(--space-7); }
+  @media (max-width: 620px) { .thumbfail { grid-template-columns: repeat(2, 1fr); } }
+  .thumbfail .t { position: relative; aspect-ratio: 3/4; border: 1px solid var(--border); overflow: hidden; background: linear-gradient(160deg,#f4ece2,#e2d2bf); }
+  .thumbfail .t .p { position: absolute; inset: 18% 20% 24%; border-radius: 8%; box-shadow: inset 0 -10px 16px rgba(0,0,0,0.18); }
+  .thumbfail .t .p.clear { background: #0174d9; }
+  .thumbfail .t.fail .p { background: #8a7a68; filter: blur(1.6px) contrast(0.7); }
+  .thumbfail .t .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 8px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; background: rgba(0,33,61,0.85); color: #fff; }
+  .thumbfail .t.fail { border: 1.5px solid var(--risk-red); box-shadow: 0 0 0 3px rgba(200,69,58,0.14); }
+  .thumbfail .t.fail .cap { background: var(--risk-red); }
+  .thumbfail .t.win { border: 1.5px solid var(--accent); box-shadow: 0 0 0 3px rgba(1,116,217,0.14); }
+  .thumbfail .t.win .cap { background: var(--accent); }
+  .tf-note { margin-top: var(--space-4); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .tf-note strong { color: var(--risk-red); font-weight: 500; }
+
+  /* X-ray + studio score */
+  .xray { position: relative; background: linear-gradient(160deg, #10202f, #071522); border: 1px solid var(--border); overflow: hidden; aspect-ratio: 4/3; }
+  .xray .grid-lines { position: absolute; inset: 0; background-image: linear-gradient(rgba(52,160,254,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(52,160,254,0.16) 1px, transparent 1px); background-size: 30px 30px; }
+  .xray .hero-obj { position: absolute; left: 34%; top: 16%; width: 32%; height: 64%; background: linear-gradient(150deg,#2b6fb0,#0174d9); box-shadow: inset 0 -22px 40px rgba(0,0,0,0.3), 0 0 40px rgba(52,160,254,0.35); }
+  .xray .co { position: absolute; font-family: var(--font-mono); font-size: 10px; background: rgba(0,33,61,0.9); border: 1px solid rgba(52,160,254,0.45); color: #fff; padding: 5px 8px; }
+  .xray .co b { color: var(--cyan); }
+  .xray .co.c1 { left: 5%; top: 22%; } .xray .co.c2 { right: 5%; top: 44%; } .xray .co.c3 { left: 7%; bottom: 16%; }
+
+  .studio-score { background: #fff; border: 1px solid var(--border); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+  .studio-score .sh { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .studio-score .row { display: grid; grid-template-columns: 1fr auto; gap: var(--space-3); align-items: center; }
+  .studio-score .row .k { font-size: var(--text-sm); color: var(--color-700); }
+  .studio-score .track { grid-column: 1 / -1; height: 8px; background: var(--color-100); position: relative; }
+  .studio-score .track .f { position: absolute; inset: 0 auto 0 0; width: var(--w,50%); background: var(--accent); }
+  .studio-score .row .v { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--blue-1000); }
+
+  /* Proof statement card */
+  .proof {
+    margin-top: var(--space-7); position: relative; background: var(--blue-1000); color: #fff;
+    overflow: hidden; padding: clamp(2rem,4vw,3.25rem);
+    display: grid; grid-template-columns: 60px 1fr; gap: var(--space-5); align-items: start;
+  }
+  .proof::before { content:''; position:absolute; inset:0; background: radial-gradient(70% 90% at 100% 0%, rgba(52,160,254,0.26), transparent 60%); pointer-events:none; }
+  .proof .mk { position: relative; z-index: 1; font-family: var(--font-display); font-size: 4rem; line-height: 0.6; color: var(--blue-300); }
+  .proof .b { position: relative; z-index: 1; }
+  .proof blockquote { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.3rem,2.4vw,2rem); line-height: 1.32; letter-spacing: -0.02em; color: #fff; }
+  .proof cite { display: block; margin-top: var(--space-5); font-style: normal; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-200); }
+
+  /* Prototypes vs renders */
+  .costs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-7); }
+  @media (max-width: 760px) { .costs { grid-template-columns: 1fr; } }
+  .cost-col { border: 1px solid var(--border); background: #fff; padding: var(--space-6); }
+  .cost-col.old { background: var(--surface); }
+  .cost-col .tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--space-4); display: block; }
+  .cost-col.old .tag { color: var(--muted); }
+  .cost-col.new .tag { color: var(--accent); }
+  .proto-row { display: flex; gap: 8px; margin-bottom: var(--space-4); }
+  .proto-row .box { width: 34px; height: 46px; background: linear-gradient(150deg,#c9b79f,#a98f6f); box-shadow: inset -6px 0 10px rgba(0,0,0,0.2); }
+  .render-row { display: flex; gap: 8px; margin-bottom: var(--space-4); align-items: center; }
+  .render-row .box { width: 34px; height: 46px; background: linear-gradient(150deg,#7d97b0,#5b7794); opacity: 0.5; }
+  .render-row .box.win { background: linear-gradient(150deg,#2b6fb0,#0174d9); opacity: 1; box-shadow: 0 0 0 3px rgba(1,116,217,0.2); position: relative; }
+  .cost-col .money { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: -0.02em; color: var(--blue-1000); }
+  .cost-col.old .money { color: var(--risk-red); }
+  .cost-col .desc { margin-top: 6px; font-size: var(--text-sm); color: var(--muted); line-height: 1.5; }
+  .cost-col .winner-tag { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-3); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--accent-soft); border: 1px solid var(--blue-100); color: var(--blue-700); padding: 4px 8px; }
+
+  /* Launch report visual */
+  .launch-report { max-width: 460px; margin: var(--space-7) auto 0; background: #fff; border: 1px solid var(--border); overflow: hidden; }
+  .launch-report .lr-head { padding: var(--space-3) var(--space-4); background: var(--blue-1000); color: #fff; display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .launch-report .lr-head .pulse { display: inline-flex; align-items: center; gap: 8px; color: var(--blue-200); }
+  .launch-report .lr-head .pulse::before { content:''; width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25); }
+  .launch-report .lr-row { display: grid; grid-template-columns: 40px 1fr auto; gap: var(--space-3); padding: var(--space-4) var(--space-5); align-items: center; border-bottom: 1px solid var(--border); }
+  .launch-report .lr-row:last-child { border-bottom: none; }
+  .launch-report .lr-row .th { width: 40px; height: 40px; border-radius: 8%; background: var(--c,#9a7d5e); }
+  .launch-report .lr-row .nm { font-family: var(--font-display); font-size: 1rem; }
+  .launch-report .lr-row .rk { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+  .launch-report .lr-row .sc { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: -0.03em; }
+  .launch-report .lr-row.win { background: var(--accent-soft); }
+  .launch-report .lr-row.win .sc { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="design-products"></vizit-nav>
+
+<!-- PANEL 1 — HERO -->
+<section class="sol-hero" data-screen-label="01 Launch with confidence">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Pre-launch proof</span>
+        <h1 class="display">Launch with <em>conversion confidence</em>.</h1>
+        <p class="subhead">Predict exactly how your packaging will perform on the digital shelf and against key competitors before you spend a single dollar on production.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Score my concept <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Slow consumer survey versus an instant Vizit-scored packaging render">
+        <div class="onw">
+          <div class="hs-chrome">
+            <span class="pulse"></span>
+            <span>Vizit · pre-launch validation</span>
+            <span style="margin-left:auto;">Concept · SKU-NEW</span>
+          </div>
+          <div class="split">
+            <div class="half old">
+              <span class="lab bad">The old way</span>
+              <div class="pie"></div>
+              <span class="slow">Consumer survey · weeks</span>
+            </div>
+            <div class="half new">
+              <span class="lab">The Vizit way</span>
+              <div class="pack"></div>
+              <span class="cert-badge"><b>89</b> Vizit Certified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">De-risking omnichannel product launches for the world's most innovative brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>BRAND C</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 2 — INNOVATION BLIND SPOT -->
+<section class="panel panel--paper" data-screen-label="02 Innovation blind spot">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">02 — The innovation blind spot</span>
+      <h2 class="display">Focus groups tell you what they <em>like</em>. Conversions tell you what they <em>buy</em>.</h2>
+      <p class="subhead">When you rely on what consumers say instead of what drives their choices, you're engineering your next launch to fail. Predictive packaging design testing with Vizit closes that gap.</p>
+    </div>
+
+    <div class="thumbfail reveal" aria-label="Digital shelf where the new concept fails at mobile thumbnail scale">
+      <div class="t"><div class="p" style="background:#3b5f7d;"></div><span class="cap">Competitor · 78</span></div>
+      <div class="t win"><div class="p clear"></div><span class="cap">Category leader · 91</span></div>
+      <div class="t fail"><div class="p"></div><span class="cap">Your concept · illegible</span></div>
+      <div class="t"><div class="p" style="background:#4a6b52;"></div><span class="cap">Competitor · 73</span></div>
+    </div>
+    <p class="tf-note reveal"><strong>First impression failure</strong> — the concept that wins in the boardroom is illegible at mobile scale.</p>
+  </div>
+</section>
+
+<!-- PANEL 3 — CATEGORY TO CONCEPT -->
+<section class="panel" data-screen-label="03 Category to concept">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="X-ray decode of category winners feeding a studio score">
+        <div class="xray">
+          <div class="grid-lines"></div>
+          <div class="hero-obj"></div>
+          <span class="co c1"><span class="k">Bold typography</span> <b>+14%</b></span>
+          <span class="co c2"><span class="k">High-contrast color</span> <b>+9%</b></span>
+          <span class="co c3"><span class="k">Front-facing pack</span> <b>+8%</b></span>
+        </div>
+        <div class="studio-score" style="margin-top: var(--space-4);">
+          <div class="sh"><span>Vizit Studio · your concept</span><span>Scored vs benchmarks</span></div>
+          <div class="row"><span class="k">Typography legibility</span><span class="v">86</span><span class="track"><span class="f" style="--w:86%;"></span></span></div>
+          <div class="row"><span class="k">Color contrast</span><span class="v">72</span><span class="track"><span class="f" style="--w:72%;"></span></span></div>
+          <div class="row"><span class="k">Shelf standout</span><span class="v">81</span><span class="track"><span class="f" style="--w:81%;"></span></span></div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — From category to concept</span>
+        <h2 class="display">Decode what converts. Design what <em>breaks through</em>.</h2>
+        <p class="subhead">Vizit analyzes the highest-converting products in your category and identifies which specific visual elements are actually driving their performance. Then our AI scores your design concepts against those proven patterns at the element level — so every design decision starts with predicted performance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 4 — DIGITAL SHELF READINESS -->
+<section class="panel panel--paper" data-screen-label="04 Digital shelf readiness">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">04 — Digital shelf readiness</span>
+      <h2 class="display">Design for the <em>thumbnail</em>, not just the physical shelf.</h2>
+      <p class="subhead">A design that wins on the physical shelf can fail completely on a thumbnail. Vizit scores your concepts for digital shelf readiness before a single prototype is built.</p>
+    </div>
+
+    <div class="proof reveal">
+      <span class="mk" aria-hidden="true">&ldquo;</span>
+      <div class="b">
+        <blockquote>Vizit allowed us to compress months of expensive consumer testing into a matter of minutes. We now know exactly how our new packaging will perform on the digital shelf before it ever goes to print.</blockquote>
+        <cite>VP of Consumer Insights &amp; Innovation · Fortune 100 CPG</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 5 — NO PROTOTYPES REQUIRED -->
+<section class="panel" data-screen-label="05 No prototypes required">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">05 — No prototypes required</span>
+      <h2 class="display">Instantly test hundreds of concepts at <em>every stage gate</em>.</h2>
+      <p class="subhead">Every research study and physical prototype costs time and money you don't get back. Vizit scores digital renders with the same predictive accuracy as live in-market testing — so the only packaging that goes to production is the one already proven to convert shoppers.</p>
+    </div>
+
+    <div class="costs reveal">
+      <div class="cost-col old">
+        <span class="tag">The old way</span>
+        <div class="proto-row"><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span></div>
+        <div class="money">$X per prototype × Y rounds</div>
+        <p class="desc">Physical prototypes, printed and shipped, tested one slow round at a time.</p>
+      </div>
+      <div class="cost-col new">
+        <span class="tag">The Vizit way</span>
+        <div class="render-row"><span class="box"></span><span class="box"></span><span class="box win"></span><span class="box"></span><span class="box"></span></div>
+        <div class="money">Hundreds of renders, minutes</div>
+        <p class="desc">Score every digital concept at once and send only the winner to production.</p>
+        <span class="winner-tag">Winning concept · 91 Vizit Certified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL 6 — FINAL CTA + LAUNCH REPORT -->
+<section class="panel panel--paper" data-screen-label="06 Pre-launch validation">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal" style="max-width:52ch;">
+        <span class="eyebrow">06 — Pre-launch validation</span>
+        <h2 class="display">Send only your <em>winning</em> concept to production.</h2>
+        <p class="subhead">Vizit analyzes your folder of unreleased packaging concepts and assigns each a predicted category rank and revenue-lift metric — so the design that ships is the one already proven to convert.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Run my Vizit validation <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Innovation launch report ranking unreleased packaging concepts">
+        <div class="launch-report">
+          <div class="lr-head"><span class="pulse">Innovation launch report</span><span>Unreleased</span></div>
+          <div class="lr-row win"><span class="th" style="--c:#0174d9;"></span><div><div class="nm">Concept C</div><div class="rk">Predicted rank · #1 in category</div></div><span class="sc">91</span></div>
+          <div class="lr-row"><span class="th" style="--c:#4a6b52;"></span><div><div class="nm">Concept A</div><div class="rk">Predicted rank · #4</div></div><span class="sc">76</span></div>
+          <div class="lr-row"><span class="th" style="--c:#7d6a86;"></span><div><div class="nm">Concept B</div><div class="rk">Predicted rank · #7</div></div><span class="sc">63</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-grid" style="margin-top: var(--space-9);">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Packaging testing <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">What innovation, insights, and packaging leaders ask us most about validating design before production.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I test packaging design without surveys or focus groups?</summary>
+            <div class="answer">Vizit scores digital renders of packaging concepts using our patented Perceptual AI, trained on how real shoppers respond to visual content. You can evaluate dozens of concept variations in minutes, benchmark them against category leaders, and identify the winning designs before producing a single prototype. It's the fastest packaging design testing process available — and it measures the actual purchase-driving triggers in the appearance of the pack itself.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is digital shelf readiness for packaging?</summary>
+            <div class="answer">Digital shelf readiness is whether a packaging design performs at thumbnail scale on a mobile screen, where the majority of online purchase decisions now happen. A design that wins on a physical shelf can fail as a tiny thumbnail, because the visual cues that work at arm's length disappear at fingernail size. Vizit tests for digital shelf readiness, predicting how your packaging will perform in the moment that actually matters to omnichannel shoppers.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How accurate is predictive packaging testing compared to in-market launches?</summary>
+            <div class="answer">Vizit's predictions are validated against real commerce outcomes at 95% accuracy. The reason: focus groups and surveys measure the wrong cognitive system. Asking "Would you recommend this to a friend?" on a 1-to-5 scale activates System 2 thinking — the slow, conscious, articulated mode of the brain. But shoppers don't buy that way. Digital shelf decisions happen in System 1: fast, instinctive, visual, largely subconscious. Vizit trains on millions of real shopper interactions to measure System 1 visual response directly, which is why a concept that wins a focus group can lose on shelf — and a concept that scores high in Vizit reliably converts.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" data-screen-label="07 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">Pre-launch validation</span>
+    <h2 class="display on-dark reveal">Know it converts <em>before</em> it goes to print.</h2>
+    <p class="subhead on-dark reveal">Replace months of expensive testing with minutes of predictive AI — and launch only the packaging already proven to win.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Run my Vizit validation <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

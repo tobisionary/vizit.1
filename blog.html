@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vizit | The Content Optimization Brief</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="Research, case studies, and playbooks on optimizing product content for conversion — from the team behind the Content Conversion Standard." />
+<link rel="stylesheet" href="css/colors-and-type.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  /* ───────── Layout ───────── */
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-7); }
+  @media (max-width: 720px) { .wrap { padding: 0 var(--space-5); } }
+
+  /* ───────── Nav (matches homepage) ───────── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .nav-logo { height: 22px; width: auto; }
+  .nav-links { display: flex; gap: var(--space-6); font-size: var(--text-sm); color: var(--color-700); }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.current { color: var(--color-1000); font-weight: 500; }
+  .nav-cta {
+    background: var(--blue-1000); color: white;
+    padding: 10px 18px; border-radius: var(--radius-full);
+    font-size: var(--text-sm); font-weight: 500;
+  }
+  .nav-cta:hover { background: var(--blue-base); }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  /* ───────── Common ───────── */
+  .eyebrow {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    display: inline-flex; align-items: center; gap: var(--space-2);
+  }
+  .display {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 0.94; letter-spacing: -0.045em;
+    font-size: clamp(2.75rem, 6.4vw, 5.5rem);
+    margin: 0; text-wrap: balance;
+  }
+  .display em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .headline {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.02; letter-spacing: -0.035em;
+    font-size: var(--h-section, clamp(2.2rem, 3.9vw, 3.5rem));
+    margin: 0; text-wrap: balance;
+  }
+  .headline em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .subhead {
+    font-family: var(--font-display); font-size: 1.25rem; line-height: 1.45;
+    color: var(--color-700); font-weight: 400; letter-spacing: -0.01em;
+    max-width: 60ch; margin: 0;
+  }
+
+  /* ───────── Blog header ───────── */
+  .blog-hero { padding: var(--space-9) 0 var(--space-7); position: relative; overflow: hidden; }
+  .blog-hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(1,116,217,0.08) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(60% 60% at 90% 30%, black, transparent 70%);
+    -webkit-mask-image: radial-gradient(60% 60% at 90% 30%, black, transparent 70%);
+    opacity: 0.7; pointer-events: none;
+  }
+  .blog-hero .wrap { position: relative; z-index: 1; }
+  .hero-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: var(--space-6); padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .hero-meta-l { display: flex; gap: var(--space-5); }
+  .blog-hero h1 { max-width: 14ch; }
+  .blog-hero .subhead { margin-top: var(--space-5); max-width: 56ch; }
+
+  /* ───────── Featured article ───────── */
+  .featured {
+    margin-top: var(--space-7);
+    display: grid; grid-template-columns: 1.05fr 1fr;
+    gap: var(--space-7); align-items: stretch;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-7) 0;
+  }
+  @media (max-width: 900px) { .featured { grid-template-columns: 1fr; } }
+  .featured-img {
+    width: 100%; aspect-ratio: 16 / 9; height: auto; min-width: 0; align-self: center;
+    border-radius: var(--radius-lg);
+    overflow: hidden; position: relative;
+    background: transparent;
+  }
+  .featured-img.has-hero { align-self: stretch; height: 100%; aspect-ratio: auto; min-height: 320px; }
+  @media (max-width: 900px) { .featured-img.has-hero { aspect-ratio: 16 / 9; height: auto; min-height: 0; } }
+  .featured-img::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(50% 60% at 80% 20%, rgba(52,160,254,0.45), transparent 60%),
+      radial-gradient(40% 40% at 10% 90%, rgba(255,255,255,0.10), transparent 60%);
+  }
+  .featured-img::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: linear-gradient(135deg, black 30%, transparent 80%);
+    -webkit-mask-image: linear-gradient(135deg, black 30%, transparent 80%);
+  }
+  .featured-img-label {
+    position: absolute; left: 24px; bottom: 24px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.65);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .featured-img-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--blue-300); box-shadow: 0 0 0 4px rgba(52,160,254,0.18);
+  }
+  .featured-img .score-stamp {
+    position: absolute; top: 24px; right: 24px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: var(--radius-full);
+    padding: 6px 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: white;
+    backdrop-filter: blur(6px);
+  }
+  .featured-body { display: flex; flex-direction: column; justify-content: center; }
+  .featured-tag {
+    display: inline-flex; gap: var(--space-3); align-items: center;
+    margin-bottom: var(--space-4);
+  }
+  .pill {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 5px 10px; border-radius: var(--radius-sm);
+    background: var(--blue-0); color: var(--blue-600);
+    border: 1px solid var(--blue-100);
+  }
+  .pill.featured-pill { background: var(--blue-1000); color: white; border-color: var(--blue-1000); }
+  .featured-meta {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .featured-body h2 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.02; letter-spacing: -0.035em;
+    font-size: var(--h-section, clamp(2.2rem, 3.9vw, 3.5rem));
+    margin: 0 0 var(--space-4); text-wrap: balance;
+  }
+  .featured-body h2 em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .featured-excerpt {
+    font-family: var(--font-display); font-size: 1.125rem; line-height: 1.5;
+    color: var(--color-700); margin: 0 0 var(--space-5);
+    max-width: 50ch;
+  }
+  .author-row {
+    display: flex; align-items: center; gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-top: var(--space-4); border-top: 1px dashed var(--border);
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--blue-1000); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-style: normal;
+    font-size: 14px; font-weight: 500;
+    border: 2px solid white; box-shadow: 0 0 0 1px var(--border);
+  }
+  .author-meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--color-700); letter-spacing: 0.04em;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .author-meta .role { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; }
+  .read-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-sans); font-size: var(--text-sm);
+    font-weight: 500; color: var(--blue-1000);
+    border-bottom: 1px solid currentColor;
+    align-self: flex-start;
+    padding-bottom: 2px;
+    transition: gap 220ms var(--ease), color 220ms var(--ease);
+  }
+  .read-link:hover { gap: 18px; color: var(--accent); }
+
+  /* ───────── Filter bar (two-axis: Type + Topic) ───────── */
+  .filter-bar {
+    margin: var(--space-8) 0 var(--space-6);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-4) 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .filter-row {
+    display: flex; align-items: center; gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .filter-row[hidden] { display: none; }
+  .filter-label {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+    min-width: 56px;
+    margin-right: var(--space-2);
+  }
+  .filter-divider {
+    height: 1px; background: var(--border);
+    border: 0; margin: 0;
+    width: 100%;
+  }
+
+  .chip {
+    font-family: var(--font-sans); font-size: var(--text-sm);
+    padding: 8px 16px; border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: white; color: var(--color-700);
+    cursor: pointer;
+    transition: all 220ms var(--ease);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { border-color: var(--blue-300); color: var(--blue-base); }
+  .chip .count {
+    font-family: var(--font-mono); font-size: 10px;
+    opacity: 0.65;
+  }
+
+  /* Primary axis — Type. Strong, dark active state. */
+  .chip--type.active {
+    background: var(--blue-1000); color: white; border-color: var(--blue-1000);
+  }
+  .chip--type.active .count { opacity: 0.55; }
+
+  /* Secondary axis — Topic. Subtler: borderless, soft blue active. */
+  .chip--topic {
+    padding: 6px 14px;
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-600);
+    font-size: var(--text-sm);
+  }
+  .chip--topic:hover {
+    background: var(--color-50);
+    border-color: var(--border);
+    color: var(--color-1000);
+  }
+  .chip--topic.active {
+    background: var(--blue-0); color: var(--blue-600);
+    border-color: var(--blue-100);
+  }
+  .chip--topic.active .count { opacity: 0.7; }
+
+  /* ───────── Card grid ───────── */
+  .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-7) var(--space-6);
+    padding-bottom: var(--space-10);
+  }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    display: flex; flex-direction: column;
+    cursor: pointer;
+    transition: transform 320ms var(--ease);
+  }
+  .card:hover { transform: translateY(-4px); }
+  .card-img {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md);
+    overflow: hidden; position: relative;
+    background: #000000;
+    margin-bottom: var(--space-4);
+  }
+  .card-img::before {
+    content: ""; position: absolute; inset: 0;
+    transition: transform 600ms var(--ease);
+  }
+  .card:hover .card-img::before { transform: scale(1.04); }
+  a.card, a.card:hover { box-shadow: none !important; background: transparent !important; }
+  .featured { background: transparent !important; box-shadow: none !important; }
+
+  /* When real images are provided (from CSV / store), drop the placeholder gradients */
+  .featured-img.has-hero::before,
+  .featured-img.has-hero::after { display: none; }
+  .card-img.has-thumb::before,
+  .card-img.has-thumb::after { display: none; }
+  .featured-img.has-hero { background-size: contain !important; background-repeat: no-repeat !important; background-position: center !important; }
+  .featured-body h2 { font-size: clamp(1.4rem, 2.3vw, 2.1rem); line-height: 1.12; }
+  .card-img.has-thumb { background-color: #000000; }
+
+  /* Category-tinted thumbnails — abstract patterns, no faked imagery */
+  .ti-research::before {
+    background:
+      radial-gradient(60% 60% at 70% 30%, rgba(1,116,217,0.45), transparent 60%),
+      #000000;
+  }
+  .ti-research::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(52,160,254,0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52,160,254,0.25) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.5;
+    mask-image: radial-gradient(50% 50% at 30% 70%, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(50% 50% at 30% 70%, black, transparent 80%);
+  }
+  .ti-case::before {
+    background:
+      radial-gradient(50% 60% at 30% 50%, rgba(46,181,115,0.35), transparent 60%),
+      #000000;
+  }
+  .ti-product::before {
+    background:
+      radial-gradient(60% 60% at 50% 50%, rgba(1,116,217,0.30), transparent 70%),
+      #000000;
+  }
+  .ti-playbook::before {
+    background:
+      radial-gradient(70% 80% at 20% 80%, rgba(1,116,217,0.30), transparent 60%),
+      #000000;
+  }
+  .ti-playbook::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(40% 40% at 80% 20%, rgba(52,160,254,0.55), transparent 60%);
+  }
+  .ti-industry::before {
+    background:
+      radial-gradient(60% 60% at 75% 25%, rgba(217,119,6,0.25), transparent 65%),
+      #000000;
+  }
+  .ti-industry::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, rgba(217, 119, 6, 0.30) 0 1px, transparent 1px 14px);
+  }
+
+  .card-thumb-mark {
+    position: absolute; left: 16px; bottom: 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.75); opacity: 1;
+    z-index: 2;
+  }
+  .ti-playbook .card-thumb-mark { color: rgba(255,255,255,0.75); }
+  .card-thumb-num {
+    position: absolute; top: 14px; right: 16px;
+    font-family: var(--font-display); font-style: normal; font-weight: 500;
+    font-size: 26px; line-height: 1; color: #ffffff;
+    opacity: 0.7; z-index: 2;
+  }
+  .ti-playbook .card-thumb-num { color: white; opacity: 0.7; }
+
+  .card-meta {
+    display: flex; align-items: center; gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .card-meta .pill { padding: 3px 8px; }
+  .card h3 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.15; letter-spacing: -0.02em;
+    font-size: 1.4rem;
+    margin: 0 0 var(--space-3);
+    color: var(--color-1000);
+    text-wrap: balance;
+  }
+  .card:hover h3 { color: var(--accent); }
+  .card p {
+    font-size: var(--text-sm); line-height: 1.55;
+    color: var(--color-700); margin: 0 0 var(--space-4);
+  }
+  .card-foot {
+    margin-top: auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .card-foot .author { color: var(--color-700); }
+
+  /* ───────── Newsletter strip ───────── */
+  .newsletter {
+    background: var(--blue-1000); color: white;
+    padding: var(--space-9) 0; position: relative; overflow: hidden;
+  }
+  .newsletter::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(50% 70% at 100% 0%, rgba(52,160,254,0.30), transparent 60%);
+    pointer-events: none;
+  }
+  .newsletter .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
+  @media (max-width: 800px) { .newsletter .wrap { grid-template-columns: 1fr; } }
+  .newsletter .eyebrow { color: var(--blue-200); }
+  .newsletter h2 { font-family: var(--font-display); font-weight: 600; font-size: var(--h-section, clamp(2.2rem, 3.9vw, 3.5rem)); line-height: 1.02; letter-spacing: -0.035em; margin: var(--space-3) 0 0; max-width: 18ch; }
+  .newsletter h2 em { font-style: normal; font-weight: 500; color: var(--blue-300); }
+  .newsletter form {
+    display: flex; gap: var(--space-3); padding: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: var(--radius-full);
+    backdrop-filter: blur(4px);
+  }
+  .newsletter input {
+    flex: 1; background: transparent; border: 0; outline: 0;
+    color: white; font-family: var(--font-sans); font-size: var(--text-base);
+    padding: 0 var(--space-4);
+  }
+  .newsletter input::placeholder { color: rgba(255,255,255,0.45); }
+  .newsletter button {
+    background: white; color: var(--blue-1000); border: 0;
+    border-radius: var(--radius-full);
+    padding: 12px 22px; font-family: var(--font-sans); font-weight: 500;
+    font-size: var(--text-sm); cursor: pointer;
+    transition: background 240ms var(--ease), color 240ms var(--ease);
+  }
+  .newsletter button:hover { background: var(--blue-300); color: var(--blue-1000); }
+  .newsletter .note {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--blue-200); margin-top: var(--space-3);
+    letter-spacing: 0.04em;
+  }
+
+  /* ───────── Footer (matches homepage) ───────── */
+  .foot {
+    background: var(--color-50);
+    padding: var(--space-9) 0 var(--space-7);
+    border-top: 1px solid var(--border);
+  }
+  .foot-meta {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: var(--space-5); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .foot-logo { height: 22px; width: auto; }
+  .foot-logo[src*="white"] { filter: invert(1); }
+  .foot-links { display: flex; gap: var(--space-5); }
+  .foot-links a:hover { color: var(--accent); }
+  .foot-headline {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.02; letter-spacing: -0.035em;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    margin: 0 0 var(--space-5);
+    max-width: 18ch;
+  }
+  .foot-headline em { font-style: normal; font-weight: 500; color: var(--accent); }
+</style>
+<style>
+  /* Products dropdown — shared across all pages */
+  .nav-item,.nav__item{position:relative;display:inline-flex;align-items:center}
+  .nav-item .nav-trigger,.nav__item .nav__trigger{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+  .nav-item .chev,.nav__item .chev{width:10px;height:10px;transition:transform .2s ease}
+  .nav-item:hover .chev,.nav__item:hover .chev{transform:rotate(180deg)}
+  .nav-sub,.nav__sub{position:absolute;top:100%;left:-12px;padding-top:10px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none;min-width:240px;z-index:200}
+  .nav-item:hover .nav-sub,.nav-item:focus-within .nav-sub,.nav__item:hover .nav__sub,.nav__item:focus-within .nav__sub{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+  .nav-sub-inner,.nav__sub-inner{background:#fff;border:1px solid var(--border,#e4e4e4);border-radius:8px;box-shadow:0 16px 40px -20px rgba(0,33,61,.25);padding:8px;display:flex;flex-direction:column}
+  .nav-sub-inner a,.nav__sub-inner a{padding:10px 12px;border-radius:4px;font-size:.875rem;color:var(--color-700,#404040);display:flex;flex-direction:column;gap:2px;border:none;background:transparent}
+  .nav-sub-inner a:hover,.nav__sub-inner a:hover{background:#fafafa;color:var(--accent,#0174d9)}
+  .nav-sub-inner a .desc,.nav__sub-inner a .desc{font-family:var(--font-mono,ui-monospace,monospace);font-size:.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#737373);font-weight:400}
+  @media (max-width:980px){
+    .nav-sub,.nav__sub{position:static;opacity:1;visibility:visible;transform:none;pointer-events:auto;padding-top:0;min-width:0}
+    .nav-sub-inner,.nav__sub-inner{box-shadow:none;border:none;padding:0 0 0 16px;background:transparent}
+    .nav-item .chev,.nav__item .chev{display:none}
+  }
+</style>
+<link rel="stylesheet" href="css/vizit-theme.css">
+  <link rel="stylesheet" href="css/vizit-elevate.css">
+<script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+</head>
+<body>
+
+<vizit-nav data-current="resources"></vizit-nav>
+
+<!-- FEATURED -->
+<section class="wrap">
+  <article class="featured" id="featured" data-href="blog-article.html">
+    <div class="featured-img">
+      <span class="score-stamp">Vizit Score · 92</span>
+      <span class="featured-img-label">Cover study · Content Conversion Standard</span>
+    </div>
+    <div class="featured-body">
+      <div class="featured-tag">
+        <span class="pill featured-pill">Featured</span>
+        <span class="pill">Research</span>
+        <span class="featured-meta">12 min read · Mar 04, 2026</span>
+      </div>
+      <h2>How we built the <em>Content Conversion Standard</em> — and why every CPG catalog now scores against it.</h2>
+      <p class="featured-excerpt">
+        Three years, 100M+ images, 10T+ retail performance data points. The story of the benchmark behind every Vizit Score — what we measured, what we threw out, and why a single number now decides whether content ships.
+      </p>
+      <div class="author-row">
+        <div class="avatar" style="background: var(--blue-1000)">EC</div>
+        <div class="avatar" style="background: var(--blue-base); margin-left: -16px">JR</div>
+        <div class="author-meta">
+          <span>Elena Choi &amp; Jordan Reyes</span>
+          <span class="role">Head of Research · Principal Researcher</span>
+        </div>
+      </div>
+      <a class="read-link" href="blog-article.html">Read the cover study →</a>
+    </div>
+  </article>
+</section>
+
+<!-- FILTERS -->
+<section class="wrap">
+  <div class="filter-bar" id="filter-bar">
+    <div class="filter-row" id="type-row" role="tablist" aria-label="Resource type">
+      <span class="filter-label">Type</span>
+      <button class="chip chip--type active" data-type="all">All <span class="count">—</span></button>
+      <button class="chip chip--type" data-type="article">Articles <span class="count">—</span></button>
+      <button class="chip chip--type" data-type="ebook">Ebooks <span class="count">—</span></button>
+    </div>
+    <hr class="filter-divider" />
+    <div class="filter-row filter-row--topic" id="topic-row" aria-label="Topic">
+      <span class="filter-label">Topic</span>
+      <button class="chip chip--topic active" data-topic="all">All topics</button>
+    </div>
+  </div>
+</section>
+
+<!-- GRID -->
+<section class="wrap">
+  <div class="grid" id="grid">
+
+    <a class="card" data-type="case-study" data-topic="" href="blog-article.html">
+      <div class="card-img ti-case">
+        <span class="card-thumb-num">+30</span>
+        <span class="card-thumb-mark">Case · Mars Petcare</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Case study</span>
+        <span>6 min</span>
+        <span>·</span>
+        <span>Feb 27, 2026</span>
+      </div>
+      <h3>Inside Mars Petcare's +30% conversion lift on optimized SKUs.</h3>
+      <p>Why a small handful of pack-front visual cues moved double-digit conversion — and how the team built a repeatable workflow around them.</p>
+      <div class="card-foot">
+        <span class="author">By Priya Shah</span>
+        <span>Score · 89</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="research" href="blog-article.html">
+      <div class="card-img ti-research">
+        <span class="card-thumb-num">500ms</span>
+        <span class="card-thumb-mark">Research · Eye-tracking</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Research</span>
+        <span>8 min</span>
+        <span>·</span>
+        <span>Feb 21, 2026</span>
+      </div>
+      <h3>Why mobile heroes lose 23% of shoppers in the first half-second.</h3>
+      <p>An eye-tracking study across 14,800 shoppers and 6 categories reveals the exact frame where attention collapses — and how to hold it.</p>
+      <div class="card-foot">
+        <span class="author">By Elena Choi</span>
+        <span>Score · 86</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="playbook" href="blog-article.html">
+      <div class="card-img ti-playbook">
+        <span class="card-thumb-num">01</span>
+        <span class="card-thumb-mark">Playbook · Pre-flight</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Playbook</span>
+        <span>7 min</span>
+        <span>·</span>
+        <span>Feb 14, 2026</span>
+      </div>
+      <h3>Retail media pre-flight: stop spending on images that won't convert.</h3>
+      <p>A five-step pre-flight your creative ops team can run before a single dollar of media is committed — and the score thresholds that signal go vs. hold.</p>
+      <div class="card-foot">
+        <span class="author">By Marcus Lin</span>
+        <span>Score · 84</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="product" href="blog-article.html">
+      <div class="card-img ti-product">
+        <span class="card-thumb-num">v9</span>
+        <span class="card-thumb-mark">Product · Score engine</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Product</span>
+        <span>4 min</span>
+        <span>·</span>
+        <span>Feb 06, 2026</span>
+      </div>
+      <h3>What's new in Vizit Score v9 — sharper signals, faster verdicts.</h3>
+      <p>Notes from the latest release: tighter category baselines, sub-second scoring for hero assets, and a new "Why this scored" diagnostic feed.</p>
+      <div class="card-foot">
+        <span class="author">By Sam Okafor</span>
+        <span>Score · 82</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="research" href="blog-article.html">
+      <div class="card-img ti-research">
+        <span class="card-thumb-num">04</span>
+        <span class="card-thumb-mark">Research · Carousels</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Research</span>
+        <span>5 min</span>
+        <span>·</span>
+        <span>Jan 30, 2026</span>
+      </div>
+      <h3>Carousel order matters more than you think.</h3>
+      <p>An A/B test across 1,284 SKUs showed reordering image 2 and image 3 lifted conversion 7% on average — with zero new creative.</p>
+      <div class="card-foot">
+        <span class="author">By Jordan Reyes</span>
+        <span>Score · 81</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="industry" href="blog-article.html">
+      <div class="card-img ti-industry">
+        <span class="card-thumb-num">L1</span>
+        <span class="card-thumb-mark">Industry · The Layer</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Industry</span>
+        <span>5 min</span>
+        <span>·</span>
+        <span>Jan 23, 2026</span>
+      </div>
+      <h3>How Vizit optimizes product content for conversion, explained.</h3>
+      <p>Your PIM, DAM, and shelf-analytics tools weren't built to tell you whether content will convert. Where content optimization sits — and why it matters now.</p>
+      <div class="card-foot">
+        <span class="author">By Priya Shah</span>
+        <span>Score · 80</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="case-study" data-topic="" href="blog-article.html">
+      <div class="card-img ti-case">
+        <span class="card-thumb-num">+18</span>
+        <span class="card-thumb-mark">Case · Beverage giant</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Case study</span>
+        <span>7 min</span>
+        <span>·</span>
+        <span>Jan 16, 2026</span>
+      </div>
+      <h3>A global beverage brand cut underperforming heroes by 41%.</h3>
+      <p>The catalog audit that surfaced 312 below-standard SKUs — and the optimization sprint that closed the gap in nine weeks.</p>
+      <div class="card-foot">
+        <span class="author">By Marcus Lin</span>
+        <span>Score · 79</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="research" href="blog-article.html">
+      <div class="card-img ti-research">
+        <span class="card-thumb-num">12k</span>
+        <span class="card-thumb-mark">Research · Pack-front</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Research</span>
+        <span>6 min</span>
+        <span>·</span>
+        <span>Jan 09, 2026</span>
+      </div>
+      <h3>The four pack-front cues that decide whether a shopper clicks.</h3>
+      <p>From product clarity to visual weight to claim placement — what 12,000 PDPs taught us about the rules of pack-front design online.</p>
+      <div class="card-foot">
+        <span class="author">By Elena Choi</span>
+        <span>Score · 78</span>
+      </div>
+    </a>
+
+    <a class="card" data-type="article" data-topic="playbook" href="blog-article.html">
+      <div class="card-img ti-playbook">
+        <span class="card-thumb-num">07</span>
+        <span class="card-thumb-mark">Playbook · Seasonal</span>
+      </div>
+      <div class="card-meta">
+        <span class="pill">Playbook</span>
+        <span>9 min</span>
+        <span>·</span>
+        <span>Jan 02, 2026</span>
+      </div>
+      <h3>The seasonal refresh: get every SKU to "ready" before the launch window.</h3>
+      <p>How three CPG brands sequence catalog refreshes against retail media flights — and the audit checklist they all run.</p>
+      <div class="card-foot">
+        <span class="author">By Sam Okafor</span>
+        <span>Score · 77</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<vizit-footer></vizit-footer>
+
+<script src="js/blog-data.js"></script>
+<script>
+  // ─────────────────────────────────────────────
+  // Hydrate featured + grid + filters from VizitBlog store
+  // ─────────────────────────────────────────────
+  (function () {
+    if (!window.VizitBlog) return;
+    var featuredEl = document.getElementById('featured');
+    var gridEl     = document.getElementById('grid');
+    var typeRow    = document.getElementById('type-row');
+    var topicRow   = document.getElementById('topic-row');
+
+    // Classify an article's category into the top-level Type.
+    function typeOf(cat) {
+      var c = (cat || '').toLowerCase().trim();
+      if (c === 'case study' || c === 'case studies') return 'case-study';
+      if (c === 'ebook'      || c === 'ebooks')       return 'ebook';
+      return 'article';
+    }
+    function topicSlug(cat) {
+      return (cat || '').toLowerCase().trim().replace(/\s+/g, '-');
+    }
+
+    function escapeHTML(s) {
+      return (s == null ? '' : String(s))
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function articleHref(slug) {
+      return 'blog-article.html?slug=' + encodeURIComponent(slug);
+    }
+
+    function shortDate(d) {
+      return window.VizitBlog.formatDateShort(d);
+    }
+
+    function renderFeatured(a) {
+      if (!a || !featuredEl) return;
+      featuredEl.setAttribute('data-href', articleHref(a.slug));
+      var hero = a.heroImage || a.thumbnail;
+      var hasHero = !!hero;
+      var bgStyle = hasHero
+        ? 'background-image: url(\'' + escapeHTML(hero) + '\'); background-size: cover; background-position: center;'
+        : '';
+      var avatars = '';
+      avatars += '<div class="avatar">' + escapeHTML(window.VizitBlog.authorInitials(a.author)) + '</div>';
+      if (a.coAuthor) {
+        avatars += '<div class="avatar" style="background: var(--blue-base); margin-left: -16px">' + escapeHTML(window.VizitBlog.authorInitials(a.coAuthor)) + '</div>';
+      }
+      var names = a.coAuthor ? (a.author + ' &amp; ' + a.coAuthor) : a.author;
+      var roles = a.authorRole + (a.coAuthorRole ? ' · ' + a.coAuthorRole : '');
+
+      featuredEl.innerHTML =
+        '<div class="featured-img' + (hasHero ? ' has-hero' : '') + '" style="' + bgStyle + '">' +
+          (hasHero ? '' :
+            '<span class="score-stamp">' + escapeHTML(a.category || 'Featured') + '</span>' +
+            '<span class="featured-img-label">Cover study · ' + escapeHTML(a.category || 'Insights') + '</span>') +
+        '</div>' +
+        '<div class="featured-body">' +
+          '<div class="featured-tag">' +
+            '<span class="pill featured-pill">Featured</span>' +
+            '<span class="pill">' + escapeHTML(a.category || '—') + '</span>' +
+            '<span class="featured-meta">' + escapeHTML(a.readTime || '') + (a.readTime ? ' read · ' : '') + escapeHTML(shortDate(a.publishedOn || a.updatedOn)) + '</span>' +
+          '</div>' +
+          '<h2>' + escapeHTML(a.title) + '</h2>' +
+          '<p class="featured-excerpt">' + escapeHTML(a.description || '') + '</p>' +
+          '<div class="author-row">' +
+            avatars +
+            '<div class="author-meta">' +
+              '<span>' + escapeHTML(names || '') + '</span>' +
+              '<span class="role">' + escapeHTML(roles || '') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<a class="read-link" href="' + articleHref(a.slug) + '">Read the cover study →</a>' +
+        '</div>';
+    }
+
+    function renderGrid(list) {
+      if (!gridEl) return;
+      gridEl.innerHTML = list.map(function (a) {
+        var thumb = window.VizitBlog.thumbClass(a.category);
+        var hasThumb = !!a.thumbnail;
+        var imgStyle = hasThumb
+          ? 'style="background-image: url(\'' + escapeHTML(a.thumbnail) + '\'); background-size: cover; background-position: center;"'
+          : '';
+        var thumbMark = a.featured
+          ? 'Featured · ' + escapeHTML(a.category || '')
+          : escapeHTML(a.category || '');
+        return '<a class="card" data-type="' + escapeHTML(typeOf(a.category)) + '" data-topic="' + escapeHTML(topicSlug(a.category)) + '" href="' + articleHref(a.slug) + '">' +
+          '<div class="card-img ' + thumb + (hasThumb ? ' has-thumb' : '') + '" ' + imgStyle + '>' +
+            (hasThumb ? '' :
+              '<span class="card-thumb-num">' + escapeHTML((a.readTime || '').replace(/[^0-9]/g, '') || '—') + '</span>' +
+              '<span class="card-thumb-mark">' + thumbMark + '</span>') +
+          '</div>' +
+          '<div class="card-meta">' +
+            '<span class="pill">' + escapeHTML(a.category || '—') + '</span>' +
+            '<span>' + escapeHTML(a.readTime || '') + '</span>' +
+            '<span>·</span>' +
+            '<span>' + escapeHTML(shortDate(a.publishedOn || a.updatedOn)) + '</span>' +
+          '</div>' +
+          '<h3>' + escapeHTML(a.title) + '</h3>' +
+          '<p>' + escapeHTML(a.description || '') + '</p>' +
+          '<div class="card-foot">' +
+            '<span class="author">By ' + escapeHTML(a.author || '—') + '</span>' +
+            '<span>' + (typeOf(a.category) === 'ebook' ? 'Download ↓' : (a.featured ? '★ Featured' : escapeHTML(a.category || ''))) + '</span>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+
+    function renderFilters(list) {
+      if (!typeRow || !topicRow) return;
+
+      // Tally by type.
+      var typeCounts = { 'all': list.length, 'article': 0, 'case-study': 0, 'ebook': 0 };
+      // Tally topics, but only within the "article" type — case studies/ebooks
+      // collapse into the type filter and don't subdivide.
+      var topicCounts = {};
+      list.forEach(function (a) {
+        var t = typeOf(a.category);
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+        if (t === 'article') {
+          var k = topicSlug(a.category);
+          if (!k) return;
+          topicCounts[k] = topicCounts[k] || { label: a.category, count: 0 };
+          topicCounts[k].count++;
+        }
+      });
+
+      // Type row — update existing chip counts (the four chips are static).
+      typeRow.querySelectorAll('.chip--type').forEach(function (chip) {
+        var t = chip.dataset.type;
+        var c = typeCounts[t] || 0;
+        var countEl = chip.querySelector('.count');
+        if (countEl) countEl.textContent = c;
+        chip.disabled = (t !== 'all' && c === 0);
+        chip.style.opacity = chip.disabled ? 0.4 : '';
+      });
+
+      // Topic row — rebuild from data, sorted by frequency.
+      var topicKeys = Object.keys(topicCounts).sort(function (a, b) {
+        if (topicCounts[b].count !== topicCounts[a].count) return topicCounts[b].count - topicCounts[a].count;
+        return topicCounts[a].label.localeCompare(topicCounts[b].label);
+      });
+      var articleTotal = typeCounts['article'] || 0;
+      var topicHTML = '<span class="filter-label">Topic</span>' +
+        '<button class="chip chip--topic active" data-topic="all">All topics <span class="count">' + articleTotal + '</span></button>';
+      topicKeys.forEach(function (k) {
+        var t = topicCounts[k];
+        topicHTML += '<button class="chip chip--topic" data-topic="' + escapeHTML(k) + '">' +
+          escapeHTML(t.label) + ' <span class="count">' + t.count + '</span></button>';
+      });
+      topicRow.innerHTML = topicHTML;
+    }
+
+    // Active filter state.
+    var state = { type: 'all', topic: 'all' };
+
+    function apply() {
+      // Toggle active classes.
+      typeRow.querySelectorAll('.chip--type').forEach(function (c) {
+        c.classList.toggle('active', c.dataset.type === state.type);
+      });
+      topicRow.querySelectorAll('.chip--topic').forEach(function (c) {
+        c.classList.toggle('active', c.dataset.topic === state.topic);
+      });
+      // Topic row only relevant when type is 'all' or 'article'.
+      var topicRelevant = (state.type === 'all' || state.type === 'article');
+      topicRow.hidden = !topicRelevant;
+      var divider = document.querySelector('.filter-divider');
+      if (divider) divider.hidden = !topicRelevant;
+
+      // Filter cards.
+      var cards = gridEl.querySelectorAll('.card');
+      cards.forEach(function (card) {
+        var cardType  = card.dataset.type  || '';
+        var cardTopic = card.dataset.topic || '';
+        var typeMatch  = (state.type === 'all')  || (cardType === state.type);
+        var topicMatch = !topicRelevant || (state.topic === 'all') || (cardTopic === state.topic);
+        card.style.display = (typeMatch && topicMatch) ? '' : 'none';
+      });
+    }
+
+    function wireFilters() {
+      typeRow.addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip--type');
+        if (!chip || chip.disabled) return;
+        state.type = chip.dataset.type;
+        // Reset topic when switching away from article/all context.
+        if (state.type !== 'all' && state.type !== 'article') state.topic = 'all';
+        apply();
+      });
+      topicRow.addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip--topic');
+        if (!chip) return;
+        state.topic = chip.dataset.topic;
+        // Selecting a specific topic implies the Article context.
+        if (state.topic !== 'all' && state.type === 'all') state.type = 'all'; // keep "all" so case-studies+ebooks remain visible? No — narrow to article.
+        if (state.topic !== 'all') state.type = 'article';
+        apply();
+      });
+
+      // Honor ?filter=... in URL (used by nav quick-links).
+      var params = new URLSearchParams(window.__vzSearch || window.location.search);
+      var want = (params.get('filter') || '').replace(/-/g, ' ').toLowerCase().trim();
+      if (want) {
+        // Type shortcuts
+        if (want === 'case study' || want === 'case studies' || want === 'case-study') state.type = 'case-study';
+        else if (want === 'ebook' || want === 'ebooks') state.type = 'ebook';
+        else if (want === 'article' || want === 'articles' || want === 'blog' || want === 'blog article') state.type = 'article';
+        else {
+          // Topic shortcut — slugify and try.
+          var slug = want.replace(/\s+/g, '-');
+          var match = topicRow.querySelector('.chip--topic[data-topic="' + slug + '"]');
+          if (match) { state.type = 'article'; state.topic = slug; }
+        }
+      }
+      apply();
+    }
+
+    function hydrate() {
+      var visible = window.VizitBlog.listVisible();
+      // Chronological — newest first
+      function ts(a) { var t = new Date(a.publishedOn || a.updatedOn || 0).getTime(); return isNaN(t) ? 0 : t; }
+      visible = visible.slice().sort(function (x, y) { return ts(y) - ts(x); });
+      // Featured pick: the Next Gen article when present, else first featured & published, else first published, else first visible
+      var featured = visible.find(function (a) { return /next.?gen/i.test(a.title || '') && !a.draft && !a.hidden; })
+                  || visible.find(function (a) { return a.featured && !a.draft && a.publishedOn; })
+                  || visible.find(function (a) { return !a.draft && a.publishedOn; })
+                  || visible[0];
+      renderFeatured(featured);
+      // Grid: published, exclude the featured one to avoid duplication, then drafts last
+      var rest = visible.filter(function (a) { return !featured || a.slug !== featured.slug; });
+      // Show non-drafts first, drafts hidden by default on public site
+      var published = rest.filter(function (a) { return !a.draft && a.publishedOn; });
+      renderGrid(published);
+      renderFilters(published);
+      wireFilters();
+    }
+
+    hydrate();
+    window.VizitBlog.onChange(hydrate);
+  })();
+</script>
+
+</body>
+</html>

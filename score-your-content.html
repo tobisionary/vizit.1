@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Request a demo · Vizit</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="See your Vizit Score before you launch. Talk to a specialist about scoring, predicting, and optimizing every product image in your catalog.">
+<meta name="theme-color" content="#00213d">
+<link rel="canonical" href="/demo">
+
+<!-- Preload the only render-blocking asset: variable display font.
+     Body type falls back to system sans for instant first paint. -->
+<link rel="preload" as="font" type="font/ttf" href="fonts/sourceserif4-variablefont-opsz-wght.ttf" crossorigin>
+
+<!-- Warm up HubSpot connections so the lazy form loads instantly when scrolled to. -->
+<link rel="preconnect" href="https://js.hsforms.net" crossorigin>
+<link rel="dns-prefetch" href="https://forms.hsforms.com">
+<link rel="dns-prefetch" href="https://forms-na1.hsforms.com">
+
+<template id="__bundler_thumbnail" data-bg-color="#e6f3ff">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#e6f3ff"/>
+    <g transform="translate(600 400)" font-family="Georgia,serif" text-anchor="middle">
+      <text y="-20" font-size="160" font-weight="300" fill="#00213d" letter-spacing="6">Vizit</text>
+      <text y="60" font-size="36" font-style="normal" fill="#0174d9">Request a demo</text>
+    </g>
+  </svg>
+</template>
+
+<style>
+  /* ─── Tokens (inlined; mirrors colors-and-type.css) ─── */
+  :root{
+    --blue-0:#e6f3ff;--blue-100:#b3dbff;--blue-200:#80c3fe;--blue-300:#34a0fe;
+    --blue-base:#0174d9;--blue-500:#015fb2;--blue-600:#014c8e;--blue-1000:#00213d;
+    --color-0:#fff;--color-50:#fafafa;--color-100:#f4f4f4;--color-200:#e4e4e4;
+    --color-300:#d4d4d4;--color-400:#a3a3a3;--color-500:#737373;--color-700:#404040;
+    --color-900:#171717;--color-1000:#0a0a0a;
+    --bg:var(--color-0);--border:var(--color-200);--text:var(--color-1000);
+    --muted:var(--color-500);--accent:var(--blue-base);--accent-soft:var(--blue-0);
+    --font-display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --radius-md:8px;--radius-lg:12px;--radius-full:999px;
+    --space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.5rem;
+    --space-6:2rem;--space-7:3rem;--space-8:4rem;--space-9:6rem;
+    --ease:cubic-bezier(0.2,0,0,1);
+  }
+  @font-face{
+    font-family:'Source Serif 4';
+    src:url('fonts/sourceserif4-variablefont-opsz-wght.ttf') format('truetype-variations'),
+        url('fonts/sourceserif4-variablefont-opsz-wght.ttf') format('truetype');
+    font-weight:200 900;font-style:normal;font-display:swap;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text)}
+  body{
+    font-family:var(--font-sans);font-size:.9375rem;line-height:1.5;
+    letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  }
+  a{color:inherit;text-decoration:none}
+  img,svg{display:block;max-width:100%}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:0 var(--space-7)}
+  @media (max-width:720px){.wrap{padding:0 var(--space-5)}}
+
+  /* ─── Nav ─── */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.86);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .nav-logo{display:flex;align-items:center;gap:.6rem;color:var(--blue-1000)}
+  .nav-logo svg{height:18px;width:auto}
+  .nav-links{display:flex;gap:var(--space-6);font-size:.8125rem;color:var(--color-700)}
+  .nav-links a:hover{color:var(--accent)}
+  .nav-cta{
+    background:var(--blue-1000);color:#fff;padding:10px 18px;
+    border-radius:var(--radius-full);font-size:.8125rem;font-weight:500;
+    transition:background 200ms var(--ease);
+  }
+  .nav-cta:hover{background:var(--blue-base)}
+  @media (max-width:860px){.nav-links{display:none}}
+
+  /* ─── Eyebrow ─── */
+  .eyebrow{
+    font-family:var(--font-mono);font-size:.6875rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+  }
+
+  .demo-shelf{margin-top:var(--space-6)}
+  .demo-shelf img{display:block;width:100%;max-width:520px;height:auto}
+  /* ─── Hero / form layout ─── */
+  .demo{padding:var(--space-9) 0 var(--space-8);position:relative;overflow:hidden;background:radial-gradient(110% 60% at 50% -5%, rgba(1,116,217,.16), transparent 60%), radial-gradient(80% 50% at 92% 78%, rgba(1,116,217,.09), transparent 60%), #000000}
+  .demo .hero-ring{position:absolute;z-index:0;pointer-events:none;width:62vw;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, transparent 54%, rgba(1,116,217,.15) 62%, rgba(30,144,255,.8) 71%, rgba(120,190,255,1) 74%, rgba(30,144,255,.75) 77%, rgba(1,116,217,.15) 86%, transparent 92%);filter:blur(14px);opacity:0;animation:demoRingPulse 5s ease-in-out infinite}
+  .demo .hero-ring.tl{top:0;left:0;transform:translate(-55%,-55%)}
+  .demo .hero-ring.br{top:50%;right:0;transform:translate(55%,-50%);animation-delay:-2.5s}
+  @keyframes demoRingPulse{0%,100%{opacity:0}35%,65%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.demo .hero-ring{animation:none;opacity:.8}}
+  .demo::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(70% 60% at 85% -5%,rgba(1,116,217,.10),transparent 55%),
+      radial-gradient(55% 50% at -5% 95%,rgba(52,160,254,.07),transparent 60%);
+  }
+  .demo::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px,rgba(1,116,217,.08) 1px,transparent 1.4px);
+    background-size:22px 22px;
+    -webkit-mask-image:radial-gradient(60% 60% at 85% 25%,#000,transparent 70%);
+            mask-image:radial-gradient(60% 60% at 85% 25%,#000,transparent 70%);
+    opacity:.7;
+  }
+  .demo .wrap{position:relative;z-index:1}
+
+  .demo-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:var(--space-8);align-items:start}
+  @media (max-width:960px){.demo-grid{grid-template-columns:1fr;gap:var(--space-7)}}
+
+  .demo-meta{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:var(--space-6);padding-bottom:var(--space-3);
+    border-bottom:1px solid var(--border);
+    font-family:var(--font-mono);font-size:.6875rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+  }
+  .demo-meta-l{display:flex;gap:var(--space-5)}
+
+  h1.headline{
+    font-family:var(--font-display);font-weight:500;
+    font-size:clamp(2.5rem,5.4vw,4.75rem);line-height:.98;
+    letter-spacing:-0.04em;margin:0;max-width:14ch;text-wrap:balance;color:#fff;
+  }
+  h1.headline em{font-style:normal;font-weight:600;background:linear-gradient(90deg,#7cc4ff 0%,#4f9dff 25%,#3b7bff 50%,#4f9dff 75%,#7cc4ff 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;filter:drop-shadow(0 0 22px rgba(80,157,255,.55));animation:demoShimmer 6s linear infinite}
+  @keyframes demoShimmer{from{background-position:0% 0}to{background-position:-200% 0}}
+  @media (prefers-reduced-motion:reduce){h1.headline em{animation:none}}
+  .demo .subhead{color:rgba(214,236,255,.85)}
+  .demo .eyebrow{color:rgba(214,236,255,.6)}
+  .subhead{
+    font-family:var(--font-display);font-size:clamp(1.05rem,1.4vw,1.3rem);
+    line-height:1.45;color:var(--color-700);font-weight:400;
+    letter-spacing:-0.01em;max-width:42ch;margin:var(--space-5) 0 0;
+  }
+
+  .bullets{list-style:none;padding:0;margin:var(--space-6) 0 0;display:grid;gap:var(--space-3);max-width:46ch}
+  .bullets li{display:flex;gap:var(--space-3);align-items:flex-start;font-size:.9375rem;color:rgba(214,236,255,.85)}
+  .bullets svg{flex-shrink:0;width:20px;height:20px;color:rgba(214,236,255,.85);margin-top:1px}
+  .bullets strong{color:#fff;font-weight:500}
+
+  /* ─── Form card ─── */
+  .form-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:var(--space-6);
+    box-shadow:0 30px 60px -32px rgba(1,60,112,.18),0 1px 0 rgba(255,255,255,.6) inset;
+    position:relative;
+  }
+  .form-card .eyebrow{display:inline-block;margin-bottom:var(--space-3)}
+  .form-card h2{
+    font-family:var(--font-display);font-weight:500;
+    font-size:1.625rem;line-height:1.1;letter-spacing:-0.02em;
+    margin:0 0 var(--space-2);text-wrap:balance;
+  }
+  .form-card h2 em{font-style: normal;color:var(--accent)}
+  .form-card .lede{font-size:.875rem;color:var(--muted);margin:0 0 var(--space-5)}
+
+  /* Skeleton placeholder reserves height so HubSpot's mount has zero layout shift */
+  .form-slot{min-height:520px;position:relative}
+  .form-slot.is-loading::before{
+    content:"";position:absolute;inset:0;border-radius:var(--radius-md);
+    background:
+      linear-gradient(var(--color-100) 0 0) 0 0/100% 14px,
+      linear-gradient(var(--color-100) 0 0) 0 28px/40% 12px,
+      linear-gradient(var(--color-100) 0 0) 0 56px/100% 44px,
+      linear-gradient(var(--color-100) 0 0) 0 116px/100% 14px,
+      linear-gradient(var(--color-100) 0 0) 0 144px/40% 12px,
+      linear-gradient(var(--color-100) 0 0) 0 172px/100% 44px,
+      linear-gradient(var(--color-100) 0 0) 0 232px/100% 14px,
+      linear-gradient(var(--color-100) 0 0) 0 260px/40% 12px,
+      linear-gradient(var(--color-100) 0 0) 0 288px/100% 44px,
+      linear-gradient(var(--color-100) 0 0) 0 392px/100% 48px;
+    background-repeat:no-repeat;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.9}50%{opacity:.5}}
+
+  /* HubSpot form polish — we don't control the markup, but we can theme it. */
+  .form-slot input[type="text"],
+  .form-slot input[type="email"],
+  .form-slot input[type="tel"],
+  .form-slot input[type="number"],
+  .form-slot select,
+  .form-slot textarea{
+    width:100%;padding:11px 14px;font:inherit;
+    color:var(--text);background:#fff;
+    border:1px solid var(--border);border-radius:var(--radius-md);
+    transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease);
+  }
+  .form-slot input:focus,.form-slot select:focus,.form-slot textarea:focus{
+    outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .form-slot label{
+    display:block;font-size:.8125rem;color:var(--color-700);
+    margin-bottom:6px;font-weight:500;
+  }
+  .form-slot .hs-form-field{margin-bottom:var(--space-4)}
+  .form-slot .hs-error-msg,.form-slot .hs-error-msgs label{
+    color:#b3331f;font-size:.75rem;margin-top:4px;
+  }
+  .form-slot input[type="submit"]{
+    -webkit-appearance:none;appearance:none;
+    background:var(--blue-1000);color:#fff;
+    padding:13px 24px;border:none;border-radius:var(--radius-full);
+    font:500 .9375rem/1 var(--font-sans);letter-spacing:-0.01em;
+    cursor:pointer;transition:background 200ms var(--ease),transform 200ms var(--ease);
+    width:100%;
+  }
+  .form-slot input[type="submit"]:hover{background:var(--blue-base);transform:translateY(-1px)}
+  .form-slot .legal-consent-container{
+    font-size:.75rem;color:var(--muted);margin-top:var(--space-3);
+  }
+
+  /* Manual fallback shown only if JS is disabled */
+  .form-fallback{font-size:.875rem;color:var(--muted)}
+  .form-fallback a{color:var(--accent);text-decoration:underline}
+
+  /* ─── Logo ribbon ─── */
+  .ribbon{border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    padding:var(--space-7) 0;background:var(--color-50)}
+  .ribbon-cap{
+    text-align:center;font-family:var(--font-mono);font-size:.6875rem;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--muted);
+    margin-bottom:var(--space-5);
+  }
+  .ribbon-logos{
+    display:grid;grid-template-columns:repeat(6,1fr);
+    gap:var(--space-5);align-items:center;max-width:1040px;margin:0 auto;
+  }
+  @media (max-width:780px){.ribbon-logos{grid-template-columns:repeat(3,1fr);row-gap:var(--space-4)}}
+  .ribbon-logos .lg{
+    font-family:var(--font-display);font-weight:500;font-size:1.125rem;
+    text-align:center;color:var(--color-500);letter-spacing:-0.01em;opacity:.75;
+  }
+  .ribbon-logos .lg .it{font-style: normal}
+  .ribbon-logos .lg.caps{
+    font-family:var(--font-sans);font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;font-size:.875rem;
+  }
+
+  /* ─── Quote band ─── */
+  .quote-band{padding:var(--space-9) 0;background:var(--blue-1000);color:#fff;position:relative;overflow:hidden}
+  .quote-band::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(50% 60% at 90% 10%,rgba(1,116,217,.35),transparent 60%);
+  }
+  .quote-band .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-8);align-items:center}
+  @media (max-width:820px){.quote-band .wrap{grid-template-columns:1fr}}
+  .quote-band blockquote{
+    font-family:var(--font-display);font-style: normal;font-weight:400;
+    font-size:clamp(1.5rem,2.4vw,2.25rem);line-height:1.2;
+    letter-spacing:-0.02em;margin:0;text-wrap:balance;
+  }
+  .quote-band blockquote em{color:var(--blue-300);font-style: normal}
+  .quote-band cite{
+    display:block;margin-top:var(--space-5);font-style:normal;
+    font-family:var(--font-mono);font-size:.6875rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--blue-200);
+  }
+  .quote-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5)}
+  .qstat{padding:var(--space-5);border:1px solid rgba(255,255,255,.12);
+    border-radius:var(--radius-lg);background:rgba(255,255,255,.04)}
+  .qstat .num{
+    font-family:var(--font-display);font-weight:300;
+    font-size:clamp(2.5rem,4.4vw,3.75rem);line-height:1;
+    letter-spacing:-0.04em;color:#fff;
+    font-variant-numeric:tabular-nums;
+  }
+  .qstat .num em{font-style: normal;color:var(--blue-300);font-weight:400}
+  .qstat .lbl{
+    margin-top:var(--space-3);font-family:var(--font-mono);font-size:.6875rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--blue-200);
+  }
+
+  /* ─── Footer ─── */
+  footer{padding:var(--space-7) 0;border-top:1px solid var(--border);background:var(--color-50)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:.6875rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .foot a:hover{color:var(--accent)}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important}
+  }
+</style>
+<link rel="stylesheet" href="css/vizit-theme.css">
+  <link rel="stylesheet" href="css/vizit-elevate.css">
+<script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+</head>
+<body>
+
+<vizit-nav data-current="demo"></vizit-nav>
+
+<main>
+
+<section class="demo">
+  <div class="hero-ring tl" aria-hidden="true"></div>
+  <div class="hero-ring br" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="demo-grid">
+      <div>
+        <h1 class="headline" style="margin-top:var(--space-3)">
+          See your <em>Vizit Score</em> before you launch.
+        </h1>
+        <p class="subhead">
+          Walk through your catalog with a specialist who has scored millions of product images. We'll show you what's hurting conversion, what to fix first, and the lift you can expect.
+        </p>
+
+        <ul class="bullets">
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l4 4 10-10"/></svg>
+            <span><strong>Live catalog scoring.</strong> See your own products scored live, so you leave knowing exactly how they perform.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l4 4 10-10"/></svg>
+            <span><strong>Category benchmark.</strong> See what content converts best in your product category.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l4 4 10-10"/></svg>
+            <span><strong>Revenue model.</strong> A tailored estimate of the conversion lift Vizit unlocks for your brand.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l4 4 10-10"/></svg>
+            <span><strong>A working session.</strong> Run by someone who's implemented Vizit at brands like yours.</span>
+          </li>
+        </ul>
+        <div class="demo-shelf reveal"><img src="assets/img/cta-shelf.png" alt="Product shelf scored with Vizit" loading="lazy"></div>
+      </div>
+
+      <aside class="form-card" id="form">
+        <h2>Book your <em>working session</em></h2>
+        <p class="lede">A specialist will reach out within one business day.</p>
+
+        <div id="form-slot" class="form-slot is-loading" aria-live="polite">
+          <!-- HubSpot form mounts here -->
+          <div class="hs-form-html"
+               data-region="na1"
+               data-form-id="248da435-1e82-4883-af5f-528f570d32aa"
+               data-portal-id="24432389"></div>
+          <noscript>
+            <p class="form-fallback">
+              This form requires JavaScript. Email <a href="mailto:hello@vizit.com">hello@vizit.com</a> to request a demo.
+            </p>
+          </noscript>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+</main>
+
+<vizit-footer data-cta="off"></vizit-footer>
+
+<script>
+  // Lazy-load HubSpot embed only when the form is near the viewport.
+  // Reduces initial main-thread work and improves LCP/TBT.
+  (function(){
+    var slot = document.getElementById('form-slot');
+    var loaded = false;
+    function load(){
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.src = 'https://js.hsforms.net/forms/embed/developer/24432389.js';
+      s.defer = true;
+      s.onload = function(){
+        // Clear skeleton once HubSpot paints something.
+        var tries = 0;
+        var iv = setInterval(function(){
+          if (slot.querySelector('form,iframe') || ++tries > 30){
+            slot.classList.remove('is-loading');
+            clearInterval(iv);
+          }
+        }, 200);
+      };
+      document.head.appendChild(s);
+    }
+    if ('IntersectionObserver' in window && slot){
+      var io = new IntersectionObserver(function(entries){
+        if (entries.some(function(e){ return e.isIntersecting; })){
+          io.disconnect(); load();
+        }
+      }, { rootMargin: '400px' });
+      io.observe(slot);
+    } else {
+      load();
+    }
+    // Safety net: load anyway after 3s in case the observer never fires.
+    setTimeout(load, 3000);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+/* ════════════════════════════════════════════════════════════
+   VIZIT — Responsive enhancements (shared across every page)
+
+   Layered ON TOP of each page's own CSS. Three jobs:
+     1) Safety net: prevent horizontal overflow, scale media,
+        keep touch targets honest on small phones.
+     2) Mobile polish: tighten container padding, allow common
+        multi-column layouts to wrap, stack forms, fluid type
+        floors so headlines never break out of the viewport.
+     3) Large monitors (≥1536px): widen the container, scale
+        display type a touch, add breathing room.
+
+   Authored to be additive — uses `:where()` for zero specificity
+   on selectors that any page might override, and reaches for
+   `!important` only on hard safety rules (overflow guards,
+   media sizing) so nothing gets stuck off-screen.
+   ════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────
+   ROOT — text-size + overflow safety
+   ────────────────────────────────────────────────── */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+html, body {
+  /* Stop bare-margins on a child from forcing a horizontal scroll bar.
+     Page-level overflow-x:hidden is preserved where it exists. */
+  max-width: 100%;
+}
+body {
+  /* Don't override existing page bg / font — only fix scroll. */
+  overflow-x: clip;
+}
+
+/* Media should never exceed its container. SVG height stays auto
+   so icons that set their own height keep working. */
+:where(img, video, canvas) {
+  max-width: 100%;
+  height: auto;
+}
+:where(svg) {
+  max-width: 100%;
+}
+/* Code and pre blocks scroll horizontally rather than blowing layout */
+:where(pre, code) {
+  max-width: 100%;
+}
+:where(pre) {
+  overflow-x: auto;
+}
+
+/* ──────────────────────────────────────────────────
+   LARGE MONITORS — ≥1536px
+   Containers widen, display type breathes a bit more,
+   panels get a touch more vertical air.
+   ────────────────────────────────────────────────── */
+@media (min-width: 1536px) {
+  :where(.wrap, .container, .vz-nav-inner) {
+    max-width: 1440px;
+  }
+  :where(.wrap, .container) {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+  :where(.display) {
+    font-size: clamp(3.5rem, 5.2vw, 7rem);
+  }
+  :where(.headline) {
+    font-size: clamp(2.5rem, 3.8vw, 4.75rem);
+  }
+}
+
+/* Ultra-wide — keep content readable, not stretched. */
+@media (min-width: 1920px) {
+  :where(.wrap, .container, .vz-nav-inner) {
+    max-width: 1520px;
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   TABLET — ≤1024px
+   Generic safety net for column layouts that lack their own
+   breakpoint. Page-specific rules still win via specificity.
+   ────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  :where(.wrap, .container) {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   MOBILE — ≤720px
+   ────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  :where(.wrap, .container) {
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+  }
+
+  /* CTA rows wrap cleanly */
+  :where(.hero__ctas, .ctas, .cta-footer .ctas, .hero-ctas) {
+    flex-wrap: wrap;
+  }
+  :where(.btn, .vz-nav-cta, .nav-cta) {
+    /* keep buttons full-width-friendly without forcing it */
+    max-width: 100%;
+  }
+
+  /* Common testimonial collapse */
+  :where(.testimonial) {
+    grid-template-columns: 1fr !important;
+    padding: var(--space-5) var(--space-5) !important;
+  }
+  :where(.testimonial__mark) {
+    font-size: 3.5rem !important;
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   SMALL MOBILE — ≤540px
+   ────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  :where(.wrap, .container) {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  /* Touch targets — anything tappable gets 40px+ */
+  :where(.btn, .vz-nav-cta, .nav-cta, .chip) {
+    min-height: 40px;
+  }
+
+  /* Newsletter / inline form patterns — stack pill-form on small screens */
+  :where(.newsletter form) {
+    flex-direction: column;
+    border-radius: 16px !important;
+    padding: 8px !important;
+  }
+  :where(.newsletter form input) {
+    padding: 12px var(--space-3) !important;
+    width: 100%;
+  }
+  :where(.newsletter form button) {
+    width: 100%;
+  }
+
+  /* Filter chip rows — let labels wrap above their chips */
+  :where(.filter-row) {
+    row-gap: 8px;
+  }
+  :where(.filter-label) {
+    min-width: 100% !important;
+    margin-right: 0 !important;
+  }
+
+  /* Footer link rows wrap */
+  :where(.foot-meta, .footer__bottom) {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: var(--space-3) !important;
+  }
+  :where(.foot-links) {
+    flex-wrap: wrap;
+    gap: var(--space-3) !important;
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   VERY NARROW — ≤380px (iPhone SE, folded phones)
+   Lets fluid type floors drop further so display headlines
+   never punch through the edge.
+   ────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  :where(.wrap, .container) {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+  :where(.display) {
+    font-size: clamp(2rem, 11vw, 2.5rem) !important;
+  }
+  :where(.headline) {
+    font-size: clamp(1.6rem, 8vw, 2rem) !important;
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   SCROLL TABLES — any wide table-like grid we don't know
+   about gets a horizontal scroll affordance rather than
+   overflowing the viewport.
+   ────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  :where(table) {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}

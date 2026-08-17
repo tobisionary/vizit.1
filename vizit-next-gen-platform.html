@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Vizit Platform | The Agentic Platform for Content Optimization</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta name="description" content="One platform to score, benchmark, monitor, and optimize every visual asset across your catalog — built to optimize your content for conversion, from first concept to live shelf.">
+  <link rel="stylesheet" href="css/colors-and-type.css">
+  <link rel="stylesheet" href="css/styles.css">
+<style>
+  /* Products dropdown — shared across all pages */
+  .nav-item,.nav__item{position:relative;display:inline-flex;align-items:center}
+  .nav-item .nav-trigger,.nav__item .nav__trigger{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+  .nav-item .chev,.nav__item .chev{width:10px;height:10px;transition:transform .2s ease}
+  .nav-item:hover .chev,.nav__item:hover .chev{transform:rotate(180deg)}
+  .nav-sub,.nav__sub{position:absolute;top:100%;left:-12px;padding-top:10px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none;min-width:240px;z-index:200}
+  .nav-item:hover .nav-sub,.nav-item:focus-within .nav-sub,.nav__item:hover .nav__sub,.nav__item:focus-within .nav__sub{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+  .nav-sub-inner,.nav__sub-inner{background:#fff;border:1px solid var(--border,#e4e4e4);border-radius:8px;box-shadow:0 16px 40px -20px rgba(0,33,61,.25);padding:8px;display:flex;flex-direction:column}
+  .nav-sub-inner a,.nav__sub-inner a{padding:10px 12px;border-radius:4px;font-size:.875rem;color:var(--color-700,#404040);display:flex;flex-direction:column;gap:2px;border:none;background:transparent}
+  .nav-sub-inner a:hover,.nav__sub-inner a:hover{background:#fafafa;color:var(--accent,#0174d9)}
+  .nav-sub-inner a .desc,.nav__sub-inner a .desc{font-family:var(--font-mono,ui-monospace,monospace);font-size:.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#737373);font-weight:400}
+  @media (max-width:980px){
+    .nav-sub,.nav__sub{position:static;opacity:1;visibility:visible;transform:none;pointer-events:auto;padding-top:0;min-width:0}
+    .nav-sub-inner,.nav__sub-inner{box-shadow:none;border:none;padding:0 0 0 16px;background:transparent}
+    .nav-item .chev,.nav__item .chev{display:none}
+  }
+</style>
+<link rel="stylesheet" href="css/vizit-theme.css">
+  <link rel="stylesheet" href="css/vizit-elevate.css">
+<script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+<style>
+  .subhead{font-size:clamp(1.0625rem,1.3vw,1.25rem) !important;line-height:1.45 !important;color:var(--color-700,#404040) !important;letter-spacing:-.01em}
+  /* ── Core offering panels: alternating two-column ── */
+  .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center}
+  @media(max-width:860px){.offer-grid{grid-template-columns:1fr}.offer .offer-media{order:-1}}
+  .offer.flip .offer-media{order:2}
+  @media(max-width:860px){.offer.flip .offer-media{order:-1}}
+  .offer-media{width:100%;aspect-ratio:5/4;position:relative}
+  .offer-media image-slot{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+  .offer-media image-slot.active{opacity:1;visibility:visible}
+  .offer-media .catalog-anim{position:absolute;inset:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;gap:0;background:#fff;border:none;border-radius:16px;padding:clamp(12px,2vw,24px);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s;overflow:hidden}
+  .offer-media .catalog-anim.active{opacity:1;visibility:visible}
+  .catalog-anim img{display:block;width:100%;height:auto}
+  .catalog-anim .cat-row{opacity:0}
+  .catalog-anim.active .cat-row{animation:catRowIn .55s cubic-bezier(.22,.9,.3,1) both}
+  .catalog-anim.active .cat-row:nth-child(2){animation-delay:.25s}
+  .catalog-anim.active .cat-row:nth-child(3){animation-delay:.55s}
+  .catalog-anim.active .cat-row:nth-child(4){animation-delay:.85s}
+  .catalog-anim.active .cat-row:nth-child(5){animation-delay:1.15s}
+  .catalog-anim.active .cat-row:nth-child(6){animation-delay:1.45s}
+  .catalog-anim.active .cat-row:nth-child(7){animation-delay:1.75s}
+  @keyframes catRowIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  /* opportunity reporting — rows fill in one at a time */
+  .rep-stage{position:relative;container-type:size;aspect-ratio:1688/1206;width:100%;height:auto;max-height:100%;max-width:100%;border-radius:14px;overflow:hidden;background:#fff}
+  .rep-stage img{position:absolute;left:0;top:0;width:100cqw;height:100cqh;display:block}
+  .rep-clip{position:absolute;left:0;width:100cqw;overflow:hidden}
+  .rep-clip img{top:calc(-1 * var(--t))}
+  .rep-top{top:0;height:57.9cqh;--t:0cqh}
+  .rep-row{opacity:0}
+  .rep-r1{top:57.9cqh;height:13.3cqh;--t:57.9cqh}
+  .rep-r2{top:71.2cqh;height:13.3cqh;--t:71.2cqh}
+  .rep-r3{top:84.5cqh;height:15.5cqh;--t:84.5cqh}
+  .pdp-anim.active .rep-row{animation:repRowIn .6s cubic-bezier(.22,.9,.3,1) both;animation-delay:var(--d)}
+  @keyframes repRowIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .pdp-anim.leaving .rep-row{animation:repRowIn 0s 0s both}
+  .offer-media .pdp-anim{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+  .offer-media .pdp-anim.active{opacity:1;visibility:visible}
+  .pdp-stage{position:relative;aspect-ratio:1186/1170;height:100%;max-width:100%;container-type:inline-size}
+  .pdp-stage>img.pdp-base{display:block;width:100%;height:100%}
+  .pdp-score{position:absolute;display:flex;align-items:center;gap:4.5%;padding:0 5%;background:#fafafa;opacity:0}
+  .pdp-score .pn{font-family:ui-monospace,monospace;font-size:2.4cqw;font-weight:600;color:#14532d}
+  .pdp-score .pb{flex:1;height:.9cqw;background:#e5e7eb;border-radius:99px;overflow:hidden}
+  .pdp-score .pb i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#86efac,#22c55e)}
+  .pdp-anim.active .pdp-score{animation:pdpFade .4s ease both;animation-delay:var(--d)}
+  .pdp-anim.active .pdp-score .pb i{animation:pdpBar .8s cubic-bezier(.25,.8,.3,1) both;animation-delay:calc(var(--d) + .15s)}
+  @keyframes pdpFade{from{opacity:0}to{opacity:1}}
+  @keyframes pdpBar{from{width:0}to{width:var(--w)}}
+  .pdp-card{position:absolute;right:-3%;top:-2%;width:34%;border-radius:12px;box-shadow:0 18px 44px -12px rgba(10,14,20,.28);opacity:0}
+  .pdp-anim.active .pdp-card{animation:pdpPop .55s cubic-bezier(.2,1.1,.35,1) both;animation-delay:2.1s}
+  @keyframes pdpPop{from{opacity:0;transform:scale(.82) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .img-stage{position:relative;aspect-ratio:1186/1174;height:100%;max-width:100%}
+  .img-stage>img.pdp-base{display:block;width:100%;height:100%}
+  .img-card{position:absolute;right:-3%;top:-2%;width:34%;border-radius:12px;box-shadow:0 18px 44px -12px rgba(10,14,20,.28);opacity:0}
+  .pdp-anim.active .img-card{animation:pdpPop .55s cubic-bezier(.2,1.1,.35,1) both;animation-delay:.8s}
+  .vs-stage{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:5%}
+  .vs-stage img{display:block;width:38%;height:auto;border-radius:10px}
+  .pdp-anim.active .vs-lose{animation:vsGrow .8s cubic-bezier(.25,.9,.3,1) both;animation-delay:1s}
+  .pdp-anim.active .vs-win{animation:vsFade .8s ease both;animation-delay:1s}
+  @keyframes vsFade{from{opacity:1}to{opacity:.35}}
+  @keyframes vsGrow{from{transform:scale(1);box-shadow:0 0 0 rgba(10,14,20,0)}to{transform:scale(1.25);box-shadow:0 22px 48px -16px rgba(10,14,20,.35)}}
+  .pdpi-stage{width:100%;display:flex;flex-direction:column;gap:4%;justify-content:center}
+  .pdpi-card{background:#fff;border-radius:16px;box-shadow:0 16px 40px -18px rgba(10,14,20,.18);padding:4% 4.5% 4.5%}
+  .pdpi-title{width:100%;aspect-ratio:1700/170;overflow:hidden}
+  .pdpi-title img{display:block;width:100%;height:auto}
+  .pdpi-card img{display:block;width:100%;height:auto}
+  .pdpi-row{display:flex;align-items:stretch;gap:1.6%;margin-top:2.5%;border:1px solid #e5e7eb;border-radius:12px;padding:1.8%}
+  .pdpi-row .pdpi-score{width:16.5%}
+  .pdpi-row .pdpi-break{width:80.5%}
+  .pdpi-row img{width:100%;height:auto}
+  .pdpi-assets{display:block;width:94%;height:auto;margin:5% auto 0}
+  .pdpi-in{opacity:0}
+  .pdp-anim.active .pdpi-in{animation:pdpFade .5s ease both;animation-delay:var(--d)}
+  .pdps-stage{position:relative;width:100%;height:100%}
+  .pdps-main{position:absolute;left:0;bottom:0;height:96%;width:auto;max-width:70%;object-fit:contain;border-radius:10px;opacity:0}
+  .pdps-panel{position:absolute;right:0;top:0;height:100%;width:auto;max-width:56%;object-fit:contain;border-radius:14px;background:#fff;opacity:0;box-shadow:0 30px 60px -18px rgba(10,14,20,.34),0 8px 20px -8px rgba(10,14,20,.16)}
+  .pdp-anim.active .pdps-main{animation:pdpsIn .7s cubic-bezier(.25,.9,.3,1) both;animation-delay:.2s}
+  .pdp-anim.active .pdps-panel{animation:pdpsPop .6s cubic-bezier(.2,1.15,.35,1) both;animation-delay:1.3s}
+  @keyframes pdpsIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pdpsPop{from{opacity:0;transform:translateX(18px) scale(.9)}to{opacity:1;transform:translateX(0) scale(1)}}
+  .pdp-anim.leaving .pdps-main{animation:pdpsIn 0s 0s both}
+  .pdp-anim.leaving .pdps-panel{animation:pdpsPop 0s 0s both}
+  .hio-stage{position:relative;width:100%;height:100%}
+  .hio-hero{position:absolute;left:50%;top:50%;width:44%;transform:translate(-50%,-50%)}
+  .pdp-anim.active .hio-hero{animation:hioShift .7s cubic-bezier(.3,.9,.3,1) both;animation-delay:1.1s}
+  @keyframes hioShift{from{left:50%}to{left:24%}}
+  .hio-panel{position:absolute;right:1%;top:50%;height:98%;transform:translateY(-50%);border-radius:12px;box-shadow:0 20px 48px -16px rgba(10,14,20,.3);opacity:0}
+  .pdp-anim.active .hio-panel{animation:hioPop .55s cubic-bezier(.2,1.1,.35,1) both;animation-delay:1.5s}
+  @keyframes hioPop{from{opacity:0;transform:translateY(-50%) scale(.85)}to{opacity:1;transform:translateY(-50%) scale(1)}}
+  .catalog-anim.leaving .cat-row{animation:catRowIn 0s 0s both}
+  .pdp-anim.leaving .pdp-score{animation:pdpFade 0s 0s both}
+  .pdp-anim.leaving .pdp-score .pb i{animation:pdpBar 0s 0s both}
+  .pdp-anim.leaving .pdp-card,.pdp-anim.leaving .img-card{animation:pdpPop 0s 0s both}
+  .pdp-anim.leaving .vs-lose{animation:vsGrow 0s 0s both}
+  .pdp-anim.leaving .vs-win{animation:vsFade 0s 0s both}
+  .pdp-anim.leaving .pdpi-in{animation:pdpFade 0s 0s both}
+  .pdp-anim.leaving .hio-hero{animation:hioShift 0s 0s both}
+  .pdp-anim.leaving .hio-panel{animation:hioPop 0s 0s both}
+  /* explore -> category drill-down */
+  .exp-stage{position:relative;aspect-ratio:1512/1232;height:100%;max-width:100%;border-radius:14px;overflow:hidden;background:#fff}
+  .exp-stage>img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+  .exp-grid{z-index:1}
+  .exp-hit{position:absolute;left:2.3%;top:69.8%;width:23.6%;height:24%;border-radius:6px;border:2px solid #6b4df6;background:rgba(107,77,246,.10);opacity:0;z-index:2}
+  .exp-cursor{position:absolute;left:74%;top:26%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:99px;background:#1a1d21;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 6px 14px -4px rgba(10,14,20,.5);opacity:0;z-index:4}
+  .exp-ring{position:absolute;left:14%;top:81%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:99px;border:2px solid #6b4df6;opacity:0;z-index:3}
+  .exp-stage>img.exp-cat{opacity:0;z-index:5;transform:translateY(6%);object-fit:contain;object-position:center;background:#fff}
+  .pdp-anim.active .exp-cursor{animation:expCursor 1.5s cubic-bezier(.4,.05,.2,1) both;animation-delay:.5s}
+  .pdp-anim.active .exp-hit{animation:expHit 3.1s ease both;animation-delay:1.6s}
+  .pdp-anim.active .exp-ring{animation:expRing .7s ease-out both;animation-delay:1.95s}
+  .pdp-anim.active .exp-cat{animation:expCat .8s cubic-bezier(.25,.9,.3,1) both;animation-delay:2.35s}
+  .pdp-anim.active .exp-grid{animation:expGridOut .8s ease both;animation-delay:2.35s}
+  @keyframes expCursor{0%{opacity:0;left:74%;top:26%}12%{opacity:1}72%{opacity:1;left:14%;top:81%}82%{transform:scale(.72)}92%{transform:scale(1)}100%{opacity:1;left:14%;top:81%}}
+  @keyframes expHit{0%{opacity:0}10%{opacity:1}70%{opacity:1}100%{opacity:0}}
+  @keyframes expRing{from{opacity:.9;transform:scale(.4)}to{opacity:0;transform:scale(1.9)}}
+  @keyframes expCat{from{opacity:0;transform:translateY(6%)}to{opacity:1;transform:translateY(0)}}
+  @keyframes expGridOut{from{opacity:1}60%{opacity:0}to{opacity:0}}
+  .pdp-anim.leaving .exp-cursor{animation:expCursor 0s 0s both}
+  .pdp-anim.leaving .exp-hit{animation:expHit 0s 0s both}
+  .pdp-anim.leaving .exp-ring{animation:expRing 0s 0s both}
+  .pdp-anim.leaving .exp-cat{animation:expCat 0s 0s both}
+  .pdp-anim.leaving .exp-grid{animation:expGridOut 0s 0s both}
+  /* optimal asset mix — add missing assets */
+  .am-stage{position:relative;container-type:inline-size;aspect-ratio:1531/1217;height:100%;max-width:100%;border-radius:14px;overflow:hidden;background:#fff}
+  .am-stage>img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center}
+  .am-f2{opacity:0;z-index:2}
+  .am-f3{opacity:0;z-index:3}
+  .am-slot{position:absolute;left:52.1%;top:19%;width:22%;height:29.5%;border-radius:8px;border:2px dashed #6b4df6;background:rgba(107,77,246,.08);opacity:0;z-index:4}
+  .am-slot.two{left:26.2%;top:62.2%;height:29.5%}
+  .am-btn{position:absolute;left:63.2%;top:53%;transform:translate(-50%,-50%);z-index:5;opacity:0;white-space:nowrap;background:#6b4df6;color:#fff;font:600 clamp(11px,1.35cqw,17px)/1 var(--font-sans,inherit);letter-spacing:-.01em;padding:.85em 1.3em;border-radius:99px;box-shadow:0 10px 24px -8px rgba(107,77,246,.6)}
+  .am-cursor{position:absolute;left:40%;top:18%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:99px;background:#1a1d21;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 6px 14px -4px rgba(10,14,20,.5);opacity:0;z-index:6}
+  .pdp-anim.active .am-cursor{animation:amCursor 7s cubic-bezier(.45,.05,.25,1) both}
+  .pdp-anim.active .am-btn{animation:amBtn 7s ease both}
+  .pdp-anim.active .am-slot{animation:amSlot 7s linear both}
+  .pdp-anim.active .am-slot.two{animation:amSlot2 7s linear both}
+  .pdp-anim.active .am-f2{animation:amFrame 7s linear both;animation-delay:0s}
+  .pdp-anim.active .am-f3{animation:amFrame3 7s linear both}
+  @keyframes amCursor{0%{opacity:0;left:40%;top:18%;transform:scale(1)}5%{opacity:1}16%{left:63.2%;top:33%;transform:scale(1)}24%{left:63.2%;top:33%}33%{left:63.2%;top:53%;transform:scale(1)}36%{transform:scale(.7)}39%{transform:scale(1)}100%{opacity:1;left:63.2%;top:53%;transform:scale(1)}}
+  @keyframes amBtn{0%,17%{opacity:0;transform:translate(-50%,-50%) scale(.9)}22%,34%{opacity:1;transform:translate(-50%,-50%) scale(1)}37%{opacity:1;transform:translate(-50%,-50%) scale(.94)}44%,100%{opacity:0;transform:translate(-50%,-50%) scale(.94)}}
+  @keyframes amSlot{0%,13%{opacity:0}17%,40%{opacity:1}46%,100%{opacity:0}}
+  @keyframes amSlot2{0%,13%{opacity:0}17%,52%{opacity:1}58%,100%{opacity:0}}
+  @keyframes amFrame{0%,40%{opacity:0}48%,100%{opacity:1}}
+  @keyframes amFrame3{0%,54%{opacity:0}62%,100%{opacity:1}}
+  .pdp-anim.leaving .am-cursor{animation:amCursor 0s 0s both}
+  .pdp-anim.leaving .am-btn{animation:amBtn 0s 0s both}
+  .pdp-anim.leaving .am-slot{animation:amSlot 0s 0s both}
+  .pdp-anim.leaving .am-slot.two{animation:amSlot2 0s 0s both}
+  .pdp-anim.leaving .am-f2{animation:amFrame 0s 0s both}
+  .pdp-anim.leaving .am-f3{animation:amFrame3 0s 0s both}
+  /* gen ai optimization */
+  .gen-stage{position:relative;container-type:inline-size;width:100%;height:100%}
+  .gen-card{position:absolute;left:50%;top:50%;width:48%;transform:translate(-50%,-50%);display:flex;flex-direction:column;gap:3%;z-index:2}
+  .gen-card img{display:block;width:100%;height:auto;border-radius:6px}
+  .gen-btn{display:block;text-align:center;background:#4b5563;color:#fff;border-radius:8px;font:600 clamp(12px,2.6cqw,30px)/1 var(--font-sans,inherit);padding:.62em 0}
+  .gen-grid{position:absolute;right:1%;top:50%;transform:translateY(-50%);width:48%;display:grid;grid-template-columns:1fr 1fr;gap:5% 5%;z-index:1}
+  .gen-grid img{display:block;width:100%;height:auto;opacity:0;filter:drop-shadow(0 12px 22px rgba(10,14,20,.22))}
+  .gen-cursor{position:absolute;left:62%;top:25%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:99px;background:#1a1d21;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 6px 14px -4px rgba(10,14,20,.5);opacity:0;z-index:4}
+  .pdp-anim.active .gen-card{animation:genCard 7s cubic-bezier(.3,.9,.3,1) both}
+  .pdp-anim.active .gen-btn{animation:genBtn 7s linear both}
+  .pdp-anim.active .gen-cursor{animation:genCursor 7s cubic-bezier(.45,.05,.25,1) both}
+  .pdp-anim.active .gen-grid img{animation:genTile .55s cubic-bezier(.2,1,.35,1) both;animation-delay:var(--d)}
+  @keyframes genCard{0%,33%{transform:translate(-50%,-50%) scale(1)}46%,100%{transform:translate(-98%,-50%) scale(.85)}}
+  @keyframes genBtn{0%,31%{opacity:1}34%,100%{opacity:0}}
+  @keyframes genCursor{0%{opacity:0;left:62%;top:25%;transform:scale(1)}8%{opacity:1}26%{left:50%;top:87%;transform:scale(1)}30%{transform:scale(.7)}34%{transform:scale(1);opacity:1}48%{left:70%;top:55%;opacity:1}58%,100%{left:70%;top:55%;opacity:0}}
+  @keyframes genTile{from{opacity:0;transform:translateY(10%) scale(.94)}to{opacity:1;transform:none}}
+  .pdp-anim.leaving .gen-card{animation:genCard 0s 0s both}
+  .pdp-anim.leaving .gen-btn{animation:genBtn 0s 0s both}
+  .pdp-anim.leaving .gen-cursor{animation:genCursor 0s 0s both}
+  .pdp-anim.leaving .gen-grid img{animation:genTile 0s 0s both}
+  .idea-list{position:absolute;right:1%;top:50%;transform:translateY(-50%);width:48%;display:flex;flex-direction:column;gap:3%;z-index:1}
+  .idea-list img{display:block;width:100%;height:auto;opacity:0;border-radius:8px;filter:drop-shadow(0 12px 22px rgba(10,14,20,.18))}
+  .pdp-anim.active .idea-list img{animation:genTile .55s cubic-bezier(.2,1,.35,1) both;animation-delay:var(--d)}
+  .pdp-anim.leaving .idea-list img{animation:genTile 0s 0s both}
+  .offer .section-head{text-align:center;max-width:900px;margin:0 auto clamp(40px,5vw,72px)}
+  .offer .section-head .headline{max-width:860px;margin-left:auto;margin-right:auto;text-wrap:balance}
+  .offer .section-head .subhead{margin:16px auto 0;max-width:640px}
+  .offer-copy{display:flex;flex-direction:column;max-width:46ch}
+  ul.offer-feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:30px}
+  ul.offer-feats li{position:relative;padding:2px 0 2px 30px;cursor:pointer}
+  ul.offer-feats li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:3px;background:var(--color-200,#e5e5e5)}
+  ul.offer-feats li .ft{display:block;font-family:var(--font-display,inherit);font-size:clamp(1.2rem,1.7vw,1.5rem);font-weight:500;letter-spacing:-.015em;line-height:1.3;color:var(--muted,#737373);transition:color .3s}
+  ul.offer-feats li.active .ft{color:#0a0e14;font-weight:600}
+  ul.offer-feats li .fd{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .4s ease,opacity .35s ease}
+  ul.offer-feats li.active .fd{grid-template-rows:1fr;opacity:1}
+  ul.offer-feats li .fd p{overflow:hidden;min-height:0;margin:0;font-size:1.05rem;line-height:1.55;color:var(--color-700,#404040)}
+  ul.offer-feats li.active .fd p{margin-top:12px}
+  ul.offer-feats li .fprog{position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:3px;overflow:hidden}
+  ul.offer-feats li .fprog i{display:block;width:100%;height:100%;background:var(--accent,#0174d9);transform:scaleY(0);transform-origin:top}
+  ul.offer-feats li.active .fprog i{animation:featProg 7s linear forwards}
+  @keyframes featProg{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @media(prefers-reduced-motion:reduce){ul.offer-feats li.active .fprog i{animation:none;transform:scaleY(1)}}
+  ul.offer-feats li.static{cursor:default}
+  ul.offer-feats li.static::before{background:var(--accent,#0174d9)}
+  .offer-cta{margin-top:32px}
+  a{color:var(--accent,#0174d9)}
+  a:hover{color:var(--blue-1000,#00213d)}
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="platform"></vizit-nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 1 — HERO
+     ══════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-ring tl" aria-hidden="true"></div>
+  <div class="hero-ring br" aria-hidden="true"></div>
+  <div class="container hero__grid" style="position:relative;z-index:1">
+    <div class="hero__copy reveal">
+      <h1>Win every moment<br>your <em>product is seen.</em></h1>
+      <p class="hero__sub">Everyone else optimizes content to get your product found, seen, or made faster. Vizit optimizes to get it bought.</p>
+      <div class="hero__ctas">
+        <a href="score-your-content.html" class="btn btn--primary">Score your content</a>
+      </div>
+    </div>
+
+    <img class="hero-shot reveal" src="assets/img/hero-image.webp" alt="The Vizit platform on a laptop">
+  </div>
+</section>
+<script src="js/image-slot.js"></script>
+
+<!-- MID-PAGE SECTION NAV -->
+<nav class="subnav" aria-label="Platform sections">
+  <div class="container subnav-row">
+    <a href="#score">Score<span class="tip">Measure image and PDP performance before or after launch.</span></a>
+    <a href="#insights">Image &amp; PDP Insights<span class="tip">Understand what's driving or hurting conversion.</span></a>
+    <a href="#research">Creative Research<span class="tip">Discover the creative patterns that win in your category.</span></a>
+    <a href="#spark">Fix Images<span class="tip">Get AI-powered recommendations to improve conversion.</span></a>
+    <a href="#reporting">Reporting<span class="tip">Track performance and share results across your team.</span></a>
+  </div>
+</nav>
+<style>
+  html{scroll-behavior:smooth}
+  section.offer{scroll-margin-top:72px}
+  .subnav{background:#fff;border-bottom:1px solid var(--border,#e4e4e4)}
+  .subnav-row{display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(8px,2vw,16px);padding:14px 0}
+  .subnav-row a{font-size:.9rem;font-weight:500;color:var(--color-700,#404040);text-decoration:none;padding:8px 16px;border-radius:999px;border:1px solid transparent;transition:color .2s,background .2s,border-color .2s}
+  .subnav-row a:hover{color:#0a0e14;background:var(--surface,#fafafa);border-color:var(--border,#e4e4e4)}
+  .subnav-row a{position:relative}
+  .subnav-row a .tip{position:absolute;top:calc(100% + 8px);left:50%;transform:translate(-50%,-4px);width:max-content;max-width:240px;background:#0a0e14;color:#fff;font-size:.75rem;font-weight:400;line-height:1.45;padding:8px 12px;border-radius:8px;box-shadow:0 12px 32px -12px rgba(10,14,20,.4);opacity:0;visibility:hidden;transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none;z-index:60;text-align:center}
+  .subnav-row a .tip::before{content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#0a0e14}
+  .subnav-row a:hover .tip,.subnav-row a:focus-visible .tip{opacity:1;visibility:visible;transform:translate(-50%,0)}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════
+     OFFERING 1 — SCORE (image left / content right)
+     ══════════════════════════════════════════════════════════════ -->
+<section class="panel offer" id="score" style="background:#fff" data-screen-label="01 Score">
+  <div class="container">
+    <div class="section-head reveal"><h2 class="headline">Know the conversion power of every product page and asset.</h2><p class="subhead">Every image in your catalog is scored against the Content Conversion Standard — the industry's first benchmark for whether content will make a shopper buy.</p></div>
+    <div class="offer-grid reveal">
+    <div class="offer-media"><div id="offer-score-1" class="catalog-anim active"><img class="cat-row" src="assets/img/product-list-header.webp" alt="Catalog table header"><img class="cat-row" src="assets/img/product-list-item.webp" alt="Scored product row"><img class="cat-row" src="assets/img/product-list-item2.webp" alt="Scored product row"><img class="cat-row" src="assets/img/product-list-item3.webp" alt="Scored product row"><img class="cat-row" src="assets/img/product-list-item4.webp" alt="Scored product row"><img class="cat-row" src="assets/img/product-list-item5.webp" alt="Scored product row"><img class="cat-row" src="assets/img/product-list-item6.webp" alt="Scored product row"></div><div id="offer-score-2" class="pdp-anim"><div class="pdp-stage"><img class="pdp-base" src="assets/img/platform-screen.webp" alt="Product page with images"><div class="pdp-score" style="left:3.5%;top:31.4%;width:27%;height:4.9%;--d:.4s"><span class="pn">83</span><span class="pb"><i style="--w:83%"></i></span></div><div class="pdp-score" style="left:6%;top:70.7%;width:27%;height:5.5%;--d:.9s"><span class="pn">96</span><span class="pb"><i style="--w:96%"></i></span></div><div class="pdp-score" style="left:36.4%;top:70.7%;width:27%;height:5.5%;--d:1.2s"><span class="pn">94</span><span class="pb"><i style="--w:94%"></i></span></div><div class="pdp-score" style="left:67%;top:70.7%;width:27%;height:5.5%;--d:1.5s"><span class="pn">93</span><span class="pb"><i style="--w:93%"></i></span></div><img class="pdp-card" src="assets/img/pdp-score.webp" alt="Product Page Score 88"></div></div><div id="offer-score-3" class="pdp-anim"><div class="img-stage"><img class="pdp-base" src="assets/img/platform-screen-image.webp" alt="Product image in platform"><img class="img-card" src="assets/img/image-score.webp" alt="Vizit Score 94 — Very high"></div></div></div>
+    <div class="offer-copy">
+      <ul class="offer-feats">
+        <li><span class="ft">Upload and score entire catalogs</span><div class="fd"><p>Score every product in your catalog at scale.</p></div></li>
+        <li><span class="ft">Get conversion scores on PDPs</span><div class="fd"><p>Score the conversion potential of every product page.</p></div></li>
+        <li><span class="ft">Measure image effectiveness.</span><div class="fd"><p>Score every image, before or after it goes live.</p></div></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     OFFERING 2 — IMAGE & PDP INSIGHTS (content left / image right)
+     ══════════════════════════════════════════════════════════════ -->
+<section class="panel offer flip" id="insights" style="background:#fff" data-screen-label="02 Image and PDP Insights">
+  <div class="container">
+    <div class="section-head reveal"><h2 class="headline">See exactly why a product page is losing conversion.</h2><p class="subhead">Vizit diagnoses every image and PDP through your shopper's eyes — surfacing the specific visual blockers hurting conversion and the revenue they're leaking.</p></div>
+    <div class="offer-grid reveal">
+    <div class="offer-media"><div id="offer-insights-2" class="pdp-anim active"><div class="pdps-stage"><img class="pdps-main" src="assets/img/pdp.webp" alt="Product page with scored images"><img class="pdps-panel" src="assets/img/pdp-score-2.webp" alt="PDP score breakdown: carousel 86, hero 98, diverse assets, 7 of 7"></div></div><div id="offer-insights-3" class="pdp-anim"><div class="hio-stage"><img class="hio-hero" src="assets/img/hero-image-2f78562d.webp" alt="Hero image scored 76"><img class="hio-panel" src="assets/img/hero-image-breadown.webp" alt="Hero image diagnostic breakdown"></div></div><div id="offer-insights-1" class="pdp-anim"><div class="vs-stage"><img class="vs-lose" src="assets/img/image-1.webp" alt="Low-scoring image — 27"><img class="vs-win" src="assets/img/image-2.webp" alt="High-scoring image — 96"></div></div></div>
+    <div class="offer-copy">
+      <ul class="offer-feats">
+        <li><span class="ft">Discover PDP level conversion opportunities</span><div class="fd"><p>Find your biggest conversion opportunities and how to improve them.</p></div></li>
+        <li><span class="ft">Uncover hero image opportunities</span><div class="fd"><p>See how your hero image can win more clicks and conversions.</p></div></li>
+        <li><span class="ft">See which carousel images are costing you sales</span><div class="fd"><p>Know which images help conversion and which hold it back.</p></div></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     OFFERING 3 — CREATIVE RESEARCH (image left / content right)
+     ══════════════════════════════════════════════════════════════ -->
+<section class="panel offer" id="research" style="background:#fff" data-screen-label="03 Creative Research">
+  <div class="container">
+    <div class="section-head reveal"><h2 class="headline">Discover what converts in your category.</h2><p class="subhead">Vizit maps the visual landscape of any product category. Pinpoint the triggers that earn shopper choice - and the gaps your competitors are exploiting.</p></div>
+    <div class="offer-grid reveal">
+    <div class="offer-media"><div id="offer-research-1" class="pdp-anim active"><div class="exp-stage"><img class="exp-grid" src="assets/img/ddf.webp" alt="Browse by product category"><span class="exp-hit"></span><span class="exp-ring"></span><span class="exp-cursor"></span><img class="exp-cat" src="assets/img/ddf-g-90.png" alt="Dry Dog Food top-performing creative"></div></div><div id="offer-research-2" class="pdp-anim"><div class="am-stage"><img class="am-f1" src="assets/img/1.webp" alt="Optimal asset mix with two missing assets"><img class="am-f2" src="assets/img/2.webp" alt="Lifestyle asset added"><img class="am-f3" src="assets/img/3.webp" alt="Product facts asset added"><span class="am-slot"></span><span class="am-slot two"></span><span class="am-btn">Add missing assets</span><span class="am-cursor"></span></div></div><image-slot id="offer-research-3" shape="rounded" radius="16">Research · creative briefs — drop screenshot here</image-slot></div>
+    <div class="offer-copy">
+      <ul class="offer-feats">
+        <li><span class="ft">Explore top-performing creative</span><div class="fd"><p>See which visual styles, claims, and layouts consistently drive conversion in your category.</p></div></li>
+        <li><span class="ft">Build the ideal content mix on your PDP</span><div class="fd"><p>Learn the right balance of pack shots, lifestyle, benefits, ingredients, and more for your category.</p></div></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     OFFERING 4 — FIX IMAGES / SPARK (content left / image right)
+     ══════════════════════════════════════════════════════════════ -->
+<section class="panel offer flip" id="spark" style="background:#fff" data-screen-label="04 Fix Images (Spark)">
+  <div class="container">
+    <div class="section-head reveal"><h2 class="headline">One click to fix the content that's losing revenue.</h2><p class="subhead">Vizit Spark transforms low-scoring images into Vizit-certified, ready-to-syndicate assets using our proprietary generative engine — no reshoots, no agency rounds.</p></div>
+    <div class="offer-grid reveal">
+    <div class="offer-media"><div id="offer-spark-1" class="pdp-anim active"><div class="gen-stage"><div class="gen-grid"><img src="assets/img/gen-1.png" alt="Generated asset scored 97" style="--d:2.9s"><img src="assets/img/gen-2.png" alt="Generated asset scored 98" style="--d:3.2s"><img src="assets/img/gen-3.png" alt="Generated asset scored 94" style="--d:3.5s"><img src="assets/img/gen-4.png" alt="Generated asset scored 90" style="--d:3.8s"><img src="assets/img/gen-5.png" alt="Generated asset scored 87" style="--d:4.1s"><img src="assets/img/gen-6.png" alt="Generated asset scored 88" style="--d:4.4s"></div><div class="gen-card"><img src="assets/img/gen-card.png" alt="Original image scored 13"><span class="gen-btn">Generate images</span></div><span class="gen-cursor"></span></div></div><div id="offer-spark-2" class="pdp-anim"><div class="gen-stage"><div class="idea-list"><img src="assets/img/idea-1.png" alt="Recommendation: background cleanup" style="--d:2.9s"><img src="assets/img/idea-2.png" alt="Recommendation: product separation" style="--d:3.4s"><img src="assets/img/idea-3.png" alt="Recommendation: composition balance" style="--d:3.9s"></div><div class="gen-card"><img src="assets/img/idea-card.png" alt="Original image scored 13"><span class="gen-btn">Generate ideas</span></div><span class="gen-cursor"></span></div></div><image-slot id="offer-spark-3" shape="rounded" radius="16">Spark · syndicate-ready output — drop screenshot here</image-slot></div>
+    <div class="offer-copy">
+      <ul class="offer-feats">
+        <li><span class="ft">Gen AI image optimization</span><div class="fd"><p>Turn a 52 into a 90+ in seconds, guided by conversion data.</p></div></li>
+        <li><span class="ft">Data-driven recommendations</span><div class="fd"><p>Exact enhancements based on each image's strengths and weaknesses.</p></div></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     OFFERING 5 — REPORTING (image left / content right)
+     ══════════════════════════════════════════════════════════════ -->
+<section class="panel offer" id="reporting" style="background:#fff" data-screen-label="05 Reporting">
+  <div class="container">
+    <div class="section-head reveal"><h2 class="headline">Prove the lift. Track every point of impact.</h2><p class="subhead">Always-on reporting connects content improvements to business outcomes — so every team sees the revenue that better content recovers.</p></div>
+    <div class="offer-grid reveal">
+    <div class="offer-media"><div id="offer-reporting-1" class="pdp-anim active"><div class="rep-stage"><div class="rep-clip rep-top"><img src="assets/img/reporting-image.webp" alt="Opportunity reporting summary"></div><div class="rep-clip rep-row rep-r1" style="--d:.5s"><img src="assets/img/reporting-image.webp" alt="SparkleNest UltraFoam — score 18, $230,300 revenue potential"></div><div class="rep-clip rep-row rep-r2" style="--d:1.1s"><img src="assets/img/reporting-image.webp" alt="SparkleNest PowerShine — score 54, $140,150 revenue potential"></div><div class="rep-clip rep-row rep-r3" style="--d:1.7s"><img src="assets/img/reporting-image.webp" alt="PureViva Clean Gen — score 63, $81,453 revenue potential"></div></div></div><image-slot id="offer-reporting-2" shape="rounded" radius="16">Reporting · conversion impact — drop screenshot here</image-slot><image-slot id="offer-reporting-3" shape="rounded" radius="16">Reporting · executive views — drop screenshot here</image-slot></div>
+    <div class="offer-copy">
+      <ul class="offer-feats">
+        <li class="active static"><span class="ft">Know which PDPs to optimize first</span><div class="fd"><p>Rank every product by its potential conversion and revenue impact.</p></div></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<vizit-footer></vizit-footer>
+
+<script src="js/page.js"></script>
+<script>
+(function(){
+  document.querySelectorAll('section.offer').forEach(function(sec){
+    var feats=[].slice.call(sec.querySelectorAll('.offer-feats li'));
+    var slots=[].slice.call(sec.querySelectorAll('.offer-media > *'));
+    if(feats.length<2)return;
+    feats.forEach(function(li){var p=document.createElement('span');p.className='fprog';p.innerHTML='<i></i>';li.appendChild(p);});
+    var idx=0,timer;
+    function show(i){
+      idx=i;
+      feats.forEach(function(li,j){
+        li.classList.toggle('active',j===i);
+        var b=li.querySelector('.fprog i');if(b){b.style.animation='none';void b.offsetWidth;b.style.animation='';}
+      });
+      slots.forEach(function(s,j){if(j!==i&&s.classList.contains('active')){s.classList.add('leaving');setTimeout(function(){s.classList.remove('leaving')},600);}s.classList.toggle('active',j===i)});
+    }
+    function start(){clearInterval(timer);timer=setInterval(function(){show((idx+1)%feats.length)},7000);}
+    feats.forEach(function(li,i){li.addEventListener('click',function(){show(i);start();})});
+    var started=false;
+    new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting&&!started){started=true;show(0);start();}
+      else if(!e.isIntersecting&&started){started=false;clearInterval(timer);}
+    })},{threshold:.35}).observe(sec);
+    show(0);
+  });
+})();
+</script>
+
+<style id="home-btn-match">
+.hero h1{color:#0a0e14 !important;font-weight:600 !important}
+.hero h1 em,.headline em{color:inherit !important;font-style:normal}
+.headline{color:#0a0e14}
+.headline,.hero h1,.headline em,.hero h1 em{font-weight:600 !important}
+.btn{border-radius:999px !important;padding:12px 24px !important;font-size:var(--text-base,1rem) !important;font-weight:500 !important;border:1px solid transparent}
+.btn--primary{background:#0a0e14 !important;color:#ffffff !important;box-shadow:none !important}
+.btn--primary:hover{background-image:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(94,182,255,.45) 0%,rgba(52,160,254,.22) 38%,rgba(52,160,254,0) 72%) !important;background-color:#ffffff !important;color:#0a0e14 !important;box-shadow:0 0 0 1px #0a0e14 inset !important;transform:none}
+.btn--secondary{background:#ffffff !important;color:#0a0e14 !important;border-color:var(--color-300,#d4d4d4) !important}
+.btn--secondary:hover{background-image:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(94,182,255,.45) 0%,rgba(52,160,254,.22) 38%,rgba(52,160,254,0) 72%) !important;background-color:#ffffff !important;color:#0a0e14 !important;border-color:transparent !important;box-shadow:0 0 0 1px #0a0e14 inset,0 0 26px -6px rgba(52,160,254,.35) !important}
+.btn--inverse,.btn--dark{background:#ffffff !important;color:#0a0e14 !important}
+.btn--inverse:hover,.btn--dark:hover{background-image:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(94,182,255,.5) 0%,rgba(52,160,254,.25) 38%,rgba(52,160,254,0) 72%) !important;background-color:#3f464e !important;color:#ffffff !important;box-shadow:0 0 0 1px #ffffff inset,0 0 26px -6px rgba(52,160,254,.4) !important}
+</style>
+<script>
+document.querySelectorAll('.btn').forEach(function(btn){
+  btn.addEventListener('pointermove',function(e){
+    var r=btn.getBoundingClientRect();
+    btn.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    btn.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+});
+</script>
+
+<style id="platform-hero-dark">
+.hero{position:relative;overflow:hidden;background:radial-gradient(110% 60% at 50% -5%, rgba(1,116,217,.16), transparent 60%), radial-gradient(80% 50% at 92% 78%, rgba(1,116,217,.09), transparent 60%), #000000 !important;padding-bottom:0 !important}
+.hero__grid{grid-template-columns:1.05fr 1fr !important;gap:clamp(32px,4vw,64px) !important;align-items:center;text-align:left;justify-items:start}
+.hero .hero__copy{padding-bottom:clamp(48px,6vw,88px)}
+@media(max-width:860px){.hero .hero__copy{padding-bottom:0}}
+@media(max-width:860px){.hero__grid{grid-template-columns:1fr !important;text-align:center;justify-items:center}}
+.hero h1{color:#fff !important;max-width:18ch;margin-left:0;margin-right:0;font-size:clamp(2.4rem,4.2vw,3.6rem) !important;line-height:1.05 !important}
+.hero .hero__sub{color:rgba(214,236,255,.85);max-width:52ch;margin-left:0;margin-right:0}
+.hero .hero__ctas{justify-content:flex-start}
+@media(max-width:860px){.hero h1,.hero .hero__sub{margin-left:auto;margin-right:auto}.hero .hero__ctas{justify-content:center}}
+.hero .hero-shot{display:block;width:120%;max-width:none;height:auto;margin:0;align-self:end;justify-self:start}
+@media(max-width:860px){.hero .hero-shot{width:100%}}
+.hero .hero-ring{position:absolute;z-index:0;pointer-events:none;width:62vw;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, transparent 54%, rgba(1,116,217,.15) 62%, rgba(30,144,255,.8) 71%, rgba(120,190,255,1) 74%, rgba(30,144,255,.75) 77%, rgba(1,116,217,.15) 86%, transparent 92%);filter:blur(14px);opacity:0;animation:platRingPulse 5s ease-in-out infinite}
+.hero .hero-ring.tl{top:0;left:0;transform:translate(-55%,-55%)}
+.hero .hero-ring.br{top:50%;right:0;transform:translate(55%,-50%);animation-delay:-2.5s}
+@keyframes platRingPulse{0%,100%{opacity:0}35%,65%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hero .hero-ring{animation:none;opacity:.8}}
+.hero::before{content:none !important}
+.hero{padding-top:120px !important;margin-top:0 !important}
+body{padding-top:0 !important}
+vizit-nav{position:fixed !important;left:0;right:0;top:0;z-index:50;background:transparent !important;border-bottom-color:transparent !important}
+vizit-nav.nav-scrolled{background:rgba(0,0,0,.45) !important;border-bottom-color:rgba(255,255,255,.1) !important;backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3)}
+.hero .hero__copy{margin-bottom:0}
+.hero .hero__ctas{margin-bottom:0}
+.hero .btn--primary{--mx:50%;--my:50%;background:#fff !important;color:#0a0e14 !important}
+.hero a.btn.btn--primary:hover,.hero .btn--primary:hover{background-image:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(94,182,255,.5) 0%,rgba(52,160,254,.25) 38%,rgba(52,160,254,0) 72%) !important;background-color:#3f464e !important;color:#ffffff !important;box-shadow:0 0 0 1px #ffffff inset,0 0 26px -6px rgba(52,160,254,.4) !important;transform:none !important;border-color:transparent !important}
+</style>
+<script>
+(function(){
+  var btn=document.querySelector('.hero .btn--primary');
+  function navScroll(){var n=document.querySelector('vizit-nav');if(n)n.classList.toggle('nav-scrolled',window.scrollY>8);}
+  window.addEventListener('scroll',navScroll,{passive:true});navScroll();
+  if(!btn)return;
+  btn.addEventListener('pointermove',function(e){
+    var r=btn.getBoundingClientRect();
+    btn.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    btn.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+  btn.addEventListener('pointerleave',function(){
+    btn.style.setProperty('--mx','50%');btn.style.setProperty('--my','50%');
+  });
+})();
+</script>
+<script>
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.15});
+  els.forEach(function(e){io.observe(e);});
+})();
+</script>
+</body>
+</html>

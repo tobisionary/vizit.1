@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Shopping Optimization | Get More Traffic From Rufus, Sparky, and ChatGPT</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Your products lose AI discovery to competitors with better visual data. Vizit is the visual layer of AEO, optimizing the images and signals AI agents use to recommend products across Amazon, Walmart, ChatGPT, and Google.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (AI Discovery) ─── */
+
+  /* Panel 1 — Two views of the same image */
+  .ai-vs {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.05;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 36px 1fr;
+  }
+  .ai-vs::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 70% at 80% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 80% at 0% 100%, rgba(1,116,217,0.30), transparent 65%);
+    pointer-events: none;
+  }
+  .ai-vs .hs-chrome {
+    position: relative; z-index: 1;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .ai-vs .body {
+    position: relative; z-index: 1;
+    padding: var(--space-6);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+  }
+  .ai-vs .panes {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    flex: 1;
+  }
+  @media (max-width: 540px) { .ai-vs .panes { grid-template-columns: 1fr; } }
+  .ai-pane {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: var(--space-3);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .ai-pane .lab {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.1em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .ai-pane .frame {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #f4ece2, #d4b89a);
+    position: relative; overflow: hidden;
+  }
+  .ai-pane .frame::after {
+    content: '';
+    position: absolute; left: 18%; top: 18%; width: 64%; height: 64%;
+    background: #b85543;
+    box-shadow: inset 0 -22px 36px rgba(0,0,0,0.22);
+  }
+  /* AI pane — overlay grid + bounding boxes */
+  .ai-pane.ai-view .frame {
+    filter: contrast(1.1);
+  }
+  .ai-pane.ai-view .frame::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(52,160,254,0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52,160,254,0.25) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .ai-pane.ai-view .bbox {
+    position: absolute;
+    border: 1.5px solid var(--cyan);
+    z-index: 2;
+  }
+  .ai-pane.ai-view .bbox .lbl {
+    position: absolute; top: -18px; left: -1px;
+    font-family: var(--font-mono); font-size: 8.5px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--cyan); color: var(--blue-1000);
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .ai-pane.ai-view .bbox.product { left: 18%; top: 18%; width: 64%; height: 64%; }
+  .ai-pane.ai-view .bbox.brand   { left: 26%; top: 26%; width: 36%; height: 18%; border-color: var(--blue-300); border-style: dashed; }
+  .ai-pane.ai-view .bbox.brand .lbl { background: var(--blue-300); }
+  .ai-pane.ai-view .signals {
+    display: flex; flex-direction: column; gap: 4px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--blue-100);
+  }
+  .ai-pane.ai-view .signals .sig {
+    display: flex; justify-content: space-between;
+    padding: 4px 6px;
+    background: rgba(255,255,255,0.05);
+    border-left: 2px solid var(--cyan);
+  }
+  .ai-pane.ai-view .signals .sig.dim {
+    border-left-color: var(--blue-300); color: var(--blue-200);
+  }
+  .ai-pane.human-view .signals {
+    display: flex; gap: 8px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--blue-200);
+  }
+  .ai-pane.human-view .signals span { padding: 4px 8px; background: rgba(255,255,255,0.05); }
+
+  .ai-vs .foot {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+
+  /* Panel callout: "The visual layer of AI commerce readiness" — big editorial bar */
+  .visual-layer {
+    background: var(--blue-base);
+    color: #fff;
+    padding: var(--space-7) 0;
+    position: relative; overflow: hidden;
+  }
+  .visual-layer::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(80% 80% at 100% 0%, rgba(52,160,254,0.5), transparent 60%),
+      radial-gradient(60% 60% at 0% 100%, rgba(0,33,61,0.45), transparent 60%);
+    pointer-events: none;
+  }
+  .visual-layer .container {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr auto; gap: var(--space-6);
+    align-items: center;
+  }
+  @media (max-width: 760px) { .visual-layer .container { grid-template-columns: 1fr; } }
+  .visual-layer .lab {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; color: var(--blue-200);
+    text-transform: uppercase;
+    margin-bottom: var(--space-3);
+  }
+  .visual-layer h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+    font-weight: 400; letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0;
+    max-width: 22ch;
+  }
+  .visual-layer h3 em { color: rgba(255,255,255,0.6); font-style: normal; }
+  .visual-layer .sigil {
+    font-family: var(--font-display);
+    font-style: normal;
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: rgba(255,255,255,0.18);
+    line-height: 1;
+  }
+
+  /* Panel 3 — ChatGPT-style answer card */
+  .ai-answer {
+    background: #fff;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .ai-answer-head {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .ai-answer-head .agent {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px;
+    background: var(--blue-1000); color: #fff;
+    border-radius: 999px;
+    font-size: 9px;
+  }
+  .ai-answer-body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+  .ai-answer .prompt {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-style: normal;
+    color: var(--text);
+    line-height: 1.45;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border-left: 3px solid var(--blue-300);
+  }
+  .ai-answer .recs { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ai-answer .rec {
+    display: grid;
+    grid-template-columns: 36px 56px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    align-items: center;
+  }
+  .ai-answer .rec .rank {
+    font-family: var(--font-display);
+    font-size: 1.4rem; letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .ai-answer .rec .pic {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, var(--bg1, #efe6db), var(--bg2, #c8a884));
+    position: relative; overflow: hidden;
+  }
+  .ai-answer .rec .pic::after {
+    content: '';
+    position: absolute; inset: 18%;
+    background: var(--prod, var(--blue-base));
+    border-radius: 14%;
+  }
+  .ai-answer .rec .info .ttl {
+    font-family: var(--font-display); font-size: 1.05rem;
+    font-weight: 400; letter-spacing: -0.01em;
+  }
+  .ai-answer .rec .info .brand {
+    margin-top: 2px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .ai-answer .rejected {
+    background: var(--surface);
+    border: 1px dashed var(--risk-red);
+    padding: var(--space-4);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: var(--space-3);
+    align-items: start;
+  }
+  .ai-answer .rejected .pic {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #efe6db, #c8a884);
+    position: relative;
+    filter: grayscale(0.6) opacity(0.7);
+  }
+  .ai-answer .rejected .pic::after {
+    content: '';
+    position: absolute; inset: 22%;
+    background: #8e6442; border-radius: 14%;
+  }
+  .ai-answer .rejected .body .label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; color: var(--risk-red);
+    text-transform: uppercase;
+  }
+  .ai-answer .rejected .body .ttl {
+    margin-top: 4px;
+    font-family: var(--font-display); font-size: 1rem;
+    color: var(--color-500);
+    text-decoration: line-through;
+    text-decoration-color: rgba(0,0,0,0.25);
+  }
+  .ai-answer .rejected .body .reasons {
+    margin-top: var(--space-3);
+    display: flex; flex-direction: column; gap: 3px;
+    font-size: 11.5px; color: var(--color-700); line-height: 1.45;
+  }
+  .ai-answer .rejected .body .reasons span::before {
+    content: '✕  ';
+    color: var(--risk-red);
+    font-family: var(--font-mono);
+    margin-right: 4px;
+  }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="answer-engine-optimization"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 1 — WHAT AI SEES
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="01 What AI sees">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — What AI sees</span>
+        <h1 class="display">You optimized your text for AI. But the algorithms are judging your <em>images</em> too.</h1>
+        <p class="subhead">Brands are racing on AEO, schema, and structured data. But multimodal algorithms don't just read your listings — they judge your images. And if those images aren't built for that moment, your products don't get chosen. Vizit Agents keep your imagery scoring for both shoppers and algorithms.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">See how Vizit wins AI discovery <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="How humans see a product image vs. how AI sees it">
+        <div class="ai-vs">
+          <div class="hs-chrome">
+            <span style="width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25);"></span>
+            <span>Vizit · multimodal signal trace</span>
+            <span style="margin-left:auto;">SKU · B0CDR4FG</span>
+          </div>
+          <div class="body">
+            <div class="panes">
+              <div class="ai-pane human-view">
+                <span class="lab">How humans see it</span>
+                <div class="frame"><img src="../assets/products/vizzy.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:10%;box-sizing:border-box;z-index:1;"></div>
+                <div class="signals">
+                  <span>Shape</span><span>Color</span><span>Mood</span>
+                </div>
+              </div>
+              <div class="ai-pane ai-view">
+                <span class="lab">How AI sees it</span>
+                <div class="frame">
+                  <img src="../assets/products/vizzy.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:10%;box-sizing:border-box;">
+                  <div class="bbox product" style="z-index:2;"><span class="lbl">product · 0.96</span></div>
+                  <div class="bbox brand" style="z-index:2;"><span class="lbl">brand · 0.82</span></div>
+                </div>
+                <div class="signals">
+                  <div class="sig"><span>object_clarity</span><span>0.94</span></div>
+                  <div class="sig"><span>category_match</span><span>0.88</span></div>
+                  <div class="sig dim"><span>context_cues</span><span>0.42</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="foot">
+              <span>shoppers · split-second judgment</span>
+              <span>AI agents · multimodal scoring</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- The visual layer of AI commerce readiness — editorial strip -->
+<section class="visual-layer reveal">
+  <div class="container">
+    <div>
+      <span class="lab">The visual layer of</span>
+      <h3>AI commerce <em>readiness</em>.</h3>
+    </div>
+    <span class="sigil">/ai</span>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">Future-proofing digital shelf discoverability for the world's most innovative brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>BRAND C</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 2 — THE WINNER-TAKE-ALL SHELF
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="02 Winner-take-all">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">02 — The winner-take-all shelf</span>
+      <h2 class="display">In AI search, there is no <em>Page 2</em>.</h2>
+      <p class="subhead">Rufus, Sparky, ChatGPT, Perplexity, and Gemini don't return ten blue links. They return one recommendation, or three. If your product isn't in that answer, it doesn't exist to the shopper. Visual AEO is what determines whether you're in the answer or invisible to it.</p>
+    </div>
+
+    <div class="big-callout reveal" style="margin-top: var(--space-7);">
+      <p class="q">Shoppers search with words. But they <em>buy with their eyes</em> — and so do the AI agents shopping on their behalf.</p>
+      <span class="src">Vizit · Visual AEO Brief, 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 3 — FOUND VS CHOSEN
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="03 Found vs chosen">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="AI answer engine rejecting a product on visual grounds">
+        <div class="ai-answer">
+          <div class="ai-answer-head">
+            <span class="agent">AI</span>
+            <span>Generative answer · live</span>
+            <span style="margin-left:auto;">3 recommendations returned</span>
+          </div>
+          <div class="ai-answer-body">
+            <p class="prompt">Recommend the best sleek, modern coffee maker under $200.</p>
+
+            <div class="recs">
+              <div class="rec">
+                <span class="rank">01</span>
+                <div class="pic" style="--bg1:#e6f3ff;--bg2:#80c3fe;--prod:#0174d9;"></div>
+                <div class="info">
+                  <div class="ttl">Helix Brew · matte black</div>
+                  <div class="brand">Brand X · $189</div>
+                </div>
+              </div>
+              <div class="rec">
+                <span class="rank">02</span>
+                <div class="pic" style="--bg1:#fff;--bg2:#d4d4d4;--prod:#404040;"></div>
+                <div class="info">
+                  <div class="ttl">Arc Mini brewer · slate</div>
+                  <div class="brand">Brand Y · $164</div>
+                </div>
+              </div>
+              <div class="rec">
+                <span class="rank">03</span>
+                <div class="pic" style="--bg1:#e6f3ff;--bg2:#b3dbff;--prod:#015fb2;"></div>
+                <div class="info">
+                  <div class="ttl">Nimbus Pour-Over</div>
+                  <div class="brand">Brand Z · $172</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rejected">
+              <div class="pic"></div>
+              <div class="body">
+                <span class="label">Image rejected for recommendation set</span>
+                <div class="ttl">Your product · single-serve drip coffee maker</div>
+                <div class="reasons">
+                  <span>Low product clarity — cluttered background, off-axis framing</span>
+                  <span>Visual style doesn't match prompt: "sleek" and "modern" not detected</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — Found vs chosen</span>
+        <h2 class="display">SEO, AEO, and GEO get you <em>found</em>. They won't get you chosen.</h2>
+        <p class="subhead">Brands spent years optimizing listings for traditional search. Then they pivoted to AEO and structured data for LLM-powered shopping. No one told them the algorithm was also looking at their images — and that visual triggers are what tip the recommendation in the final moment.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-ghost" href="../vizit-next-gen-platform.html">Learn about Perceptual AI <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 4 — ONE IMAGE, TWO CUSTOMERS
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="04 Two customers">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">04 — One image, two customers</span>
+      <h2 class="display">Engineer your hero images for the algorithm's <em>eyes</em>.</h2>
+      <p class="subhead">Vizit optimizes your product images for both audiences simultaneously: the human shopper making the split-second judgment, and the AI system deciding what gets surfaced. This is Visual AEO — where the next generation of digital shelf wins are happening.</p>
+    </div>
+
+    <div class="ai-opts reveal">
+      <div class="ai-opt">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12 H21 M12 3 a14 14 0 0 1 0 18 M12 3 a14 14 0 0 0 0 18"/>
+          </svg>
+        </div>
+        <div>
+          <h4>Product clarity</h4>
+          <p>AI systems recommend what they can identify with confidence. Cluttered backgrounds, poor contrast, and bad framing reduce that confidence — and your recommendation likelihood with it.</p>
+        </div>
+      </div>
+      <div class="ai-opt">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M3 12 L9 6 L13 10 L21 4"/>
+            <path d="M3 20 H21" opacity="0.5"/>
+          </svg>
+        </div>
+        <div>
+          <h4>Contextual relevance</h4>
+          <p>Multimodal AI matches products to shopper intent by reading visual context. An image without setting, usage, or lifestyle cues gives the AI less to match against a query — and more reason to recommend a competitor.</p>
+        </div>
+      </div>
+      <div class="ai-opt">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="4"/>
+            <rect x="14" y="10" width="7" height="11" fill="currentColor" stroke="none"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <div>
+          <h4>Visual hierarchy</h4>
+          <p>Color, texture, scale, and distinguishing features must be legible at thumbnail size. If the AI can't resolve what makes your product distinctive, it defaults to the brand whose image communicates it clearly.</p>
+        </div>
+      </div>
+      <div class="ai-opt">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 4 H20 V20 H4 Z"/>
+            <path d="M4 9 H20 M9 4 V20" opacity="0.5"/>
+            <path d="M12 13 L14 15 L17 11" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <h4>Readability &amp; accessibility</h4>
+          <p>Text overlays that fail contrast thresholds don't just lose the human shopper. They reduce image legibility for machine vision systems evaluating the asset — and that ambiguity works against you in AI-powered discovery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — VISUAL AEO READINESS AUDIT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="05 Visual AEO audit">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">05 — Visual AEO readiness audit</span>
+      <h2 class="display">Find out which products AI is <em>passing over</em>, and why.</h2>
+      <p class="subhead">Most brands don't know which products are losing ground to AI shopping systems. Vizit scores the same visual signals that determine whether human shoppers stop or scroll, identifies which images are failing, and tells you what to fix.</p>
+      <div class="cta-row" style="margin-top: var(--space-6);">
+        <a class="btn btn-primary btn-lg" href="../score-your-content.html">Let's talk <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="06 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Visual AEO <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">What ecommerce and AI-readiness leaders ask us most about getting recommended by Rufus, Sparky, ChatGPT, and Perplexity.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is AEO (Answer Engine Optimization) for ecommerce?</summary>
+            <div class="answer">AEO is the practice of optimizing product content to be surfaced, recommended, and cited by AI answer engines like ChatGPT, Perplexity, Gemini, Walmart's Sparky, and Amazon Rufus. For ecommerce, this includes optimizing product images for multimodal AI systems that judge product recommendations based on visual content, not just text. The visual layer of AEO is the most under-invested side of the discipline — and the one that has a big impact on which products get recommended.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do AI shopping agents choose which products to recommend?</summary>
+            <div class="answer">Modern AI shopping agents are multimodal, which means they evaluate both text and images. Visual signals are one of several inputs, but they're the input that determines whether a product clears the recommendation threshold in the first place. The AI evaluates images for things like product clarity, contextual relevance to the prompt, visual hierarchy, and readability. Products whose images fail these checks are deprioritized, regardless of how well the listing copy is written or how strong the reviews are.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I optimize product images for ChatGPT, Rufus, and Perplexity?</summary>
+            <div class="answer">Optimize for machine readability (clean object boundaries, high contrast, uncluttered framing), contextual signals (lifestyle and usage cues that match likely prompts), and visual hierarchy (distinguishing features legible at thumbnail scale). This is what Visual AEO measures and what Vizit scores and optimizes simultaneously for human shoppers and AI systems.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is GEO (Generative Engine Optimization)?</summary>
+            <div class="answer">GEO is the practice of optimizing content to be cited and recommended by generative AI systems — essentially SEO for the AI era. For product pages, GEO covers both structured data (schema markup) and multimodal optimization (the visual signals AI uses to evaluate products). Most brands have started on the structured data side. Far fewer have started on the visual side, which is where the next wave of AI commerce wins are being captured.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What's the difference between AEO and Visual AEO?</summary>
+            <div class="answer">AEO focuses on making your text content readable and citable by AI answer engines, which includes schema, structured data, and listing copy. Visual AEO is the layer most brands are missing: optimizing the images that multimodal AI systems use to evaluate and recommend products. Since modern AI agents weigh both inputs, brands that only optimize text are losing recommendations to brands that optimize both.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="07 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">The visual layer of AI commerce</span>
+    <h2 class="display on-dark reveal">In AI discovery, the image is <em>the answer</em>.</h2>
+    <p class="subhead on-dark reveal">Multimodal agents don't just read your text. Vizit optimizes the visual signals that decide whether you're recommended — or invisible.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Audit my visual AEO <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

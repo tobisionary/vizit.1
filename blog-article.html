@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How we built the Content Conversion Standard | Vizit Insights</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<meta name="description" content="Three years, 100M+ images, 10T+ retail performance data points. The story behind the Vizit Score — what we measured, what we threw out, and the benchmark every CPG catalog now scores against." />
+<link rel="stylesheet" href="css/colors-and-type.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); scroll-behavior: smooth; }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-7); }
+  .wrap-narrow { max-width: 1100px; margin: 0 auto; padding: 0 var(--space-7); }
+  @media (max-width: 720px) { .wrap, .wrap-narrow { padding: 0 var(--space-5); } }
+
+  /* ───────── Nav ───────── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .nav-logo { height: 22px; width: auto; }
+  .nav-links { display: flex; gap: var(--space-6); font-size: var(--text-sm); color: var(--color-700); }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.current { color: var(--color-1000); font-weight: 500; }
+  .nav-cta {
+    background: var(--blue-1000); color: white;
+    padding: 10px 18px; border-radius: var(--radius-full);
+    font-size: var(--text-sm); font-weight: 500;
+  }
+  .nav-cta:hover { background: var(--blue-base); }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  /* ───────── Reading progress bar ───────── */
+  .progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 200; pointer-events: none;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    transition: width 80ms linear;
+  }
+
+  /* ───────── Breadcrumb / back ───────── */
+  .crumb {
+    padding: var(--space-6) 0 var(--space-3);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .back-home {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--color-700);
+    padding: 8px 14px 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: white;
+    transition: all 240ms var(--ease);
+  }
+  .back-home:hover {
+    color: var(--accent); border-color: var(--blue-300);
+    transform: translateX(-3px);
+  }
+  .back-home .arrow {
+    display: inline-block;
+    transition: transform 240ms var(--ease);
+  }
+  .back-home:hover .arrow { transform: translateX(-3px); }
+  .crumb-trail {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .crumb-trail a:hover { color: var(--accent); }
+  .crumb-trail .sep { margin: 0 8px; opacity: 0.5; }
+  .crumb-trail .current { color: var(--color-1000); }
+
+  /* ───────── Article header ───────── */
+  .art-head { padding: var(--space-6) 0 var(--space-7); }
+  .art-head .eyebrow {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent);
+    display: inline-flex; gap: var(--space-3); align-items: center;
+    margin-bottom: var(--space-5);
+  }
+  .art-head .eyebrow::after {
+    content: ""; width: 36px; height: 1px; background: currentColor;
+  }
+  .art-head h1 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.0; letter-spacing: -0.04em;
+    font-size: clamp(2.5rem, 5.4vw, 4.75rem);
+    margin: 0 0 var(--space-5);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .art-head h1 em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .art-lead {
+    font-family: var(--font-display); font-size: 1.5rem; line-height: 1.4;
+    color: var(--color-700); font-weight: 400; letter-spacing: -0.01em;
+    max-width: 60ch; margin: 0;
+  }
+  .art-meta {
+    margin-top: var(--space-7);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-5); flex-wrap: wrap;
+  }
+  .author-block { display: flex; align-items: center; gap: var(--space-3); }
+  .avatars { display: flex; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--blue-1000); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-style: normal;
+    font-size: 15px; font-weight: 500;
+    border: 2px solid white; box-shadow: 0 0 0 1px var(--border);
+  }
+  .avatars .avatar + .avatar { margin-left: -10px; }
+  .author-meta { display: flex; flex-direction: column; gap: 2px; }
+  .author-meta .names { font-family: var(--font-sans); font-weight: 500; font-size: var(--text-sm); color: var(--color-900); }
+  .author-meta .role { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+  .read-meta {
+    display: flex; align-items: center; gap: var(--space-5);
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .read-meta strong { color: var(--color-900); font-weight: 500; }
+
+  /* ───────── Hero image ───────── */
+  .art-hero {
+    aspect-ratio: 21 / 9;
+    border-radius: var(--radius-lg);
+    overflow: hidden; position: relative;
+    background: radial-gradient(70% 90% at 25% 85%, rgba(1,116,217,0.25), transparent 60%), #000000;
+    margin-bottom: var(--space-9);
+  }
+  .art-hero::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(40% 60% at 75% 30%, rgba(52,160,254,0.55), transparent 60%),
+      radial-gradient(30% 50% at 20% 80%, rgba(255,255,255,0.10), transparent 60%);
+  }
+  .art-hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(135deg, black 20%, transparent 75%);
+    -webkit-mask-image: linear-gradient(135deg, black 20%, transparent 75%);
+  }
+  /* When a real hero image is supplied, drop the placeholder gradient overlays and size the hero to the image itself */
+  .art-hero.has-hero::before,
+  .art-hero.has-hero::after { display: none; }
+  .art-hero.has-hero { aspect-ratio: auto; background: none; }
+  .art-hero.has-hero .hero-img { display: block; width: 100%; height: auto; }
+  .hero-stamp, .hero-readout, .hero-caption { display: none !important; }
+  .hero-stamp {
+    position: absolute; top: 28px; right: 28px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: var(--radius-full);
+    padding: 8px 18px;
+    font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: white;
+    backdrop-filter: blur(6px);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .hero-stamp::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--blue-300); box-shadow: 0 0 0 4px rgba(52,160,254,0.20);
+  }
+  .hero-caption {
+    position: absolute; left: 28px; bottom: 24px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.65);
+    max-width: 60%;
+  }
+  /* Floating "score readout" on hero */
+  .hero-readout {
+    position: absolute; right: 32px; bottom: 28px;
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    box-shadow: 0 20px 40px -20px rgba(0,33,61,0.45);
+    display: flex; align-items: center; gap: var(--space-4);
+  }
+  .hero-readout .num {
+    font-family: var(--font-display); font-weight: 500;
+    font-style: normal; font-size: 32px; line-height: 1;
+    color: var(--accent);
+  }
+  .hero-readout .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .hero-readout .lbl strong { color: var(--color-900); font-weight: 500; }
+  /* Ebook download CTA */
+  .ebook-dl { margin-top: var(--space-5); display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+  .ebook-dl-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--blue-1000); color: white; padding: 14px 26px; border-radius: 999px; font-weight: 500; font-size: var(--text-sm); transition: background 200ms var(--ease), gap 200ms var(--ease); }
+  .ebook-dl-btn:hover { background: var(--blue-base); color: white; gap: 14px; }
+  .ebook-dl-meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  @media (max-width: 720px) {
+    .hero-readout { display: none; }
+    .hero-caption { left: 16px; bottom: 14px; }
+  }
+
+  /* ───────── Article layout ───────── */
+  .art-body {
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: var(--space-9);
+    padding-bottom: var(--space-10);
+    align-items: start;
+  }
+  @media (max-width: 900px) { .art-body { grid-template-columns: 1fr; gap: var(--space-7); } }
+
+  /* Sticky side nav (TOC) */
+  .toc {
+    position: sticky; top: 96px;
+  }
+  @media (max-width: 900px) {
+    .toc {
+      position: static;
+      padding: var(--space-4);
+      background: var(--color-50);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+  }
+  .toc-label {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-bottom: var(--space-3); padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .toc-list { display: flex; flex-direction: column; gap: 2px; }
+  .toc-link {
+    display: flex; gap: 12px;
+    padding: 10px 0;
+    font-family: var(--font-sans); font-size: var(--text-sm);
+    color: var(--color-500);
+    border-left: 2px solid transparent;
+    padding-left: 14px; margin-left: -14px;
+    transition: all 220ms var(--ease);
+    line-height: 1.35;
+  }
+  .toc-link .ix {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--color-400); letter-spacing: 0.06em;
+    flex-shrink: 0; padding-top: 3px;
+    transition: color 220ms var(--ease);
+  }
+  .toc-link:hover { color: var(--color-1000); }
+  .toc-link.active {
+    color: var(--color-1000); border-left-color: var(--accent);
+    font-weight: 500;
+  }
+  .toc-link.active .ix { color: var(--accent); }
+
+  .toc-share {
+    margin-top: var(--space-5); padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  .toc-share-label {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-bottom: var(--space-2);
+  }
+  .share-row { display: flex; gap: 8px; }
+  .share-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white; cursor: pointer;
+    transition: all 220ms var(--ease);
+    color: var(--color-500);
+  }
+  .share-btn:hover { color: var(--accent); border-color: var(--blue-300); }
+  .share-btn svg { width: 14px; height: 14px; }
+
+  /* Article content */
+  .art-content { max-width: 70ch; font-size: 1.0625rem; line-height: 1.7; color: var(--color-800); }
+  .art-content h2 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.1; letter-spacing: -0.025em;
+    font-size: 2.25rem;
+    margin: var(--space-9) 0 var(--space-4);
+    color: var(--color-1000);
+    scroll-margin-top: 100px;
+    text-wrap: balance;
+  }
+  .art-content h2:first-of-type { margin-top: 0; }
+  .art-content h2 em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .art-content h2 .sec {
+    display: block;
+    font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--accent); font-weight: 400;
+    margin-bottom: var(--space-3);
+  }
+  .art-content h3 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em;
+    margin: var(--space-7) 0 var(--space-3);
+    color: var(--color-1000);
+  }
+  .art-content p {
+    margin: 0 0 var(--space-5);
+    text-wrap: pretty;
+  }
+  .art-content p strong { color: var(--color-1000); font-weight: 500; }
+  .art-content p em { color: var(--color-800); }
+  .art-content a {
+    color: var(--accent); border-bottom: 1px solid currentColor;
+    transition: color 220ms var(--ease);
+  }
+  .art-content a:hover { color: var(--blue-700); }
+  .art-content ul, .art-content ol {
+    margin: 0 0 var(--space-5); padding-left: var(--space-5);
+  }
+  .art-content li { margin-bottom: var(--space-2); }
+  .art-content blockquote {
+    margin: var(--space-7) 0;
+    padding: var(--space-5) var(--space-6);
+    border-left: 3px solid var(--accent);
+    background: var(--color-50);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .art-content blockquote p {
+    font-family: var(--font-display); font-style: normal;
+    font-size: 1.375rem; line-height: 1.4;
+    color: var(--color-1000); margin: 0 0 var(--space-3);
+    text-wrap: balance;
+  }
+  .art-content blockquote cite {
+    font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); font-style: normal;
+  }
+  .art-content .pull {
+    margin: var(--space-7) 0;
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+  @media (max-width: 600px) { .art-content .pull { grid-template-columns: 1fr; } }
+  .stat { display: flex; flex-direction: column; gap: 6px; }
+  .stat .num {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 2.5rem; line-height: 1; letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+  .stat .num em { font-style: normal; }
+  .stat .lbl {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+
+  .art-content .figure {
+    margin: var(--space-7) 0;
+  }
+  .art-content .figure-img {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden; position: relative;
+    background: linear-gradient(135deg, var(--blue-0), white);
+  }
+  .art-content .figure-img.dark {
+    background: linear-gradient(135deg, var(--blue-1000), var(--blue-700));
+  }
+  .art-content .figure-img::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(1,116,217,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(1,116,217,0.10) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(60% 50% at 50% 50%, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(60% 50% at 50% 50%, black, transparent 80%);
+  }
+  .art-content .figure-img.dark::after {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.10) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(60% 50% at 50% 50%, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(60% 50% at 50% 50%, black, transparent 80%);
+  }
+  .figure-img-mark {
+    position: absolute; left: 16px; bottom: 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--blue-700); z-index: 2;
+  }
+  .figure-img.dark .figure-img-mark { color: rgba(255,255,255,0.75); }
+  .figure-img-num {
+    position: absolute; top: 14px; right: 16px;
+    font-family: var(--font-display); font-style: normal; font-weight: 500;
+    font-size: 32px; line-height: 1; color: var(--blue-700);
+    opacity: 0.6; z-index: 2;
+  }
+  .figure-img.dark .figure-img-num { color: rgba(255,255,255,0.8); }
+  .figure-cap {
+    margin-top: var(--space-3);
+    font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+  }
+  .figure-cap strong { color: var(--color-900); font-weight: 500; margin-right: 8px; }
+
+  /* ───── Video embed ───── */
+  .video-wrap {
+    margin-bottom: var(--space-9);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--blue-1000);
+    position: relative;
+  }
+  .video-wrap iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+  .video-wrap.link {
+    aspect-ratio: 21 / 9;
+    background: linear-gradient(135deg, var(--blue-1000), var(--blue-700));
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .video-wrap.link::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(40% 60% at 75% 30%, rgba(52,160,254,0.5), transparent 60%),
+      radial-gradient(30% 50% at 20% 80%, rgba(255,255,255,0.10), transparent 60%);
+  }
+  .video-wrap.link a {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 28px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.30);
+    color: white;
+    border-radius: var(--radius-full);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    transition: background 220ms var(--ease), transform 220ms var(--ease), border-color 220ms var(--ease);
+  }
+  .video-wrap.link a:hover {
+    background: rgba(255,255,255,0.20);
+    border-color: white;
+    transform: translateY(-2px);
+  }
+  .video-wrap.link .play-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: white; color: var(--blue-1000);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; padding-left: 3px;
+  }
+
+  /* ───── Slider / gallery ───── */
+  .slider {
+    margin-bottom: var(--space-9);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--color-50);
+    padding: var(--space-4);
+    position: relative;
+  }
+  .slider-cap {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: var(--space-3);
+  }
+  .slider-cap-label {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+  }
+  .slider-cap-counter {
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    color: var(--color-700); letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .slider-viewport {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-100);
+    aspect-ratio: 16 / 9;
+  }
+  .slider-track {
+    display: flex;
+    height: 100%;
+    transition: transform 420ms cubic-bezier(0.2, 0, 0, 1);
+    will-change: transform;
+  }
+  .slider-slide {
+    flex: 0 0 100%;
+    width: 100%; height: 100%;
+    position: relative;
+    background-color: var(--color-100);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .slider-slide.broken {
+    background: linear-gradient(135deg, #f4e8e8, white);
+    display: flex; align-items: center; justify-content: center;
+    color: #b3331f; font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .slider-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--color-900);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,33,61,0.18);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+    transition: background 200ms var(--ease), transform 200ms var(--ease);
+  }
+  .slider-nav:hover { background: var(--accent); color: white; }
+  .slider-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+  .slider-nav:disabled:hover { background: white; color: var(--color-900); }
+  .slider-nav svg { width: 16px; height: 16px; }
+  .slider-nav.prev { left: 22px; }
+  .slider-nav.next { right: 22px; }
+  .slider-dots {
+    display: flex; justify-content: center; gap: 6px;
+    margin-top: var(--space-3);
+  }
+  .slider-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--color-300);
+    border: 0; padding: 0; cursor: pointer;
+    transition: background 200ms var(--ease), width 200ms var(--ease);
+  }
+  .slider-dot.active {
+    background: var(--accent);
+    width: 22px; border-radius: 999px;
+  }
+  .slider-dot:hover:not(.active) { background: var(--color-500); }
+
+  /* End-of-article CTA */
+  .art-cta {
+    margin-top: var(--space-9);
+    padding: var(--space-6);
+    background: #0a0e14; color: white;
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-5); flex-wrap: wrap;
+  }
+  .art-cta h3 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em;
+    margin: 0; max-width: 28ch; color: white;
+  }
+  .art-cta h3 em { font-style: normal; color: var(--blue-300); }
+  .art-cta a {
+    --mx: 50%; --my: 50%;
+    background: white; color: #0a0e14;
+    padding: 12px 22px; border-radius: 999px;
+    font-family: var(--font-sans); font-weight: 500;
+    font-size: var(--text-sm);
+    transition: transform 380ms cubic-bezier(0.2,0,0,1), background 380ms var(--ease), color 380ms var(--ease), box-shadow 380ms var(--ease);
+  }
+  .art-cta a:hover {
+    background-image: radial-gradient(170px circle at var(--mx) var(--my), rgba(94,182,255,0.5) 0%, rgba(52,160,254,0.25) 38%, rgba(52,160,254,0) 72%);
+    background-color: #3f464e; color: #ffffff;
+    box-shadow: 0 0 0 1px #ffffff inset, 0 0 26px -6px rgba(52,160,254,0.4);
+    transform: translateY(-2px);
+  }
+  .art-cta a:active { transform: translateY(0); }
+
+  /* ───────── Related ───────── */
+  .related {
+    padding: var(--space-9) 0;
+    background: var(--color-50);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .related-head {
+    display: flex; align-items: end; justify-content: space-between;
+    gap: var(--space-5); flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+  .related-head h2 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.02; letter-spacing: -0.03em;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin: var(--space-3) 0 0;
+    max-width: 22ch;
+  }
+  .related-head h2 em { font-style: normal; font-weight: 500; color: var(--accent); }
+  .related-head .all {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-sans); font-size: var(--text-sm);
+    font-weight: 500; color: var(--blue-1000);
+    padding-bottom: 2px;
+    border-bottom: 1px solid currentColor;
+    transition: gap 220ms var(--ease), color 220ms var(--ease);
+  }
+  .related-head .all:hover { gap: 18px; color: var(--accent); }
+  .related-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+  @media (max-width: 900px) { .related-grid { grid-template-columns: 1fr; } }
+
+  .rcard {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 320ms var(--ease), box-shadow 320ms var(--ease);
+    display: flex; flex-direction: column;
+  }
+  .rcard:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -22px rgba(0,33,61,0.20); }
+  .rcard-img {
+    aspect-ratio: 16 / 9; position: relative; overflow: hidden;
+  }
+  .rcard-img.ti-case {
+    background:
+      radial-gradient(50% 60% at 30% 50%, rgba(46,181,115,0.30), transparent 60%),
+      linear-gradient(135deg, #eef9f1, white);
+  }
+  .rcard-img.ti-research {
+    background:
+      radial-gradient(60% 60% at 70% 30%, rgba(1,116,217,0.35), transparent 60%),
+      linear-gradient(135deg, var(--blue-0), white);
+  }
+  .rcard-img.ti-research::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--blue-100) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blue-100) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.5;
+    mask-image: radial-gradient(50% 50% at 30% 70%, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(50% 50% at 30% 70%, black, transparent 80%);
+  }
+  .rcard-img.ti-playbook {
+    background: linear-gradient(135deg, var(--blue-1000), var(--blue-700));
+  }
+  .rcard-img.ti-playbook::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(40% 40% at 80% 20%, rgba(52,160,254,0.55), transparent 60%);
+  }
+  .rcard-thumb-mark {
+    position: absolute; left: 16px; bottom: 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--color-900); opacity: 0.7; z-index: 2;
+  }
+  .rcard-img.ti-playbook .rcard-thumb-mark { color: rgba(255,255,255,0.75); }
+  .rcard-thumb-num {
+    position: absolute; top: 12px; right: 16px;
+    font-family: var(--font-display); font-style: normal; font-weight: 500;
+    font-size: 26px; line-height: 1; color: var(--color-900); opacity: 0.55; z-index: 2;
+  }
+  .rcard-img.ti-playbook .rcard-thumb-num { color: white; opacity: 0.7; }
+
+  .rcard-body { padding: var(--space-5); display: flex; flex-direction: column; flex: 1; }
+  .pill {
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 4px 10px; border-radius: var(--radius-sm);
+    background: var(--blue-0); color: var(--blue-600);
+    border: 1px solid var(--blue-100);
+    align-self: flex-start;
+  }
+  .rcard-meta {
+    display: flex; align-items: center; gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .rcard h3 {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.15; letter-spacing: -0.02em;
+    font-size: 1.25rem;
+    margin: 0 0 var(--space-3);
+    color: var(--color-1000);
+    text-wrap: balance;
+  }
+  .rcard:hover h3 { color: var(--accent); }
+  .rcard p {
+    font-size: var(--text-sm); line-height: 1.55;
+    color: var(--color-700); margin: 0 0 var(--space-4);
+  }
+  .rcard-foot {
+    margin-top: auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .rcard-foot .author { color: var(--color-700); }
+
+  /* ───────── Footer ───────── */
+  .foot {
+    background: white;
+    padding: var(--space-9) 0 var(--space-6);
+  }
+  .foot-meta {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: var(--space-5); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--text-xs);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .foot-logo { height: 22px; width: auto; }
+  .foot-links { display: flex; gap: var(--space-5); }
+  .foot-links a:hover { color: var(--accent); }
+  .foot-headline {
+    font-family: var(--font-display); font-weight: 600;
+    line-height: 1.02; letter-spacing: -0.035em;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    margin: 0 0 var(--space-5);
+    max-width: 18ch;
+  }
+  .foot-headline em { font-style: normal; font-weight: 500; color: var(--accent); }
+</style>
+<style>
+  /* Products dropdown — shared across all pages */
+  .nav-item,.nav__item{position:relative;display:inline-flex;align-items:center}
+  .nav-item .nav-trigger,.nav__item .nav__trigger{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+  .nav-item .chev,.nav__item .chev{width:10px;height:10px;transition:transform .2s ease}
+  .nav-item:hover .chev,.nav__item:hover .chev{transform:rotate(180deg)}
+  .nav-sub,.nav__sub{position:absolute;top:100%;left:-12px;padding-top:10px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .18s ease,transform .18s ease,visibility .18s;pointer-events:none;min-width:240px;z-index:200}
+  .nav-item:hover .nav-sub,.nav-item:focus-within .nav-sub,.nav__item:hover .nav__sub,.nav__item:focus-within .nav__sub{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+  .nav-sub-inner,.nav__sub-inner{background:#fff;border:1px solid var(--border,#e4e4e4);border-radius:8px;box-shadow:0 16px 40px -20px rgba(0,33,61,.25);padding:8px;display:flex;flex-direction:column}
+  .nav-sub-inner a,.nav__sub-inner a{padding:10px 12px;border-radius:4px;font-size:.875rem;color:var(--color-700,#404040);display:flex;flex-direction:column;gap:2px;border:none;background:transparent}
+  .nav-sub-inner a:hover,.nav__sub-inner a:hover{background:#fafafa;color:var(--accent,#0174d9)}
+  .nav-sub-inner a .desc,.nav__sub-inner a .desc{font-family:var(--font-mono,ui-monospace,monospace);font-size:.625rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#737373);font-weight:400}
+  @media (max-width:980px){
+    .nav-sub,.nav__sub{position:static;opacity:1;visibility:visible;transform:none;pointer-events:auto;padding-top:0;min-width:0}
+    .nav-sub-inner,.nav__sub-inner{box-shadow:none;border:none;padding:0 0 0 16px;background:transparent}
+    .nav-item .chev,.nav__item .chev{display:none}
+  }
+</style>
+<link rel="stylesheet" href="css/vizit-theme.css">
+<script src="js/vizit-nav.js" defer></script>
+  <script src="js/vizit-footer.js" defer></script>
+</head>
+<body>
+
+<!-- Reading progress -->
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<vizit-nav data-current="resources"></vizit-nav>
+
+<!-- BREADCRUMB + BACK -->
+<div class="wrap crumb">
+  <a class="back-home" href="blog.html">
+    <span class="arrow">←</span>
+    <span>Back to blog</span>
+  </a>
+  <div class="crumb-trail">
+    <a href="blog.html">Insights</a>
+    <span class="sep">/</span>
+    <span>Research</span>
+    <span class="sep">/</span>
+    <span class="current">Cover study</span>
+  </div>
+</div>
+
+<!-- ARTICLE HEADER -->
+<header class="wrap">
+  <div class="art-head" id="artHead">
+    <span class="eyebrow">Research · Cover study</span>
+    <h1>How we built the <em>Content Conversion Standard</em>.</h1>
+    <p class="art-lead">
+      Three years. 100M+ images. 10T+ retail performance data points. Inside the benchmark every CPG catalog now scores against — what we measured, what we threw out, and why a single number decides whether content ships.
+    </p>
+
+    <div class="art-meta">
+      <div class="author-block">
+        <div class="avatars">
+          <div class="avatar">EC</div>
+          <div class="avatar" style="background: var(--blue-base)">JR</div>
+        </div>
+        <div class="author-meta">
+          <span class="names">Elena Choi &amp; Jordan Reyes</span>
+          <span class="role">Head of Research · Principal Researcher</span>
+        </div>
+      </div>
+      <div class="read-meta">
+        <span><strong>12 min</strong> read</span>
+        <span>Mar 04, 2026</span>
+        <span>Vol. 04 · No. 09</span>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<!-- VIDEO (auto-shows when article has a Video link) -->
+<section class="wrap-narrow" id="videoSection" style="display:none">
+  <div class="video-wrap" id="videoWrap"></div>
+</section>
+
+<!-- SLIDER (auto-shows when article has Slider Images) -->
+<section class="wrap-narrow" id="sliderSection" style="display:none">
+  <div class="slider" id="slider">
+    <div class="slider-cap">
+      <span class="slider-cap-label">Gallery</span>
+      <span class="slider-cap-counter" id="sliderCounter">1 / 1</span>
+    </div>
+    <div class="slider-viewport" id="sliderViewport">
+      <div class="slider-track" id="sliderTrack"></div>
+    </div>
+    <button class="slider-nav prev" id="sliderPrev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="slider-nav next" id="sliderNext" aria-label="Next slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="slider-dots" id="sliderDots"></div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<div class="wrap-narrow">
+  <div class="art-body">
+
+    <!-- TOC -->
+    <aside class="toc" id="toc">
+      <div class="toc-label">In this study</div>
+      <nav class="toc-list" id="tocList">
+        <a class="toc-link active" href="#section-1" data-section="section-1">
+          <span class="ix">01</span>
+          <span>What "ready" means, measurably</span>
+        </a>
+        <a class="toc-link" href="#section-2" data-section="section-2">
+          <span class="ix">02</span>
+          <span>The signals we kept — and the ones we threw out</span>
+        </a>
+        <a class="toc-link" href="#section-3" data-section="section-3">
+          <span class="ix">03</span>
+          <span>Why a single score wins over a dashboard</span>
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- CONTENT -->
+    <article class="art-content" id="artContent">
+
+      <section id="section-1">
+        <h2>
+          <span class="sec">01 · The premise</span>
+          What <em>"ready"</em> means, measurably.
+        </h2>
+        <p>
+          For most of digital commerce's history, "is this image good?" has been a question answered by the loudest person in the room. Brand managers had taste. Creative directors had instincts. Compliance had checklists. Nobody had a number — and so nothing shipped against a standard. It shipped against an opinion.
+        </p>
+        <p>
+          When we started this project in early 2023, the premise was simple: <strong>convertibility is observable</strong>. Shoppers behave in patterns. Those patterns leave signal across hundreds of measurable dimensions — pack-front clarity, claim placement, visual weight, foreground contrast, the geometry of attention. Add enough of those signals together, weighted against actual conversion outcomes, and you get a number that means something the same way a credit score means something.
+        </p>
+        <p>
+          The harder question was what to call <em>ready</em>. Ready for what? Not ready to win a design award. Ready to <strong>convert at first impression</strong> against the population of shoppers who will see it on a phone, in two-tenths of a second, on a retailer page they didn't choose. That definition was the wall we kept hitting back to as we built every part of the standard.
+        </p>
+
+        <div class="pull">
+          <div class="stat">
+            <span class="num">100<em>M+</em></span>
+            <span class="lbl">Images analyzed</span>
+          </div>
+          <div class="stat">
+            <span class="num">10<em>T+</em></span>
+            <span class="lbl">retail performance data points trained on</span>
+          </div>
+          <div class="stat">
+            <span class="num">20+</span>
+            <span class="lbl">Countries observed</span>
+          </div>
+        </div>
+
+        <p>
+          We built it the way you'd build a benchmark: collect everything, kill what doesn't predict, repeat for years. The corpus that survived is what now powers every Vizit Score.
+        </p>
+      </section>
+
+      <section id="section-2">
+        <h2>
+          <span class="sec">02 · The signals</span>
+          The signals we kept — and the ones we <em>threw out</em>.
+        </h2>
+        <p>
+          We started with 1,140 candidate signals. Some were obvious: where the product sits in the frame, how much of the pack you can read at 320px wide, how many visual elements compete for attention. Others were more speculative — color temperature, claim density, the angle of the product against the cropline. Every signal had to earn its place by predicting outcomes on a held-out test set across categories the model hadn't seen.
+        </p>
+        <p>
+          By year two we were down to 184. By the time we shipped, 87. The cuts were sometimes counterintuitive. A few examples of what survived, and what didn't:
+        </p>
+
+        <ul>
+          <li><strong>Survived:</strong> Pack-front legibility at thumb size. Product centrality. Foreground-to-background contrast ratio. Claim hierarchy. Cropline geometry.</li>
+          <li><strong>Cut:</strong> Brand color saturation. Logo size as a percentage of frame. Photographic style. Image resolution above 1080px. Background "premium-ness."</li>
+        </ul>
+
+        <p>
+          The cuts were the more interesting result. <em>Photographic style</em> — the dimension creative teams argue about most — turned out to be a near-zero predictor of conversion once pack-front legibility was controlled for. The shopper, it turns out, does not care whether the bag is lit moodily. The shopper cares whether they can tell what's in it.
+        </p>
+
+        <div class="figure">
+          <div class="figure-img">
+            <span class="figure-img-num">87</span>
+            <span class="figure-img-mark">Fig. 1 · Final signal set</span>
+          </div>
+          <p class="figure-cap"><strong>Fig. 1</strong> The 87 signals that survived to v1, grouped by dimension. Pack-front clarity carries the heaviest weight; photographic style carries none.</p>
+        </div>
+
+        <blockquote>
+          <p>Once you let outcomes do the talking, the things you argued about for a decade stop mattering. The things you'd never thought to argue about turn out to be everything.</p>
+          <cite>— Jordan Reyes, Principal Researcher</cite>
+        </blockquote>
+
+        <p>
+          The model that came out of this is calibrated against actual shopper behavior — not the opinion of any one judge, not the conventions of any one brand. That's what makes the score portable across categories, retailers, and geographies. Pack-front clarity in pet food and pack-front clarity in personal care are measured the same way, because shoppers process them the same way.
+        </p>
+      </section>
+
+      <section id="section-3">
+        <h2>
+          <span class="sec">03 · The verdict</span>
+          Why a <em>single score</em> wins over a dashboard.
+        </h2>
+        <p>
+          Most of the conversion-intelligence work we saw in the wild before Vizit was dashboard-shaped. A page would show you twelve metrics, ten meters, three trend lines, and a colored heatmap, and leave you to figure out which one mattered. We tried this. It is worse than nothing. People who had to make a ship/no-ship decision in fifteen minutes ignored the dashboard entirely.
+        </p>
+        <p>
+          So we collapsed it. The Vizit Score is a 0–100 number on each asset and a 0–100 number on the page that contains it. Above 80 is conversion-ready. Below 60 is leaving revenue on the table. Between is the optimization zone. That's the entire decision surface. Underneath, the score decomposes — you can open any single asset and see exactly which signals dragged it down — but the headline is a number, and the number is what ships.
+        </p>
+
+        <div class="figure">
+          <div class="figure-img dark">
+            <span class="figure-img-num">0–100</span>
+            <span class="figure-img-mark">Fig. 2 · The score in production</span>
+          </div>
+          <p class="figure-cap"><strong>Fig. 2</strong> A single number compresses 87 signals into one decision surface. Diagnostics live below the headline, not in place of it.</p>
+        </div>
+
+        <p>
+          The result, in production, is that teams stop arguing about whether something is good. They argue about <em>how to get it above 80</em>, which is a much more productive argument. The work moves from taste to optimization, and once you've made that move, every part of the catalog gets faster.
+        </p>
+        <p>
+          We'll write more in the coming months about specific signal dimensions — pack-front clarity gets its own piece next month, with the dataset attached. For now, the headline: the standard exists, it's portable, and it scores against shopper behavior rather than anyone's instincts. That's the work.
+        </p>
+      </section>
+
+      <!-- End-of-article CTA -->
+      <div class="art-cta">
+        <h3>See where your catalog sits against the <em>standard</em>.</h3>
+        <a href="index.html#calc">Get your Vizit Score →</a>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- RELATED -->
+<section class="related">
+  <div class="wrap">
+    <div class="related-head">
+      <div>
+        <span class="eyebrow" style="font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);">Keep reading</span>
+        <h2>Three more from the <em>brief</em>.</h2>
+      </div>
+      <a class="all" href="blog.html">All insights →</a>
+    </div>
+
+    <div class="related-grid" id="relatedGrid">
+      <a class="rcard" href="blog-article.html">
+        <div class="rcard-img ti-case">
+          <span class="rcard-thumb-num">+30</span>
+          <span class="rcard-thumb-mark">Case · Mars Petcare</span>
+        </div>
+        <div class="rcard-body">
+          <div class="rcard-meta">
+            <span class="pill">Case study</span>
+            <span>6 min</span>
+            <span>·</span>
+            <span>Feb 27</span>
+          </div>
+          <h3>Inside Mars Petcare's +30% conversion lift on optimized SKUs.</h3>
+          <p>The pack-front cues that moved double-digit conversion — and how the team built a repeatable workflow around them.</p>
+          <div class="rcard-foot">
+            <span class="author">Priya Shah</span>
+            <span>Score · 89</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="rcard" href="blog-article.html">
+        <div class="rcard-img ti-research">
+          <span class="rcard-thumb-num">500ms</span>
+          <span class="rcard-thumb-mark">Research · Eye-tracking</span>
+        </div>
+        <div class="rcard-body">
+          <div class="rcard-meta">
+            <span class="pill">Research</span>
+            <span>8 min</span>
+            <span>·</span>
+            <span>Feb 21</span>
+          </div>
+          <h3>Why mobile heroes lose 23% of shoppers in the first half-second.</h3>
+          <p>An eye-tracking study across 14,800 shoppers reveals the exact frame where attention collapses — and how to hold it.</p>
+          <div class="rcard-foot">
+            <span class="author">Elena Choi</span>
+            <span>Score · 86</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="rcard" href="blog-article.html">
+        <div class="rcard-img ti-playbook">
+          <span class="rcard-thumb-num">01</span>
+          <span class="rcard-thumb-mark">Playbook · Pre-flight</span>
+        </div>
+        <div class="rcard-body">
+          <div class="rcard-meta">
+            <span class="pill">Playbook</span>
+            <span>7 min</span>
+            <span>·</span>
+            <span>Feb 14</span>
+          </div>
+          <h3>Retail media pre-flight: stop spending on images that won't convert.</h3>
+          <p>A five-step pre-flight your creative ops team can run before a single dollar of media is committed.</p>
+          <div class="rcard-foot">
+            <span class="author">Marcus Lin</span>
+            <span>Score · 84</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<vizit-footer></vizit-footer>
+
+<script src="js/blog-data.js"></script>
+<script>
+  // ─────────────────────────────────────────────
+  // Hydrate article from ?slug= URL parameter
+  // ─────────────────────────────────────────────
+  (function () {
+    if (!window.VizitBlog) return;
+
+    function getSlug() {
+      var params = new URLSearchParams(window.__vzSearch || window.location.search);
+      var s = params.get('slug');
+      if (s) return s;
+      if (window.location.hash.indexOf('slug=') === 0) {
+        return decodeURIComponent(window.location.hash.replace(/^#slug=/, ''));
+      }
+      return null;
+    }
+
+    function escapeHTML(s) {
+      return (s == null ? '' : String(s))
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function articleHref(slug) {
+      return 'blog-article.html?slug=' + encodeURIComponent(slug);
+    }
+
+    function renderHead(a) {
+      var head = document.getElementById('artHead');
+      if (!head) return;
+      var avatars = '<div class="avatar">' + escapeHTML(VizitBlog.authorInitials(a.author)) + '</div>';
+      var names = a.author;
+      var roles = a.authorRole || '';
+      if (a.coAuthor) {
+        avatars += '<div class="avatar" style="background: var(--blue-base)">' + escapeHTML(VizitBlog.authorInitials(a.coAuthor)) + '</div>';
+        names += ' &amp; ' + a.coAuthor;
+        if (a.coAuthorRole) roles += (roles ? ' · ' : '') + a.coAuthorRole;
+      }
+      var dateStr = VizitBlog.formatDate(a.publishedOn || a.updatedOn);
+      head.innerHTML =
+        '<span class="eyebrow">' + escapeHTML(a.category || 'Insights') + (a.featured ? ' · Featured' : '') + '</span>' +
+        '<h1>' + escapeHTML(a.title) + '</h1>' +
+        '<p class="art-lead">' + escapeHTML(a.description || '') + '</p>' +
+        '<div class="art-meta">' +
+          '<div class="author-block">' +
+            '<div class="avatars">' + avatars + '</div>' +
+            '<div class="author-meta">' +
+              '<span class="names">' + escapeHTML(names) + '</span>' +
+              '<span class="role">' + escapeHTML(roles) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="read-meta">' +
+            (a.readTime ? '<span><strong>' + escapeHTML(a.readTime) + '</strong> read</span>' : '') +
+            (dateStr ? '<span>' + escapeHTML(dateStr) + '</span>' : '<span style="color:#b45309">Draft</span>') +
+          '</div>' +
+        '</div>';
+      var isEbook = /ebook|e-book/.test((a.category || '').toLowerCase());
+      if (isEbook) {
+        head.insertAdjacentHTML('beforeend', a.ebookUrl
+          ? '<div class="ebook-dl"><a class="ebook-dl-btn" href="' + escapeHTML(a.ebookUrl) + '" download>Download the ebook <span aria-hidden="true">↓</span></a><span class="ebook-dl-meta">Free · PDF' + (a.readTime ? ' · ' + escapeHTML(a.readTime) : '') + '</span></div>'
+          : '<div class="ebook-dl"><span class="ebook-dl-meta">Download coming soon — add the file URL in the CMS</span></div>');
+      }
+    }
+
+    function renderHero(a) {
+      var hero = document.getElementById('artHero');
+      if (!hero) return;
+      var img = hero.querySelector('.hero-img');
+      if (a.heroImage) {
+        hero.classList.add('has-hero');
+        if (!img) { img = document.createElement('img'); img.className = 'hero-img'; hero.appendChild(img); }
+        img.src = a.heroImage;
+        img.alt = a.title || '';
+      } else {
+        hero.classList.remove('has-hero');
+        if (img) img.remove();
+      }
+    }
+
+    function renderToc(a) {
+      var list = document.getElementById('tocList');
+      var tocAside = document.getElementById('toc');
+      if (!list || !tocAside) return;
+      if (!a.sections || !a.sections.length) {
+        tocAside.style.display = 'none';
+        return;
+      }
+      tocAside.style.display = '';
+      list.innerHTML = a.sections.map(function (s, i) {
+        var ix = (i + 1) < 10 ? '0' + (i + 1) : '' + (i + 1);
+        var id = 'section-' + (i + 1);
+        return '<a class="toc-link' + (i === 0 ? ' active' : '') + '" href="#' + id + '" data-section="' + id + '">' +
+          '<span class="ix">' + ix + '</span>' +
+          '<span>' + escapeHTML(s.title || ('Section ' + (i + 1))) + '</span>' +
+        '</a>';
+      }).join('');
+    }
+
+    function renderContent(a) {
+      var content = document.getElementById('artContent');
+      if (!content) return;
+      var sections = (a.sections && a.sections.length) ? a.sections : [{
+        title: 'Overview',
+        body: '<p>' + escapeHTML(a.description || 'Content coming soon.') + '</p>'
+      }];
+      var html = '';
+      sections.forEach(function (s, i) {
+        var ix = (i + 1) < 10 ? '0' + (i + 1) : '' + (i + 1);
+        var id = 'section-' + (i + 1);
+        var labels = ['The premise', 'The signals', 'The verdict', 'The result', 'The outlook'];
+        var label = labels[i] || ('Section ' + (i + 1));
+        html += '<section id="' + id + '">' +
+          '<h2>' +
+            '<span class="sec">' + ix + ' · ' + escapeHTML(label) + '</span>' +
+            escapeHTML(s.title || '') +
+          '</h2>' +
+          (s.body || '') +
+        '</section>';
+      });
+      // CTA always last
+      html += '<div class="art-cta">' +
+        '<h3>See where your catalog sits against the <em>standard</em>.</h3>' +
+        '<a href="index.html#calc">Get your Vizit Score →</a>' +
+      '</div>';
+      content.innerHTML = html;
+    }
+
+    function renderCrumb(a) {
+      var trail = document.querySelector('.crumb-trail');
+      if (!trail) return;
+      trail.innerHTML =
+        '<a href="blog.html">Insights</a>' +
+        '<span class="sep">/</span>' +
+        '<span>' + escapeHTML(a.category || 'Article') + '</span>' +
+        '<span class="sep">/</span>' +
+        '<span class="current">' + escapeHTML(a.title.length > 40 ? a.title.slice(0, 40) + '…' : a.title) + '</span>';
+    }
+
+    function renderVideo(a) {
+      var section = document.getElementById('videoSection');
+      var wrap = document.getElementById('videoWrap');
+      if (!section || !wrap) return;
+      var url = (a.videoLink || '').trim();
+      if (!url) { section.style.display = 'none'; return; }
+      var embed = toEmbed(url);
+      if (embed) {
+        wrap.className = 'video-wrap';
+        wrap.innerHTML = '<iframe src="' + escapeHTML(embed) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+      } else {
+        wrap.className = 'video-wrap link';
+        wrap.innerHTML =
+          '<a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">' +
+            '<span class="play-icon">▶</span>' +
+            '<span>Watch the video</span>' +
+          '</a>';
+      }
+      section.style.display = '';
+    }
+
+    function toEmbed(url) {
+      var yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/);
+      if (yt) return 'https://www.youtube.com/embed/' + yt[1];
+      var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+      if (vm) return 'https://player.vimeo.com/video/' + vm[1];
+      var lm = url.match(/loom\.com\/(?:share|embed)\/([A-Za-z0-9]+)/);
+      if (lm) return 'https://www.loom.com/embed/' + lm[1];
+      return null;
+    }
+
+    function renderSlider(a) {
+      var section = document.getElementById('sliderSection');
+      var track   = document.getElementById('sliderTrack');
+      var dotsEl  = document.getElementById('sliderDots');
+      var counter = document.getElementById('sliderCounter');
+      var prevBtn = document.getElementById('sliderPrev');
+      var nextBtn = document.getElementById('sliderNext');
+      if (!section || !track) return;
+      var slides = (a.sliderImages || []).filter(Boolean);
+      if (!slides.length) { section.style.display = 'none'; return; }
+
+      track.innerHTML = slides.map(function (url) {
+        return '<div class="slider-slide" style="background-image: url(\'' + escapeHTML(url) + '\');" data-url="' + escapeHTML(url) + '"></div>';
+      }).join('');
+      dotsEl.innerHTML = slides.map(function (_, i) {
+        return '<button class="slider-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Slide ' + (i + 1) + '"></button>';
+      }).join('');
+
+      var idx = 0;
+      function goTo(n) {
+        idx = Math.max(0, Math.min(slides.length - 1, n));
+        track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+        dotsEl.querySelectorAll('.slider-dot').forEach(function (d, i) {
+          d.classList.toggle('active', i === idx);
+        });
+        counter.textContent = (idx + 1) + ' / ' + slides.length;
+        if (prevBtn) prevBtn.disabled = idx === 0;
+        if (nextBtn) nextBtn.disabled = idx === slides.length - 1;
+      }
+
+      slides.forEach(function (url, i) {
+        var probe = new Image();
+        probe.onerror = function () {
+          var node = track.children[i];
+          if (node) {
+            node.classList.add('broken');
+            node.style.backgroundImage = 'none';
+            node.textContent = 'Image not available';
+          }
+        };
+        probe.src = url;
+      });
+
+      // Reset listeners by cloning the nav buttons
+      var newPrev = prevBtn.cloneNode(true);
+      var newNext = nextBtn.cloneNode(true);
+      prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+      nextBtn.parentNode.replaceChild(newNext, nextBtn);
+      newPrev.addEventListener('click', function () { goTo(idx - 1); });
+      newNext.addEventListener('click', function () { goTo(idx + 1); });
+      dotsEl.querySelectorAll('.slider-dot').forEach(function (d) {
+        d.addEventListener('click', function () { goTo(parseInt(d.dataset.i, 10)); });
+      });
+
+      var startX = 0, dx = 0, dragging = false;
+      var vp = document.getElementById('sliderViewport');
+      vp.addEventListener('touchstart', function (e) { dragging = true; startX = e.touches[0].clientX; dx = 0; });
+      vp.addEventListener('touchmove',  function (e) { if (dragging) dx = e.touches[0].clientX - startX; });
+      vp.addEventListener('touchend',   function () {
+        dragging = false;
+        if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1));
+      });
+      vp.tabIndex = 0;
+      vp.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(idx - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); }
+      });
+
+      section.style.display = '';
+      goTo(0);
+    }
+
+    function renderRelated(currentSlug) {
+      var grid = document.getElementById('relatedGrid');
+      if (!grid) return;
+      var pool = VizitBlog.listPublished().filter(function (a) { return a.slug !== currentSlug; });
+      // Prefer same-category, then fill with others
+      var current = VizitBlog.bySlug(currentSlug);
+      if (current) {
+        pool.sort(function (a, b) {
+          var sa = (a.category === current.category) ? 0 : 1;
+          var sb = (b.category === current.category) ? 0 : 1;
+          if (sa !== sb) return sa - sb;
+          return 0;
+        });
+      }
+      var picks = pool.slice(0, 3);
+      if (!picks.length) {
+        grid.innerHTML = '<p style="color: var(--muted)">No other articles published yet.</p>';
+        return;
+      }
+      grid.innerHTML = picks.map(function (a) {
+        var thumb = VizitBlog.thumbClass(a.category);
+        var thumbStyle = a.thumbnail
+          ? 'style="background-image: url(\'' + escapeHTML(a.thumbnail) + '\'); background-size: cover; background-position: center;"'
+          : '';
+        return '<a class="rcard" href="' + articleHref(a.slug) + '">' +
+          '<div class="rcard-img ' + thumb + '" ' + thumbStyle + '>' +
+            (a.thumbnail ? '' :
+              '<span class="rcard-thumb-num">' + escapeHTML((a.readTime || '').replace(/[^0-9]/g, '') || '·') + '</span>' +
+              '<span class="rcard-thumb-mark">' + escapeHTML(a.category || '') + '</span>') +
+          '</div>' +
+          '<div class="rcard-body">' +
+            '<div class="rcard-meta">' +
+              '<span class="pill">' + escapeHTML(a.category || '—') + '</span>' +
+              '<span>' + escapeHTML(a.readTime || '') + '</span>' +
+              '<span>·</span>' +
+              '<span>' + escapeHTML(VizitBlog.formatDateShort(a.publishedOn || a.updatedOn)) + '</span>' +
+            '</div>' +
+            '<h3>' + escapeHTML(a.title) + '</h3>' +
+            '<p>' + escapeHTML(a.description || '') + '</p>' +
+            '<div class="rcard-foot">' +
+              '<span class="author">' + escapeHTML(a.author || '') + '</span>' +
+              '<span>' + (a.featured ? '★ Featured' : escapeHTML(a.category || '')) + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+
+    function hydrate() {
+      var slug = getSlug();
+      var article;
+      if (slug) article = VizitBlog.bySlug(slug);
+      if (!article) {
+        // Fall back to first featured published article
+        var all = VizitBlog.list();
+        article = all.find(function (a) { return a.featured && !a.hidden && !a.archived && !a.draft && a.publishedOn; })
+               || all.find(function (a) { return !a.hidden && !a.archived; })
+               || all[0];
+      }
+      if (!article) return;
+      document.title = article.title + ' | Vizit Insights';
+      renderCrumb(article);
+      renderHead(article);
+      renderHero(article);
+      renderVideo(article);
+      renderSlider(article);
+      renderToc(article);
+      renderContent(article);
+      renderRelated(article.slug);
+    }
+
+    hydrate();
+    VizitBlog.onChange(hydrate);
+  })();
+</script>
+<script>
+  // Reading progress bar
+  (function () {
+    var bar = document.getElementById('progressFill');
+    var content = document.querySelector('.art-content');
+    function update() {
+      if (!content) return;
+      var rect = content.getBoundingClientRect();
+      var total = rect.height + window.innerHeight * 0.3;
+      var scrolled = Math.min(Math.max(window.innerHeight * 0.3 - rect.top, 0), total);
+      var pct = (scrolled / total) * 100;
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  // TOC scroll spy — works with any number of dynamically-generated sections
+  (function () {
+    function setActive() {
+      var links = document.querySelectorAll('.toc-link');
+      var sections = Array.prototype.slice.call(
+        document.querySelectorAll('.art-content > section[id]')
+      );
+      if (!sections.length || !links.length) return;
+      var fromTop = window.scrollY + 140;
+      var current = sections[0];
+      sections.forEach(function (s) {
+        if (s.offsetTop <= fromTop) current = s;
+      });
+      links.forEach(function (l) {
+        l.classList.toggle('active', l.dataset.section === current.id);
+      });
+    }
+    window.addEventListener('scroll', setActive, { passive: true });
+    // Run after the hydrate script finishes (it runs first in the prior block)
+    setTimeout(setActive, 50);
+  })();
+
+  // Cursor-following glow on the article CTA button (matches homepage buttons)
+  document.addEventListener('pointermove', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.art-cta a') : null;
+    if (!btn) return;
+    var r = btn.getBoundingClientRect();
+    btn.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    btn.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+  document.addEventListener('pointerout', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.art-cta a') : null;
+    if (btn && (!e.relatedTarget || !btn.contains(e.relatedTarget))) {
+      btn.style.setProperty('--mx', '50%'); btn.style.setProperty('--my', '50%');
+    }
+  });
+
+</script>
+
+<script>
+(function () {
+  try {
+    var slug = new URLSearchParams(window.__vzSearch || location.search).get('slug');
+    if (!slug) return;
+    var KEY = 'vizit_analytics';
+    var db = JSON.parse(localStorage.getItem(KEY) || '{}');
+    var rec = db[slug] || { v: 0, t: 0 };
+    rec.v++;
+    db[slug] = rec;
+    localStorage.setItem(KEY, JSON.stringify(db));
+    var t0 = Date.now(), vis = !document.hidden;
+    function flush() {
+      if (vis) { rec.t = (rec.t || 0) + Math.round((Date.now() - t0) / 1000); t0 = Date.now(); }
+      db[slug] = rec;
+      try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {}
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { flush(); vis = false; }
+      else { vis = true; t0 = Date.now(); }
+    });
+    window.addEventListener('pagehide', flush);
+    setInterval(flush, 5000);
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

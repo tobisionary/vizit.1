@@ -1,0 +1,159 @@
+/* ════════════════════════════════════════════════════════════
+   VIZIT ELEVATE — light / premium layer.
+   Link LAST on every page (after page styles + vizit-theme.css).
+   White canvas, restrained blue accents, soft depth. The base
+   stylesheets (ci / company / solutions / styles.css) already
+   render light — this layer only refines type, rhythm, buttons
+   and card depth so every page reads as one product.
+   ════════════════════════════════════════════════════════════ */
+
+html{ background:#ffffff; }
+body{ background:#ffffff; color:var(--text, #0a0a0a); }
+body::before{
+  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(1200px 700px at 85% -10%, rgba(1,116,217,.05), transparent 62%),
+    radial-gradient(900px 600px at -10% 34%, rgba(1,116,217,.03), transparent 60%),
+    #ffffff;
+}
+
+/* ── page-level type ── */
+h1, .headline, .display, h1.display, h2.display{ color:var(--blue-1000, #00213d); }
+.headline, .display{ letter-spacing:-0.032em; }
+.subhead, .lead, .hero__sub, .sec-head p, .section-head p{ color:var(--color-600, #525252); }
+.eyebrow{ color:var(--accent, #0174d9) !important; }
+.panel--dark .eyebrow, .final .eyebrow, .final-cta .eyebrow, .cta .eyebrow, .eyebrow.on-dark{ color:var(--blue-200, #80c3fe) !important; }
+a{ color:var(--accent, #0174d9); }
+a:hover{ color:var(--blue-500, #015fb2); }
+
+/* dark panels keep their own inverted type */
+.panel--dark h1, .panel--dark .headline, .panel--dark h2.display,
+.final h1, .final .headline, .final h2.display, .final .display,
+.final-cta h1, .final-cta .headline, .final-cta h2.display, .final-cta .display,
+.cta-footer h2, .foot-tagline h2{ color:#fff; }
+.panel--dark .subhead, .panel--dark .section-head p{ color:rgba(210,228,246,.78); }
+/* on-dark is an explicit signal that text sits on a dark surface — always invert */
+.display.on-dark, .headline.on-dark, h1.on-dark, h2.on-dark{ color:#fff !important; }
+.subhead.on-dark, p.on-dark{ color:rgba(210,228,246,.85) !important; }
+.panel--dark .eyebrow{ color:#5db4ff !important; }
+
+/* ── buttons: pill + subtle glow ── */
+.btn, .btn-primary, .btn--primary, .btn-lg{ border-radius:999px !important; }
+.btn-primary, .btn--primary{
+  background:var(--accent,#0174d9) !important; color:#fff !important;
+  box-shadow:0 10px 26px -10px rgba(1,116,217,.55);
+}
+.btn-primary:hover, .btn--primary:hover{ background:var(--blue-500,#015fb2) !important; box-shadow:0 14px 34px -10px rgba(1,116,217,.6); }
+.btn-ghost, .btn--ghost, .btn--secondary{
+  color:var(--blue-1000,#00213d) !important; border-color:var(--color-300,#d4d4d4) !important; background:#fff !important;
+  padding-left:22px !important; padding-right:22px !important;
+}
+.btn-ghost.btn-lg, .btn--ghost.btn-lg{ padding-left:28px !important; padding-right:28px !important; }
+.btn-ghost:hover, .btn--ghost:hover, .btn--secondary:hover{ border-color:var(--accent,#0174d9) !important; color:var(--accent,#0174d9) !important; }
+.btn--inverse{ border-radius:999px !important; }
+
+/* ── card depth: one soft elevation language everywhere ── */
+.cmp3 .c, .sixstack .tier, .quote-card, .pillar, .tool, .team,
+.qstat, .feature, .api-card, .ctile, .build-card, .op,
+.calc-preview, .notice, .stack-row, .tech-callout, .ci-quote,
+.eq, .impact__callout, .casestudy, .step, .stat,
+.cap-rail__item, .xray__callout, .viz-row, .integration-card,
+.tabs__visual, .testimonial, .flywheel__list li,
+.fail-card, .roas-card, .std-card, .value-card, .dim-card, .scorecard, .gap-stat, .why-card,
+.ai-opt, .preflight, .principle, .press-card, .compare-card, .founder-bio,
+a.card, .featured, a.article{
+  background:#ffffff;
+  border-color:var(--color-200,#e4e4e4);
+  box-shadow:0 1px 2px rgba(0,33,61,.04), 0 24px 48px -36px rgba(0,33,61,.18);
+}
+.flywheel__list li.active{ background:var(--accent-soft,#e6f3ff) !important; border-color:var(--blue-100,#b3dbff) !important; }
+
+/* dark panels: their cards go glass so they still sit on ink */
+.panel--dark .step, .panel--dark .stat, .panel--dark .stage-card,
+.panel--dark .viz-row, .panel--dark .hub, .panel--dark .eq{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(128,195,254,.18);
+  box-shadow:none;
+  color:#e8f1fa;
+}
+.stage-card__title{ color:#fff; }
+.stage-row__name, .eq-result{ color:#b3dbff; }
+
+/* FAQ patterns */
+.faq-item, .faq__item{ background:#fff; border-color:var(--color-200,#e4e4e4); }
+.faq-item summary, .faq__q, .faq-q{ color:var(--blue-1000,#00213d); }
+.faq-item .answer, .faq__a-inner, .faq-a-inner{ color:var(--color-600,#525252); }
+.faq__num, .faq-q .ix, .faq-item .plus{ color:var(--accent,#0174d9); }
+.faq__a, .faq-a{ background:transparent !important; border:none !important; }
+
+/* pills */
+.pill{ background:var(--accent-soft,#e6f3ff) !important; border:1px solid var(--blue-100,#b3dbff) !important; color:var(--blue-700,#013c70) !important; }
+
+/* quotes */
+blockquote{ color:var(--blue-1000,#00213d); }
+cite{ color:var(--muted,#737373); }
+
+/* form card */
+.form-card{ color:#233043; }
+
+/* mock-UI artifacts keep dark text on white cards */
+.dashboard, .gitem, .stage-visual, .audit-split, .display-mock, .shelf-mock,
+.phone, .laptop-screen, .pdp, .grid-shelf, .calc-preview .row, .hs-chrome,
+.mock-pdp, .spons-mock, .row-card{
+  color:#233043;
+}
+
+/* motion */
+.reveal{ transition-duration:.8s; }
+@media (prefers-reduced-motion: reduce){ .reveal{ transition:none; } }
+
+/* ════════════════════════════════════════════════════════════
+   CONSISTENCY KIT — one type scale, one rhythm, one voice
+   ════════════════════════════════════════════════════════════ */
+
+h1.display, .tech-hero h1, header.hero h1{
+  font-size:clamp(3rem,5.6vw,4.9rem) !important;
+  line-height:1.02 !important; letter-spacing:-0.035em !important; font-weight:600;
+}
+h2.display, .headline{
+  font-size:var(--h-section, clamp(2.2rem,3.9vw,3.5rem)) !important; font-weight:600 !important;
+  line-height:1.06 !important; letter-spacing:-0.03em !important;
+}
+.subhead, .lead{ font-size:clamp(1.02rem,1.5vw,1.22rem) !important; line-height:1.55; }
+
+.eyebrow{
+  display:inline-flex !important; align-items:center; gap:10px;
+  font-size:11px !important; letter-spacing:.16em !important; text-transform:uppercase;
+}
+.eyebrow::before{ content:""; width:24px; height:1px; background:var(--accent,#0174d9); }
+.panel--dark .eyebrow::before{ background:#5db4ff; }
+
+.panel, .tech-hero, .section{
+  padding-top:clamp(5.5rem,10vh,8.5rem) !important;
+  padding-bottom:clamp(5.5rem,10vh,8.5rem) !important;
+}
+
+/* ── signature: the technology stack diagram (shared across tech pages) ── */
+.sixstack{ display:flex; flex-direction:column; gap:10px; position:relative; max-width:560px; counter-reset:tier; }
+.sixstack .tier{
+  padding:16px 20px !important; font-weight:500; letter-spacing:-.01em; position:relative;
+  border:1px solid var(--color-200,#e4e4e4) !important;
+  background:#fff !important;
+  box-shadow:0 14px 34px -26px rgba(0,33,61,.35);
+  transition:transform .25s ease, border-color .25s ease;
+}
+.sixstack .tier:hover{ transform:translateX(4px); border-color:var(--blue-200,#80c3fe) !important; }
+.sixstack .tier::after{
+  counter-increment:tier; content:"0" counter(tier);
+  position:absolute; right:16px; top:50%; transform:translateY(-50%);
+  font-family:var(--font-mono, monospace); font-size:10px; letter-spacing:.1em; color:var(--blue-300,#34a0fe);
+}
+.sixstack .tier.here{
+  background:linear-gradient(120deg, var(--accent,#0174d9), var(--blue-500,#015fb2)) !important;
+  border-color:var(--accent,#0174d9) !important; color:#fff !important;
+  box-shadow:0 22px 44px -18px rgba(1,116,217,.55);
+}
+.sixstack .tier.here .badge{ background:#fff; color:var(--accent,#0174d9); }
+.panel--dark .sixstack .tier{ background:rgba(255,255,255,.05) !important; border-color:rgba(255,255,255,.14) !important; color:rgba(255,255,255,.92); }
+.panel--dark .sixstack .tier:hover{ border-color:rgba(52,160,254,.5) !important; }
+.panel--dark .sixstack .tier::after{ color:var(--blue-200,#80c3fe); }

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retail Media Optimization | Maximize ROAS Through Better Hero Images and PDPs</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Stop running media to PDPs that aren't built to convert. Vizit scores every destination before your campaigns run — ensuring every ad dollar flows to Vizit Certified content on Amazon, Walmart, Target, and Kroger.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Retail Media ROI) ─── */
+
+  /* Panel 1 hero — buyer dashboard → shopper PDP w/ leakage arrow */
+  .leak-stage {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.05;
+    overflow: hidden;
+    display: grid; grid-template-rows: 36px 1fr;
+  }
+  .leak-stage::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 70% at 0% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 80% at 100% 100%, rgba(200,69,58,0.30), transparent 65%);
+    pointer-events: none;
+  }
+  .leak-stage .hs-chrome {
+    position: relative; z-index: 1;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .leak-stage .body {
+    position: relative; z-index: 1;
+    padding: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-4);
+  }
+  .leak-stage .side-head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .leak-row {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-4);
+    align-items: center;
+  }
+  @media (max-width: 540px) { .leak-row { grid-template-columns: 1fr; } }
+  .buyer-pane, .shopper-pane {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: var(--space-4);
+    display: flex; flex-direction: column; gap: var(--space-3);
+    min-height: 220px;
+  }
+  .buyer-pane .lab, .shopper-pane .lab {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.1em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .buyer-pane .metric {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  .buyer-pane .metric:last-of-type { border-bottom: none; }
+  .buyer-pane .metric .k {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--blue-100); letter-spacing: 0.05em;
+  }
+  .buyer-pane .metric .v {
+    font-family: var(--font-display); font-size: 1.1rem;
+    color: var(--cyan); letter-spacing: -0.02em;
+  }
+  .shopper-pane {
+    background: rgba(200,69,58,0.10);
+    border-color: rgba(200,69,58,0.32);
+  }
+  .shopper-pane .mock-pdp {
+    background: rgba(255,255,255,0.95);
+    color: var(--blue-1000);
+    padding: var(--space-3);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    flex: 1;
+  }
+  .shopper-pane .mock-pdp .pic {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #efe6db, #c8a884);
+    position: relative; overflow: hidden;
+  }
+  .shopper-pane .mock-pdp .pic::after {
+    content: ''; position: absolute; inset: 22%;
+    background: #8e6442; border-radius: 14%;
+    filter: contrast(0.85);
+  }
+  .shopper-pane .mock-pdp .meta {
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 9.5px;
+  }
+  .shopper-pane .mock-pdp .meta .ttl {
+    font-family: var(--font-display); font-size: 0.85rem; letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .shopper-pane .mock-pdp .meta .px {
+    font-family: var(--font-mono); color: var(--color-700);
+  }
+  .shopper-pane .mock-pdp .meta .back {
+    margin-top: auto;
+    padding: 6px 8px; font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--risk-red); color: #fff;
+    width: max-content;
+  }
+  .leak-arrow {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.08em; color: var(--risk-red);
+    text-transform: uppercase;
+  }
+  .leak-arrow svg { width: 60px; height: 18px; color: var(--risk-red); }
+  @media (max-width: 540px) { .leak-arrow svg { transform: rotate(90deg); } }
+  .leak-stage .foot {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .leak-stage .foot .leak {
+    color: #ff8b7e;
+  }
+
+  /* Panel 2 split visual — sponsored search fail / display fail */
+  .fail-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+  @media (max-width: 760px) { .fail-split { grid-template-columns: 1fr; } }
+  .fail-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: var(--space-5);
+    display: flex; flex-direction: column; gap: var(--space-4);
+  }
+  .fail-card .lab {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.1em; color: var(--risk-red);
+    text-transform: uppercase;
+  }
+  .fail-card h4 {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 1.25rem; letter-spacing: -0.02em;
+    margin: 0; line-height: 1.2;
+  }
+  .fail-card p {
+    margin: 0; font-size: var(--text-sm); color: var(--muted);
+    line-height: 1.55;
+  }
+  /* mini sponsored search visual */
+  .spons-mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--space-3);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .spons-mock .row-card {
+    display: grid; grid-template-columns: 36px 1fr auto;
+    gap: 8px; align-items: center;
+    background: #fff; border: 1px solid var(--border);
+    padding: 6px 8px;
+  }
+  .spons-mock .row-card .pic {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, var(--bg1, #efe6db), var(--bg2, #c8a884));
+    position: relative;
+  }
+  .spons-mock .row-card .pic::after {
+    content: ''; position: absolute; inset: 20%;
+    background: var(--prod, #8e6442);
+    border-radius: 14%;
+  }
+  .spons-mock .row-card .info {
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 10.5px;
+  }
+  .spons-mock .row-card .info .ttl { color: var(--text); font-weight: 500; }
+  .spons-mock .row-card .info .sub {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.05em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .spons-mock .row-card.sponsored { border: 1.5px dashed var(--risk-red); }
+  .spons-mock .row-card.sponsored .info .sub { color: var(--risk-red); }
+  .spons-mock .row-card.win { background: var(--accent-soft); border-color: var(--blue-200); }
+  .spons-mock .row-card.win .info .sub { color: var(--blue-700); }
+
+  /* display fail visual */
+  .display-mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--space-4);
+    display: grid; grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .display-mock .ad {
+    background: linear-gradient(135deg, var(--blue-1000), var(--blue-base));
+    color: #fff;
+    padding: var(--space-4);
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: var(--space-3); align-items: center;
+  }
+  .display-mock .ad .pic {
+    aspect-ratio: 1 / 1;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    position: relative;
+  }
+  .display-mock .ad .pic::after {
+    content: ''; position: absolute; inset: 18%;
+    background: var(--cyan);
+    border-radius: 14%;
+  }
+  .display-mock .ad .copy-area {
+    font-family: var(--font-display);
+  }
+  .display-mock .ad .copy-area .ttl {
+    font-size: 0.95rem; letter-spacing: -0.01em;
+  }
+  .display-mock .ad .copy-area .ttl em { color: var(--cyan); font-style: normal; }
+  .display-mock .ad .copy-area .micro {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--blue-200); margin-top: 6px;
+  }
+  .display-mock .pdp-flag {
+    background: rgba(200,69,58,0.10);
+    border: 1.5px dashed var(--risk-red);
+    padding: var(--space-3);
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .display-mock .pdp-flag .pic {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #efe6db, #c8a884);
+    position: relative;
+  }
+  .display-mock .pdp-flag .pic::after {
+    content: ''; position: absolute; inset: 22%;
+    background: #8e6442; border-radius: 14%;
+    filter: grayscale(0.4);
+  }
+  .display-mock .pdp-flag .info {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--risk-red);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .display-mock .pdp-flag .info strong {
+    font-family: var(--font-display); font-size: 1rem;
+    color: var(--risk-red); font-weight: 500;
+    letter-spacing: -0.01em; text-transform: none;
+  }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="retail-media-roas"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 1 — ROAS DIES AT FIRST IMPRESSION
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="01 Retail media efficiency">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Retail media efficiency</span>
+        <h1 class="display">ROAS is won or lost at the <em>first impression</em>.</h1>
+        <p class="subhead">No amount of targeting fixes a failing hero image. Every ad dollar you spend on an unoptimized PDP is a dollar funding the competitor next to you. Vizit Agents certify every destination before your media runs.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Calculate my media waste <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="hero-images.html">See hero image optimization</a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Media buyer dashboard handing off to a failing shopper PDP">
+        <div class="leak-stage">
+          <div class="hs-chrome">
+            <span style="width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25);"></span>
+            <span>Vizit · revenue leakage trace</span>
+            <span style="margin-left:auto;">amazon · sponsored products</span>
+          </div>
+          <div class="body">
+            <div class="side-head">
+              <span>The buyer's view</span>
+              <span>The shopper's view</span>
+            </div>
+            <div class="leak-row">
+              <div class="buyer-pane">
+                <span class="lab">Campaign dashboard</span>
+                <div class="metric"><span class="k">Bid won</span><span class="v">✓</span></div>
+                <div class="metric"><span class="k">Traffic sent</span><span class="v">142,408</span></div>
+                <div class="metric"><span class="k">CPC</span><span class="v">$1.84</span></div>
+                <div class="metric"><span class="k">Spend MTD</span><span class="v">$262K</span></div>
+                <div class="metric"><span class="k">Status</span><span class="v" style="color:#65c87b;">Running</span></div>
+              </div>
+              <div class="leak-arrow" aria-hidden="true">
+                <svg viewBox="0 0 60 18" fill="none">
+                  <path d="M0 9 H50 M44 4 L52 9 L44 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Revenue<br/>leakage</span>
+              </div>
+              <div class="shopper-pane">
+                <span class="lab">PDP landed · sub-80 score</span>
+                <div class="mock-pdp">
+                  <div class="pic" style="background:#fff;"><img src="../assets/products/vzero-orange.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:8%;box-sizing:border-box;z-index:2;"></div>
+                  <div class="meta">
+                    <div class="ttl">V-ZERO Sport Drink, Orange 20oz</div>
+                    <div class="px">$2.19</div>
+                    <div class="px">★★★☆ (412)</div>
+                    <div class="back">← back to results</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="foot">
+              <span>Conversion suppressed</span>
+              <span class="leak">−$32K · this campaign · this week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">Powering more efficient media for the world's top brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>BRAND C</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 2 — THE CREATIVE TAX
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="02 Creative tax">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">02 — The creative tax</span>
+      <h2 class="display">Every weak image is a <em>tax</em> on your media budget.</h2>
+      <p class="subhead">Every retail media network gives you tools to refine targeting, bidding, and placement. None of them tell you whether the PDP you're sending traffic to is built to convert. If your content lacks conversion power, your media efficiency decays instantly across the two most expensive ad formats.</p>
+    </div>
+
+    <div class="fail-split reveal">
+      <div class="fail-card">
+        <span class="lab">Failure pattern 01 · sponsored search</span>
+        <h4>Your hero image fails to dominate the search grid.</h4>
+        <p>You pay for the impression, but lose the click to a competitor with a higher Vizit Score.</p>
+        <div class="spons-mock">
+          <div class="row-card sponsored" style="--bg1:#efe6db;--bg2:#c8a884;--prod:#8e6442;">
+            <div class="pic" style="position:relative;background:#fff;"><img src="../assets/products/foundation.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:4%;box-sizing:border-box;z-index:2;"></div>
+            <div class="info">
+              <span class="ttl">Your sponsored result</span>
+              <span class="sub">Sponsored · Score 55</span>
+            </div>
+            <span class="score-tag low"><span class="dot"></span>0.4% CTR</span>
+          </div>
+          <div class="row-card win" style="--bg1:#e6f3ff;--bg2:#80c3fe;--prod:#0174d9;">
+            <div class="pic" style="position:relative;background:#fff;"><img src="../assets/products/vizzy.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:4%;box-sizing:border-box;z-index:2;"></div>
+            <div class="info">
+              <span class="ttl">Organic competitor</span>
+              <span class="sub">Vizit Certified · Score 88</span>
+            </div>
+            <span class="score-tag win"><span class="dot"></span>2.1% CTR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fail-card">
+        <span class="lab">Failure pattern 02 · display ads</span>
+        <h4>External display traffic lands on a PDP that isn't ready to convert.</h4>
+        <p>The shopper bounces, and the bounce gets attributed to weak demand — when it was actually weak imagery.</p>
+        <div class="display-mock">
+          <div class="ad">
+            <div class="pic"></div>
+            <div class="copy-area">
+              <div class="ttl">Built to brew <em>better</em>.</div>
+              <div class="micro">Cost per click · $3.40</div>
+            </div>
+          </div>
+          <div class="pdp-flag">
+            <div class="pic"></div>
+            <div class="info">
+              <strong>PDP flagged: high risk</strong>
+              <span>Below the Standard · Score 47</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top: var(--space-7); text-align: center; display: flex; flex-direction: column; gap: var(--space-4); align-items: center;">
+      <p class="display" style="max-width:30ch; font-size: clamp(1.5rem, 2.4vw, 2.25rem); line-height: 1.15;">See exactly how much of your media budget is funding <em>underperforming content</em>.</p>
+      <a class="btn btn-primary btn-lg" href="../score-your-content.html">Calculate your media waste <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 3 — PRE-FLIGHT CHECKLIST
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="03 Pre-flight">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="reveal" aria-label="Pre-flight checklist: Vizit AI approving destination PDPs before media spend">
+        <div class="preflight">
+          <div class="preflight-head">
+            <span>Pre-flight · Vizit AI</span>
+            <span class="pulse">Scanning 4 destinations</span>
+          </div>
+          <div class="preflight-row">
+            <span class="mark">✓</span>
+            <span>
+              <div class="sku">B0CDR4FG · countertop blender</div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:0.05em;">Hero 88 · carousel 86 · lifestyle 84</div>
+            </span>
+            <span>Score 86</span>
+            <span class="status ok">Approved</span>
+          </div>
+          <div class="preflight-row">
+            <span class="mark">✓</span>
+            <span>
+              <div class="sku">B0R8K2 · espresso machine</div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:0.05em;">Hero 90 · carousel 81 · lifestyle 79</div>
+            </span>
+            <span>Score 83</span>
+            <span class="status ok">Approved</span>
+          </div>
+          <div class="preflight-row">
+            <span class="mark">✓</span>
+            <span>
+              <div class="sku">B0T2M9 · electric kettle</div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:2px; letter-spacing:0.05em;">Hero 91 · carousel 88 · lifestyle 90</div>
+            </span>
+            <span>Score 90</span>
+            <span class="status ok">Approved</span>
+          </div>
+          <div class="preflight-row fail">
+            <span class="mark">!</span>
+            <span>
+              <div class="sku">B0A4FG · pro 64-oz blender</div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--risk-red); margin-top:2px; letter-spacing:0.05em;">Hero 42 · low contrast · variant unclear</div>
+            </span>
+            <span>Score 42</span>
+            <span class="status">Pause spend</span>
+          </div>
+        </div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">03 — Predictive media optimization</span>
+        <h2 class="display">Stop A/B testing bad creative with <em>valuable media dollars</em>.</h2>
+        <p class="subhead">Vizit scores every PDP from hero to lifestyle assets before you run your campaigns, so ad dollars only flow to experiences that are Vizit Certified.</p>
+      </div>
+    </div>
+
+    <div class="big-callout reveal" style="margin-top: var(--space-8);">
+      <p class="q">A leading household brand redirected <em>23% of retail media spend</em> after a Vizit pre-flight audit — and saw a 1.7× ROAS improvement in 60 days.</p>
+      <span class="src">Customer case study · placeholder</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 4 — ROAS MULTIPLIER
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="04 ROAS multiplier">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">04 — The ROAS multiplier</span>
+      <h2 class="display">Lower your CPCs. <em>Multiply</em> your ROAS.</h2>
+      <p class="subhead">Vizit Certified visuals improve quality scores and click-through rates, lowering acquisition costs while lifting conversion. ROAS multiplies from there.</p>
+    </div>
+
+    <div class="roas-cards reveal">
+      <div class="roas-card">
+        <span class="ix">01</span>
+        <span class="n">↓ CPC</span>
+        <h4>Higher CTR. Lower acquisition cost.</h4>
+        <p>Vizit Certified hero images earn more clicks at the same bid, improving quality score and lowering effective CPC across every ad you run.</p>
+      </div>
+      <div class="roas-card">
+        <span class="ix">02</span>
+        <span class="n">↑ <em>CVR</em></span>
+        <h4>Every 10-point Vizit gain ≈ 4% CVR lift.</h4>
+        <p>Once you've earned the click, a higher-scoring PDP carries it through to conversion. ~4% improvement per 10 points on the Vizit Score, on average.</p>
+        <p style="font-size:0.75rem;line-height:1.5;color:var(--muted);opacity:0.85;margin-top:auto;">Relative conversion improvement, all else equal. Exact impact varies by category, price point, traffic source, and competitive context — the Vizit Score isolates the visual driver of the purchase decision.</p>
+      </div>
+      <div class="roas-card">
+        <span class="ix">03</span>
+        <span class="n"><em>×</em>ROAS</span>
+        <h4>Compounded across every campaign.</h4>
+        <p>Lower CPC × higher CVR = ROAS multiplied across sponsored search, sponsored display, video, and off-site media — same budget, more orders.</p>
+      </div>
+    </div>
+
+    <div class="inline-quote reveal">
+      <span class="q">"</span>
+      <div>
+        <blockquote>Vizit showed us where traffic and media spend were being wasted on content that was never going to convert. Fixing the destination lowered our CPCs instantly.</blockquote>
+        <cite>— VP of Performance Marketing · placeholder</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — DAILY MEDIA WASTE
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="05 Daily waste">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">05 — Daily media waste</span>
+      <h2 class="display">Every day you run media to unoptimized PDPs, you're paying to <em>teach shoppers</em> that your competitor is the better choice.</h2>
+      <p class="subhead">The fix is faster than you think.</p>
+      <div class="cta-row" style="margin-top: var(--space-6);">
+        <a class="btn btn-primary btn-lg" href="../score-your-content.html">Talk to a Vizit expert <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="06 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Retail media <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">What performance marketing and retail media leaders ask us most about ROAS, CTR, and CPC on Amazon, Walmart, Target, and Kroger.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>Why is my retail media ROAS low?</summary>
+            <div class="answer">Most retail media underperformance is caused by the destination PDP, not the bid or the targeting. The hero image determines whether shoppers tap. The carousel determines whether they convert. If either fails, every click underperforms regardless of how precisely the audience is targeted. You can't bid your way out of a failing PDP. You need to score and then fix the core assets first.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I lower my Amazon ACoS?</summary>
+            <div class="answer">ACoS is a function of conversion rate and CPC, and both are driven by visual content more than most teams realize. A weak hero image lowers CTR, which raises CPC. A weak PDP lowers conversion, which raises ACoS even further. The fastest path to lower ACoS is fixing the visual content shoppers see. Brands that bring their PDPs to Vizit Product Page Score of 80 or above typically see ACoS drop within weeks or days of making the update.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I lower my Amazon CPC?</summary>
+            <div class="answer">Amazon CPC is influenced by relevance score, which is influenced by CTR, which is driven primarily by hero image performance. Raising a hero image's Vizit Score improves CTR, which improves relevance, which lowers effective CPC. A strategy to lower your retail media CPC should start with image measurement and image optimization.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I improve Sponsored Products CTR?</summary>
+            <div class="answer">Sponsored Products CTR is determined almost entirely by the hero image, because that's the only visual element shoppers see in the search grid before deciding whether to tap. Most underperforming Sponsored Products listings have hero images that fail to clear the visual threshold needed to win attention against competitors. Vizit scores hero images on the specific dimensions that drive category-leading CTRs on a scale from 0–100.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>Does image quality affect Amazon sponsored ads?</summary>
+            <div class="answer">Yes. Every sponsored placement on Amazon is won or lost at the hero image. Image quality affects CTR, which affects relevance, which affects CPC and placement. A low Vizit Score on the hero image directly suppresses campaign performance, even with perfect targeting and bidding.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="07 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">The retail media multiplier</span>
+    <h2 class="display on-dark reveal">Ad dollars only deserve to flow to <em>destinations that convert</em>.</h2>
+    <p class="subhead on-dark reveal">Score every PDP before media goes live. Watch your CPCs drop and ROAS multiply across every channel.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Talk to a Vizit expert <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="hero-images.html">See hero image optimization</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

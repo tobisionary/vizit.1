@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-Syndication Conversion Scoring | Score Every Image Before It Syndicates | Vizit</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Score every image for conversion before it syndicates. Call the Vizit API from your PIM to return Hero, Carousel, and PDP scores at new item setup, so only content proven to convert reaches the shelf.">
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (Pre-Syndication Conversion Scoring) ─── */
+  .gate {
+    position: relative;
+    background: var(--blue-1000); color: #fff;
+    border: 1px solid rgba(255,255,255,0.10);
+    overflow: hidden;
+    display: grid; grid-template-rows: 38px 1fr;
+  }
+  .gate::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(110% 70% at 0% 0%, rgba(52,160,254,0.28), transparent 60%),
+      radial-gradient(80% 80% at 100% 100%, rgba(1,116,217,0.30), transparent 65%);
+  }
+  .gate .g-chrome {
+    position: relative; z-index: 1; height: 38px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+    color: var(--blue-200); text-transform: uppercase;
+  }
+  .gate .g-chrome .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 0 3px rgba(52,160,254,0.25); }
+  .gate .g-body { position: relative; z-index: 1; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+  .gate .g-head { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--blue-200); text-transform: uppercase; }
+  .g-score { display: grid; grid-template-columns: 1fr auto auto; gap: var(--space-3); align-items: center; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); padding: 12px 14px; }
+  .g-score .lab { font-family: var(--font-display); font-size: 1.02rem; letter-spacing: -0.01em; }
+  .g-score .lab span { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue-200); margin-top: 3px; }
+  .g-score .val { font-family: var(--font-display); font-size: 1.5rem; color: var(--cyan); letter-spacing: -0.02em; }
+  .g-score .mk { width: 22px; height: 22px; border-radius: 999px; background: rgba(52,160,254,0.18); border: 1px solid var(--blue-300); color: var(--blue-200); display: grid; place-items: center; font-size: 12px; }
+  .gate .g-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; background: rgba(52,160,254,0.14); border: 1px solid var(--blue-300); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-100); }
+  .gate .g-foot b { color: #fff; font-weight: 500; }
+
+  /* workflow compare */
+  .flowcmp { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin-top: var(--space-7); }
+  @media (max-width: 700px){ .flowcmp, .flowcmp { grid-template-columns: 1fr; } }
+  @media (max-width: 700px){ .flowcmp { grid-template-columns: 1fr; } }
+  .flowcmp { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin-top: var(--space-7); }
+  @media (max-width: 700px){ .flowcmp { grid-template-columns: 1fr; } }
+  .flowcard { border: 1px solid var(--border); background: #fff; padding: var(--space-5); }
+  .flowcard.old { background: var(--surface); }
+  .flowcard .lab { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--space-4); }
+  .flowcard.old .lab { color: var(--risk-red); }
+  .flowcard.new .lab { color: var(--accent); }
+  .flowsteps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .flowsteps span.step { font-family: var(--font-display); font-size: 1.05rem; letter-spacing: -0.01em; color: var(--text); border: 1px solid var(--border); padding: 8px 13px; background: var(--surface); }
+  .flowcard.new .flowsteps span.step { background: var(--accent-soft); border-color: var(--blue-100); color: var(--blue-1000); }
+  .flowsteps span.arr { font-family: var(--font-mono); color: var(--muted); }
+  .flowcard.new .flowsteps span.arr { color: var(--accent); }
+
+  /* fit list */
+  .fitlist { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: 10px; max-width: 62ch; }
+  .fitlist li { display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 1.0625rem; line-height: 1.5; color: var(--color-800); }
+  .fitlist li::before { content: ''; width: 8px; height: 8px; margin-top: 9px; background: var(--accent); }
+
+  /* standard gate */
+  .stdgate { border: 1px solid var(--border); background: #fff; padding: var(--space-6); }
+  .stdgate .lede { font-size: 1.0625rem; line-height: 1.55; color: var(--color-800); max-width: 62ch; margin: 0 0 calc(var(--space-6) + 8px); }
+  .stdgate .lede b { color: var(--text); font-weight: 600; }
+  .stdgate .lede a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--blue-100); }
+  .stdgate .lede a:hover { border-bottom-color: var(--accent); }
+  .stdmeter { position: relative; margin: 0 0 var(--space-6); }
+  .stdmeter .track { display: grid; grid-template-columns: 80fr 20fr; height: 14px; border: 1px solid var(--border); }
+  .stdmeter .track .lo { background: repeating-linear-gradient(135deg, var(--surface), var(--surface) 5px, #fff 5px, #fff 10px); }
+  .stdmeter .track .hi { background: var(--accent-soft); border-left: 2px solid var(--accent); }
+  .stdmeter .thr { position: absolute; top: -8px; bottom: -8px; left: 80%; width: 2px; background: var(--accent); }
+  .stdmeter .thr b { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--accent); }
+  .stdmeter .ends { display: flex; justify-content: space-between; margin-top: 9px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
+  .stdmeter .ends .mid { color: var(--accent); text-transform: uppercase; }
+  .stdout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 700px) { .stdout { grid-template-columns: 1fr; } }
+  .stdcard { border: 1px solid var(--border); padding: var(--space-5); }
+  .stdcard .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .stdcard .tag .mk { width: 18px; height: 18px; border-radius: 999px; display: grid; place-items: center; font-size: 11px; }
+  .stdcard.pass { background: var(--accent-soft); border-color: var(--blue-100); }
+  .stdcard.pass .tag { color: var(--accent); }
+  .stdcard.pass .tag .mk { background: var(--accent); color: #fff; }
+  .stdcard.fail .tag { color: var(--risk-red); }
+  .stdcard.fail .tag .mk { border: 1.5px solid var(--risk-red); color: var(--risk-red); }
+  .stdcard h4 { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: -0.01em; margin: 0 0 7px; color: var(--text); }
+  .stdcard p { font-size: 0.98rem; line-height: 1.5; color: var(--color-800); margin: 0; }
+  .stdcard p a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--blue-100); }
+  .stdcard p a:hover { border-bottom-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="pre-syndication-conversion-scoring"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="Hero">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">Digital Shelf &amp; Merchandising</span>
+        <h1 class="display">Score every image <em>before it syndicates</em>.</h1>
+        <p class="subhead">Once content goes out, the conversion is already won or lost. Vizit scores every asset before it syndicates, so only content proven to convert reaches the shelf.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Get your Vizit Score <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="../vizit-api.html">See the API docs</a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Vizit API scoring a product record at new item setup before syndication">
+        <div class="gate">
+          <div class="g-chrome">
+            <span class="dot"></span>
+            <span>Vizit API · new item setup</span>
+            <span style="margin-left:auto;">PIM → syndication</span>
+          </div>
+          <div class="g-body">
+            <div class="g-head">
+              <span>SKU B0CDR4FG · countertop blender</span>
+              <span>3 scores returned</span>
+            </div>
+            <div class="g-score">
+              <span class="lab">Vizit Hero Score<span>Wins the click in the grid</span></span>
+              <span class="val">91</span>
+              <span class="mk">✓</span>
+            </div>
+            <div class="g-score">
+              <span class="lab">Vizit Carousel Score<span>Carries the shopper to buy</span></span>
+              <span class="val">86</span>
+              <span class="mk">✓</span>
+            </div>
+            <div class="g-score">
+              <span class="lab">Vizit PDP Score<span>Full page conversion power</span></span>
+              <span class="val">88</span>
+              <span class="mk">✓</span>
+            </div>
+            <div class="g-foot">
+              <span><b>Vizit Certified</b> · 80+</span>
+              <span>Cleared to syndicate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">Trusted by the world's leading brands</span>
+    <div class="ribbon-logos">
+      <span>Nestlé</span><span>P&amp;G</span><span>L'Oréal</span><span>Mars</span><span>Colgate-Palmolive</span><span>PepsiCo</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 01 — THE GAP
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="01 The gap">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">01 — The gap</span>
+      <h2 class="display">Your PIM confirms the content exists. <em>Not that it will sell.</em></h2>
+      <p class="subhead">At new item setup, your PIM checks that every image is present, on-spec, and formatted for each retailer, then syndicates it. Nothing in that workflow checks the one thing that decides revenue: whether the images will actually make a shopper buy. Compliance is a floor, not a forecast.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 02 — THE STAKES
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="02 The stakes">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">02 — Why it matters</span>
+      <h2 class="display">By then, the conversion is <em>already lost</em>.</h2>
+      <p class="subhead">Once weak content syndicates, it's live across every channel, absorbing the media you paid to drive to it. You only learn it's failing weeks later, after the traffic is spent. The fix has to happen before syndication, at the one point where you can still change the outcome.</p>
+    </div>
+    <div class="flowcmp reveal">
+      <div class="flowcard old">
+        <div class="lab">Old workflow</div>
+        <div class="flowsteps">
+          <span class="step">Publish</span><span class="arr">→</span>
+          <span class="step">Syndicate</span><span class="arr">→</span>
+          <span class="step">Measure</span><span class="arr">→</span>
+          <span class="step">React</span>
+        </div>
+      </div>
+      <div class="flowcard new">
+        <div class="lab">With Vizit</div>
+        <div class="flowsteps">
+          <span class="step">Score</span><span class="arr">→</span>
+          <span class="step">Fix</span><span class="arr">→</span>
+          <span class="step">Certify</span><span class="arr">→</span>
+          <span class="step">Syndicate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 03 — HOW IT WORKS
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--tight" data-screen-label="03 How it works">
+  <div class="container">
+    <div class="copy reveal" style="max-width:64ch;">
+      <span class="eyebrow">03 — Inside your workflow</span>
+      <h2 class="display">One API call. <em>Every score, before you syndicate.</em></h2>
+      <p class="subhead">When new images attach to a product record, your PIM calls the Vizit API and gets conversion scores back in seconds. No new tool, no change to how your team works.</p>
+    </div>
+    <div class="roas-cards reveal">
+      <div class="roas-card">
+        <span class="ix">01</span>
+        <span class="n">Hero</span>
+        <h4>Vizit Hero Score</h4>
+        <p>Will your primary image win the click in the search grid?</p>
+      </div>
+      <div class="roas-card">
+        <span class="ix">02</span>
+        <span class="n">Carousel</span>
+        <h4>Vizit Carousel Score</h4>
+        <p>Do your secondary images build the story and carry the shopper toward the buy?</p>
+      </div>
+      <div class="roas-card">
+        <span class="ix">03</span>
+        <span class="n">PDP</span>
+        <h4>Vizit PDP Score</h4>
+        <p>The full product page scored as one, on total conversion power.</p>
+      </div>
+    </div>
+    <div class="stdgate reveal" style="margin-top: var(--space-7);">
+      <p class="lede">Every score is benchmarked against the <a href="../blog-article.html"><b>Content Conversion Standard</b></a> for its category — the conversion bar that asset has to clear.</p>
+      <div class="stdmeter">
+        <div class="track"><span class="lo"></span><span class="hi"></span></div>
+        <div class="thr"><b>80</b></div>
+        <div class="ends"><span>0</span><span>100</span></div>
+      </div>
+      <div class="stdout">
+        <div class="stdcard fail">
+          <div class="tag"><span class="mk">!</span><span>Below 80</span></div>
+          <h4>Flagged</h4>
+          <p>Vizit pinpoints exactly what's costing conversion and hands the fix to your team — or to the <a href="../vizit-next-gen-platform.html">Content Optimization Agent</a>.</p>
+        </div>
+        <div class="stdcard pass">
+          <div class="tag"><span class="mk">✓</span><span>80 and above</span></div>
+          <h4>Vizit Certified</h4>
+          <p>The asset clears the Standard and is cleared to syndicate.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 04 — WHERE IT FITS
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="04 Where it fits">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">04 — Built for your stack</span>
+      <h2 class="display">A conversion quality gate inside the workflow <em>you already run</em>.</h2>
+      <p class="subhead">Vizit doesn't replace your PIM or DAM. It scores whether the content they syndicate will actually perform. Your PIM governs one source of truth and pushes to every channel. Vizit makes sure what goes out is proven to convert.</p>
+    </div>
+    <ul class="fitlist reveal">
+      <li>Connects to your PIM, DAM, and channels, including Amazon Vendor Central, via API.</li>
+      <li>Scores at new item setup or when new assets attach to a product record.</li>
+      <li>Returns Hero, Carousel, and PDP scores in seconds.</li>
+      <li>Flags below-standard assets before syndication and pinpoints the fix.</li>
+      <li>Only Vizit Certified content reaches the shelf.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 05 — THE PAYOFF
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="05 The payoff">
+  <div class="container">
+    <div class="copy reveal" style="max-width:62ch;">
+      <span class="eyebrow">05 — The result</span>
+      <h2 class="display">Stop syndicating content that was <em>never going to convert</em>.</h2>
+      <p class="subhead">When every asset clears the standard before it goes out, you stop pushing your weakest content to your biggest channels. Problems get caught while they're still cheap to fix, before a dollar of media lands on them.</p>
+    </div>
+    <div class="statline reveal" style="margin-top: var(--space-7);">
+      <div><div class="n">95%</div><div class="l">of Vizit-optimized SKUs increase conversion, revenue, and units.</div></div>
+      <div><div class="n">+13.3%</div><div class="l">average conversion lift across optimized products.</div></div>
+      <div><div class="n">&lt;30s</div><div class="l">to score a full product record via the API.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="06 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">Pre-syndication scoring, <em>answered</em>.</h2>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How does Vizit fit into our PIM workflow?</summary>
+            <div class="answer">Your PIM calls the Vizit API when new images attach to a product record. Vizit returns Hero, Carousel, and PDP scores in seconds, inside the workflow your team already uses.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What does the API return?</summary>
+            <div class="answer">Three scores per product: Vizit Hero Score, Vizit Carousel Score, and Vizit PDP Score. Each is a 0 to 100 rating of conversion power, benchmarked against the Content Conversion Standard, with diagnostics on what's limiting conversion.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>Does Vizit replace our PIM or syndication platform?</summary>
+            <div class="answer">No. Your PIM governs and syndicates content. Vizit scores whether that content will convert before it goes out. It's a quality gate on top of your stack, not a replacement.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What happens when an asset scores below the standard?</summary>
+            <div class="answer">Vizit flags it before syndication and pinpoints what's hurting conversion. Your team can fix it, or hand the spec to Vizit's Content Optimization Agent to rebuild a higher-scoring version.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What does Vizit Certified mean?</summary>
+            <div class="answer">An asset scoring 80 or above on the Content Conversion Standard. That ranks it in the top 20% of its category for conversion likelihood.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="07 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">Pre-syndication conversion scoring</span>
+    <h2 class="display on-dark reveal">Never syndicate a <em>losing image</em> again.</h2>
+    <p class="subhead on-dark reveal">Score every asset for conversion before it goes out, inside the workflow you already run.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Get your Vizit Score <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-api.html">See the API docs</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>

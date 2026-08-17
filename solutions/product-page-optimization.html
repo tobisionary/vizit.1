@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecommerce CRO for Product Pages | Improve PDP Conversion</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+  <meta name="description" content="Turn more product page visits into sales. Vizit pinpoints the exact images hurting PDP conversion, and what to fix to recover trapped revenue.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Ecommerce Conversion Rate Optimization for Product Pages.",
+    "url": "https://vizit.com/solutions/pdp-optimization"
+  }
+  </script>
+  <link rel="stylesheet" href="../css/ci-styles.css">
+  <link rel="stylesheet" href="../css/company-styles.css">
+  <link rel="stylesheet" href="../css/solutions-styles.css">
+  <link rel="stylesheet" href="../css/vizit-theme.css">
+  <link rel="stylesheet" href="../css/vizit-elevate.css">
+  <link rel="stylesheet" href="../css/vizit-effects.css">
+  <script src="../js/vizit-effects.js" defer></script>
+  <script src="../js/vizit-nav.js" defer></script>
+  <script src="../js/vizit-footer.js" defer></script>
+<style>
+  /* ─── Page-specific (PDP Optimization) ─── */
+
+  /* Panel 1 — Audit View: leak vs captured */
+  .audit-split {
+    position: relative;
+    background: var(--blue-1000);
+    color: #fff;
+    aspect-ratio: 1 / 1.05;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 36px 1fr;
+  }
+  .audit-split::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 60% at 80% 0%, rgba(52,160,254,0.30), transparent 60%),
+      radial-gradient(80% 70% at 0% 100%, rgba(200,69,58,0.22), transparent 65%);
+    pointer-events: none;
+  }
+  .audit-split .hs-chrome {
+    position: relative; z-index: 1;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; gap: 10px; padding: 0 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--blue-200);
+    text-transform: uppercase;
+  }
+  .audit-split .body {
+    position: relative; z-index: 1;
+    padding: var(--space-6);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  @media (max-width: 540px) { .audit-split .body { grid-template-columns: 1fr; } }
+  .audit-side {
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .audit-side .stamp {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 8px;
+    width: max-content;
+  }
+  .audit-side.bad .stamp { background: rgba(200,69,58,0.16); color: #ffb1a8; border: 1px solid rgba(200,69,58,0.4); }
+  .audit-side.good .stamp { background: rgba(52,160,254,0.16); color: var(--cyan); border: 1px solid rgba(52,160,254,0.4); }
+  .carousel-strip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .carousel-strip .ct {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #efe6db, #c8a884);
+    position: relative; overflow: hidden;
+  }
+  .carousel-strip .ct::after {
+    content: '';
+    position: absolute; inset: 22% 22%;
+    background: var(--prod, #b85543);
+    border-radius: 14%;
+  }
+  .audit-side.bad .carousel-strip {
+    filter: blur(2px) grayscale(0.4);
+  }
+  .audit-side.good .carousel-strip {
+    box-shadow: 0 0 0 1px rgba(52,160,254,0.3), 0 0 26px rgba(52,160,254,0.18);
+  }
+  .audit-side .tag {
+    margin-top: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    display: flex; align-items: baseline; justify-content: space-between;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .audit-side.bad .tag { background: rgba(200,69,58,0.20); border-color: rgba(200,69,58,0.35); }
+  .audit-side.good .tag { background: rgba(52,160,254,0.15); border-color: rgba(52,160,254,0.35); }
+  .audit-side .tag .k {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--blue-200);
+  }
+  .audit-side .tag .v {
+    font-family: var(--font-display);
+    font-size: 1.5rem; letter-spacing: -0.02em;
+  }
+  .audit-side.bad .tag .v { color: #ff8b7e; }
+  .audit-side.good .tag .v { color: var(--cyan); }
+
+  /* Panel 2 — Digital shelf with one flagged tile */
+  .shelf-board {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    position: relative;
+  }
+  @media (max-width: 540px) { .shelf-board { grid-template-columns: repeat(2, 1fr); } }
+  .shelf-board .head {
+    grid-column: 1 / -1;
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-1);
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .shelf-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--space-3);
+    aspect-ratio: 1 / 1.18;
+    display: flex; flex-direction: column;
+    gap: var(--space-2);
+    position: relative;
+  }
+  .shelf-tile .pic {
+    flex: 1;
+    background: linear-gradient(160deg, var(--bg1, #efe6db), var(--bg2, #d4b89a));
+    position: relative; overflow: hidden;
+  }
+  .shelf-tile .pic::after {
+    content: '';
+    position: absolute; inset: 22%;
+    background: var(--prod, var(--blue-base));
+    border-radius: var(--prod-r, 14%);
+  }
+  .shelf-tile .label {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.08em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .shelf-tile .check {
+    position: absolute; top: 8px; right: 8px;
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    background: var(--color-100);
+    color: var(--color-500);
+    border-radius: 999px;
+    font-size: 11px;
+  }
+  .shelf-tile.flag {
+    border: 1.5px solid var(--risk-amber);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(217,155,39,0.16);
+    animation: flag-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes flag-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(217,155,39,0.16); }
+    50%      { box-shadow: 0 0 0 9px rgba(217,155,39,0.05); }
+  }
+  .shelf-tile.flag .check {
+    background: var(--risk-amber); color: #fff;
+  }
+  .shelf-tile.flag::after {
+    content: 'Projected revenue leak: $420K';
+    position: absolute;
+    left: 50%; bottom: -10px; transform: translate(-50%, 100%);
+    background: var(--risk-amber); color: #fff;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 5px 10px;
+    white-space: nowrap;
+    z-index: 4;
+  }
+  .shelf-board { padding-bottom: var(--space-9); }
+</style>
+</head>
+<body>
+
+<vizit-nav data-current="product-page-optimization"></vizit-nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 1 — TRAPPED REVENUE / Audit View
+     ════════════════════════════════════════════════════════════ -->
+<section class="sol-hero" data-screen-label="01 Trapped revenue">
+  <div class="container">
+    <div class="sol-hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">01 — Trapped revenue</span>
+        <h1 class="display">Convert more of the traffic you <em>already have</em>.</h1>
+        <p class="subhead">You already paid to get shoppers to the page. Vizit shows you exactly which products are failing the first impression — and what to fix. Vizit Agents find, fix, and re-merchandise those pages continuously.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">See where you're losing conversion <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal" aria-label="Vizit conversion audit comparison">
+        <div class="audit-split">
+          <div class="hs-chrome">
+            <span style="width:6px;height:6px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 3px rgba(52,160,254,0.25);"></span>
+            <span>Vizit · conversion audit</span>
+            <span style="margin-left:auto;">Q3 · category review</span>
+          </div>
+          <div class="body">
+            <div class="audit-side bad">
+              <span class="stamp">Before · current</span>
+              <div class="carousel-strip">
+                <div class="ct" style="--prod:#8e6442;"></div>
+                <div class="ct" style="--prod:#9e735a;"></div>
+                <div class="ct" style="--prod:#7d5236;"></div>
+                <div class="ct" style="--prod:#a0826b;"></div>
+              </div>
+              <div class="tag"><span class="k">Annual leakage</span><span class="v">−$2.4M</span></div>
+            </div>
+            <div class="audit-side good">
+              <span class="stamp">After · Vizit Certified</span>
+              <div class="carousel-strip">
+                <div class="ct" style="--prod:#0174d9; background:linear-gradient(160deg,#e6f3ff,#b3dbff);"></div>
+                <div class="ct" style="--prod:#015fb2; background:linear-gradient(160deg,#e6f3ff,#80c3fe);"></div>
+                <div class="ct" style="--prod:#0174d9; background:linear-gradient(160deg,#fff,#b3dbff);"></div>
+                <div class="ct" style="--prod:#34a0fe; background:linear-gradient(160deg,#e6f3ff,#80c3fe);"></div>
+              </div>
+              <div class="tag"><span class="k">Revenue captured</span><span class="v">+$4.1M</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logo ribbon -->
+<div class="ribbon reveal">
+  <div class="container ribbon-inner">
+    <span class="ribbon-eyebrow">Recovering millions in trapped revenue for the world's top brands</span>
+    <div class="ribbon-logos">
+      <span>BRAND A</span><span>BRAND B</span><span>BRAND C</span><span>BRAND D</span><span>BRAND E</span><span>BRAND F</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 2 — THE BLIND SPOT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="02 Blind spot">
+  <div class="container">
+    <div class="two-up flip">
+      <div class="fx reveal" data-fx="h2h" data-root="../" aria-label="Head-to-head — your product vs the category leader"></div>
+      </div>
+      <div class="copy reveal">
+        <span class="eyebrow">02 — The blind spot</span>
+        <h2 class="display">First impressions drive the decision. Most teams still don't <em>measure</em> them.</h2>
+        <p class="subhead">Vizit automatically scans product pages and Amazon listings, pinpoints the exact images hurting your sales, and delivers a prioritized SKU-level roadmap to recover trapped revenue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 3 — CONVERSION AUDIT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="03 CI Audit">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">03 — The Vizit conversion audit</span>
+      <h2 class="display">Audit every pixel. Uncover every <em>lost dollar</em>.</h2>
+      <p class="subhead">A Vizit Conversion Audit shows you exactly which SKUs are leaking revenue, ranked by upside. You'll see the score gaps, the specific image failures, and the prioritized fixes — measured in dollars.</p>
+    </div>
+
+    <div class="reveal" style="margin-top: var(--space-7);">
+      <div class="audit-list" aria-label="Top SKU opportunities by revenue upside">
+        <div class="audit-row" style="grid-template-columns: 1fr; padding: var(--space-4) var(--space-5); background: var(--surface); border-bottom: 1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase;">Top SKU opportunities · ranked by revenue upside</span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; color:var(--blue-700); text-transform:uppercase;">Scanning · 11,248 SKUs</span>
+          </div>
+        </div>
+        <div class="audit-row scanning" style="--bg1:#f4ece2;--bg2:#c8a884;--prod:#8e6442;">
+          <div class="thumb" style="position:relative;background:#fff;"><img src="../assets/products/vzero-orange.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:6%;box-sizing:border-box;z-index:2;"></div>
+          <div class="info">
+            <span class="sku">SKU · B0A4FG · sports drink</span>
+            <div class="name">V-ZERO Sport Drink, Orange 20oz</div>
+            <div class="delta"><strong>$1.2M opportunity</strong> · Low contrast hero · variant unclear</div>
+          </div>
+          <div class="actions">
+            <span class="score low">Score 42</span>
+            <span class="upside">+$1.2M</span>
+          </div>
+        </div>
+        <div class="audit-row" style="--bg1:#efe6db;--bg2:#a0826b;--prod:#7d5236;">
+          <div class="thumb" style="position:relative;background:#fff;"><img src="../assets/products/foundation.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:6%;box-sizing:border-box;z-index:2;"></div>
+          <div class="info">
+            <span class="sku">SKU · B0R8K2 · foundation</span>
+            <div class="name">Infallible 32H Fresh Wear Foundation</div>
+            <div class="delta"><strong>$840K opportunity</strong> · Off-axis framing · brand mark obscured</div>
+          </div>
+          <div class="actions">
+            <span class="score low">Score 49</span>
+            <span class="upside">+$840K</span>
+          </div>
+        </div>
+        <div class="audit-row" style="--bg1:#f0e8de;--bg2:#cfc2ad;--prod:#a76d44;">
+          <div class="thumb" style="position:relative;background:#fff;"><img src="../assets/products/vizbone.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:6%;box-sizing:border-box;z-index:2;"></div>
+          <div class="info">
+            <span class="sku">SKU · B0Q9X1 · dog treats</span>
+            <div class="name">VIZ·BONE Dog Biscuits, Medium</div>
+            <div class="delta"><strong>$612K opportunity</strong> · Background fail · accessories distract</div>
+          </div>
+          <div class="actions">
+            <span class="score warn">Score 56</span>
+            <span class="upside">+$612K</span>
+          </div>
+        </div>
+        <div class="audit-row good" style="--bg1:#e6f3ff;--bg2:#80c3fe;--prod:#0174d9;">
+          <div class="thumb" style="position:relative;background:#fff;"><img src="../assets/products/vizzy.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:6%;box-sizing:border-box;z-index:2;"></div>
+          <div class="info">
+            <span class="sku">SKU · B0T2M9 · salty snacks</span>
+            <div class="name">Vizzy V-Shaped Chips, Party Size</div>
+            <div class="delta">Certified hero · maintaining +24% lift</div>
+          </div>
+          <div class="actions">
+            <span class="score good">Score 91</span>
+            <span class="upside" style="color:var(--accent);">Certified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top: var(--space-6); font-family: var(--font-display); font-style: normal; font-size: clamp(1.1rem, 1.6vw, 1.5rem); color: var(--blue-1000); max-width: 60ch; line-height: 1.4;">
+      AI reveals which products are losing at first impression — and the <em style="color: var(--accent);">revenue upside</em> of fixing them.
+    </p>
+  </div>
+</section>
+
+<!-- Inline customer quote between panels -->
+<section class="panel panel--tight" style="border-top: none; padding-top: 0;" data-screen-label="03b Customer quote">
+  <div class="container">
+    <div class="inline-quote reveal">
+      <span class="q">"</span>
+      <div>
+        <blockquote>We had systems to get content to shelf, but no system to tell us if it was actually ready to win. Vizit found the exact SKUs leaking revenue — and showed us the exact visual fixes to recover it.</blockquote>
+        <cite>— Director of Digital Commerce · case study placeholder</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 4 — TOTAL VISIBILITY (before / after)
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="04 Total visibility">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">04 — Total visibility</span>
+        <h2 class="display">Know which of your images are <em>winning</em> — and which are costing you sales.</h2>
+        <p class="subhead">From the hero to the last lifestyle shot, Vizit scores every visual's conversion power against category leaders. Spark then instantly generates optimized versions of the underperformers.</p>
+      </div>
+      <div class="reveal">
+        <div class="fx" data-fx="carousel" data-root="../" aria-label="The self-sorting carousel — interactive demo"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 5 — MORE FROM EVERY VISIT
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="05 More from every visit">
+  <div class="container">
+    <div class="copy reveal" style="max-width:60ch;">
+      <span class="eyebrow">05 — More from every visit</span>
+      <h2 class="display">Hit your growth targets without <em>spending more on ads</em>.</h2>
+      <p class="subhead">Whether you're optimizing DTC product pages or Amazon listings, better imagery unlocks more value from every visit. You capture the lift by fixing content you already own, not by buying more traffic.</p>
+    </div>
+
+    <div class="stat-strip reveal">
+      <div class="stat"><div class="n">16.5<em>%</em></div><div class="l">average conversion lift on visual content optimization</div></div>
+      <div class="stat"><div class="n"><em>4</em>%</div><div class="l">conversion gain per 10-point Vizit Score improvement</div></div>
+      <div class="stat"><div class="n">$<em>0</em></div><div class="l">extra ad spend to capture it</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL 6 — TRAPPED REVENUE / ROI calc CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel panel--paper" data-screen-label="06 Audit request">
+  <div class="container">
+    <div class="two-up">
+      <div class="copy reveal">
+        <span class="eyebrow">06 — Trapped revenue</span>
+        <h2 class="display">How much trapped revenue is <em>hiding</em> in your catalog?</h2>
+        <p class="subhead">Request a custom Vizit Conversion Audit to see which assets are costing you money and where the biggest upside exists.</p>
+        <div class="cta-row" style="margin-top: var(--space-6);">
+          <a class="btn btn-primary btn-lg" href="../score-your-content.html">Calculate your revenue opportunity <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="calc-preview">
+          <span class="lbl">Conversion audit · preview</span>
+          <div class="row"><span class="k">Catalog size</span><span class="v">11,248 SKUs</span></div>
+          <div class="row"><span class="k">SKUs scoring &lt; 80</span><span class="v">62%</span></div>
+          <div class="row"><span class="k">Avg. conversion lift at 80+</span><span class="v">16.5%</span></div>
+          <div class="row"><span class="k">Annual PDP revenue (LTM)</span><span class="v">$184M</span></div>
+          <div class="blur">
+            <div class="lock" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="11" width="14" height="10"/>
+                <path d="M8 11 V7 a4 4 0 0 1 8 0 V11"/>
+              </svg>
+            </div>
+            <div class="num">$<em>—,———,—</em>—</div>
+            <a class="cta" href="../score-your-content.html">Request my custom audit →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="panel" data-screen-label="07 FAQ">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="display" style="margin-top: var(--space-3); font-size: clamp(1.75rem, 3vw, 2.5rem);">PDP conversion <em>questions</em>, answered.</h2>
+        <p class="subhead" style="margin-top: var(--space-4);">What ecommerce, brand, and Amazon teams ask us most about turning traffic into orders.</p>
+      </div>
+      <div class="reveal">
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I increase my product page conversion rate?</summary>
+            <div class="answer">The highest-ROI lever on a product page is the visual content, especially the hero and carousel. These assets are the biggest drivers of conversion. Auditing every image against the Visual Conversion Standard (Vizit uses an 80+ score threshold) and fixing the ones below it is the fastest path to lift. Brands that systematically optimize visual content see an average 16.5% conversion lift.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What is a good ecommerce conversion rate?</summary>
+            <div class="answer">Ecommerce conversion rates vary by category, channel, and price point. Instead of asking "what's average for my category?", ask: "what's possible?" The truest benchmark for any PDP is the gap between your top-performing SKUs and the rest of your catalog. That gap is almost always explained by visual content losing the first-impression moment, and it's almost always closeable.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>Why isn't my Amazon listing converting?</summary>
+            <div class="answer">Most underperforming Amazon listings lose at the first impression: the hero image doesn't earn the tap, so shoppers scroll past before they ever see the title, price, or reviews. The fix is almost always visual: a hero that fails on Amazon's mobile thumbnail, a carousel missing the assets shoppers expect for the category, or imagery that doesn't communicate the product's value in the half-second the shopper gives it. Vizit identifies which specific visual elements are suppressing your conversion rate and generates the fixes automatically.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>What's the difference between PDP optimization and conversion rate optimization?</summary>
+            <div class="answer">Conversion rate optimization (CRO) is the broad practice of improving the percentage of visitors who take a desired action. PDP optimization is the subset focused on the product detail page itself: the surface where the actual purchase decision happens on a retail site. For ecommerce brands, PDP optimization is usually the highest-leverage CRO work, because the PDP is where most paid traffic lands and where most drop-off occurs.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How long does it take to see results from PDP optimization?</summary>
+            <div class="answer">Visual fixes deploy fast. Once an updated image is live on the PDP, the conversion impact is observed right away because every new shopper sees the optimized version immediately. Most Vizit customers see measurable lift within days of deploying Vizit Certified image updates across their priority SKUs.</div>
+          </details>
+          <details class="faq-item">
+            <summary><span class="plus">+</span>How do I optimize my Amazon listing for higher conversion?</summary>
+            <div class="answer">Amazon listing optimization usually focuses on keywords, pricing, and reviews, but the largest untapped lever is visual. The hero image and image carousel determine whether shoppers tap the listing on the search results page and whether they engage once they land on the page. Vizit scores every image on the listing, identifies which ones are suppressing conversion, and generates optimized versions that are mobile-ready.</div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════════════════ -->
+<section class="final-cta" data-screen-label="08 Final CTA">
+  <div class="container final-cta-inner">
+    <span class="eyebrow on-dark reveal">Ecommerce CRO for product pages</span>
+    <h2 class="display on-dark reveal">Stop paying for traffic that <em>doesn't convert</em>.</h2>
+    <p class="subhead on-dark reveal">Find the SKUs leaking revenue. Fix the exact images costing you the click. Recover the traffic you already paid for.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-on-dark btn-lg" href="../score-your-content.html">Request my audit <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" style="color:var(--blue-200);" href="../vizit-next-gen-platform.html">See the platform</a>
+    </div>
+  </div>
+</section>
+
+<vizit-footer></vizit-footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function(e){ io.observe(e); });
+  })();
+</script>
+
+</body>
+</html>
